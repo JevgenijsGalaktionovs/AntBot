@@ -1,0 +1,5 @@
+<launch>
+  <include file="$(find raspicam_node)/launch/camerav2_410x308_30fps.launch" />
+  <node name="Controller" pkg="sherlock_ants" type="main.py" output="screen" />
+</launch>
+
