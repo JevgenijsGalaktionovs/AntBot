@@ -6,6 +6,8 @@ from dynamixel_sdk import *                     # Uses Dynamixel SDK library
 
 # Control table address. Same for MX-28(2.0), MX-64(2.0), MX-106(2.0)
 ADDR_MX_ID                 = 7
+ADDR_MX_BAUDRATE           = 8
+ADDR_MX_PWM_LIMIT          = 36
 ADDR_MX_TORQUE_ENABLE      = 64                 # Control table address is different in Dynamixel model
 ADDR_MX_GOAL_POSITION      = 116
 ADDR_MX_PRESENT_POSITION   = 132
@@ -27,7 +29,7 @@ PROTOCOL_VERSION           = 2.0               # See which protocol version is u
 
 SECONDARY_ID               = 20
 BROADCAST_ID               = 0xFE              # ID 254, reserved for broadcast ("send to all available ids")
-BAUDRATE                   = 4000000           # Dynamixel default baudrate : 57600
+BAUDRATE                   = 1000000           # Dynamixel default baudrate : 57600
 DEVICENAME                 = '/dev/ttyUSB0'    # Check which port is being used on your controller
 
 TORQUE_ENABLE              = 1                 # Value for enabling the torque
@@ -43,11 +45,28 @@ packetHandler = PacketHandler (PROTOCOL_VERSION) # Get methods and members of Pr
 gbr           = GroupBulkRead (portHandler, packetHandler)
 gbw           = GroupBulkWrite(portHandler, packetHandler)
 
+if os.name == 'nt':
+    import msvcrt
+    def getch():
+        return msvcrt.getch().decode()
+else:
+    import sys, tty, termios
+    fd = sys.stdin.fileno()
+    old_settings = termios.tcgetattr(fd)
+    def getch():
+        try:
+            sys.stdin.flush()
+            tty.setraw(sys.stdin.fileno())
+            ch = sys.stdin.read(1)
+        finally:
+            termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
+        return ch
+
 def CheckOpenPort(portHandler):
     # Open port
     if portHandler.openPort():
-        pass
-        # print("Succeeded to open the port")
+        print ("")
+        print("Succeeded to open the port %s" % DEVICENAME)
     else:
         print("Failed to open the port")
         print("Press any key to terminate...")
@@ -57,7 +76,7 @@ def SetPortBaudrate(BAUDRATE):
     # Set port baudrate
     if portHandler.setBaudRate(BAUDRATE):
         pass
-        # print("Succeeded to change the baudrate")
+        print("Succeeded to set the baudrate %d" %BAUDRATE)
     else:
         print("Failed to change the baudrate")
         print("Press any key to terminate...")
@@ -66,6 +85,39 @@ def SetPortBaudrate(BAUDRATE):
 
 CheckOpenPort(portHandler)
 SetPortBaudrate(BAUDRATE)
+
+def CheckStatus():
+    count_dynamixels = 0
+    id_dynamixels = list()
+    dxl_data_list, dxl_comm_result = packetHandler.broadcastPing(portHandler)
+    if dxl_comm_result != COMM_SUCCESS:
+        print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
+    print("Detected Dynamixels :")
+    for dxl_id in dxl_data_list:
+        count_dynamixels +=1
+        id_dynamixels.append(dxl_id)
+    print(id_dynamixels)
+    if count_dynamixels != 18:
+        print "Not all servos are connected. Found %d out of 18 servos." %count_dynamixels
+        print "Press any key to restart"
+        getch()
+        timeout = 6# one more
+        for x in range (0,5):
+            timeout -=1
+            print "Restart in %d seconds..." %timeout
+            time.sleep(1)
+        return 0
+    else:
+        return 1
+def ConnectToDynamixels():
+    while 1:
+        print "Attempting to connect"
+        status = CheckStatus()
+        if status:
+            break
+    print "Connection to Dynamixels has been established."
+
+
 
 
 def ConvertTo4Bytes(data):
@@ -122,6 +174,8 @@ def BulkRead(ADDR_MX,DATA_LEN): # Takes ~0.023sec to read
 
     gbr.clearParam()
     return data
+
+
 ######################################
 #######  All servo commands  #########
 ######################################
@@ -141,6 +195,10 @@ def DisableTorqueAllServos():
         print("%s" % packetHandler.getRxPacketError(dxl_error))
     else:
         print("All Torques disabled")
+def PingAllServos():
+    dxl_data_list, dxl_comm_result = packetHandler.broadcastPing(portHandler)
+    if dxl_comm_result != COMM_SUCCESS:
+        print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
 def RebootAllServos():
     dxl_comm_result, dxl_error = packetHandler.reboot(portHandler,BROADCAST_ID)
     if dxl_comm_result != COMM_SUCCESS:
@@ -149,14 +207,6 @@ def RebootAllServos():
         print("%s" % packetHandler.getRxPacketError(dxl_error))
     else:
         print("All Servos rebooted")
-def PingAllServos():
-    dxl_data_list, dxl_comm_result = packetHandler.broadcastPing(portHandler)
-    if dxl_comm_result != COMM_SUCCESS:
-        print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
-
-    print("Detected Dynamixel :")
-    for dxl_id in dxl_data_list:
-        print("[ID:%03d] model version : %d | firmware version : %d" % (dxl_id, dxl_data_list.get(dxl_id)[0], dxl_data_list.get(dxl_id)[1]))
 def ReadAllPositions():
     return BulkRead(ADDR_MX_PRESENT_POSITION, LEN_4BYTES)
 def ReadAllPWM():
@@ -165,6 +215,9 @@ def ReadAllPWM():
         if all_pwm[x] > (MAX_UINT16_VALUE*0.8): # dirty hack. we read 2 bytes = uint32 ;It has values from 0 to 65535
             all_pwm[x] -= MAX_UINT16_VALUE
     return all_pwm
+def ReadAllPWMlimits():
+    print BulkRead(ADDR_MX_PWM_LIMIT, LEN_2BYTES)
+
 def ReadAllVelocity():
     all_velocities =  BulkRead(ADDR_MX_PRESENT_VELOCITY, LEN_4BYTES)
     for x in range(0,len(all_velocities)):
@@ -173,6 +226,25 @@ def ReadAllVelocity():
     return all_velocities
 def WriteAllPWM(PWM18VALUES_LIST):
     BulkWrite(ADDR_MX_GOAL_PWM, LEN_2BYTES, PWM18VALUES_LIST)
+def ReadAllOperationModes():
+    return BulkRead(ADDR_MX_OPERATION_MODE, LEN_1BYTE)
+def WriteAllOperationModes():
+    print "Please choose the mode (all servos at once): "
+    print "Type 3 for Position Contro Mode"
+    print "Type 16 for PWM Control Mode"
+    servo_mode = int(raw_input())
+    options = [3,16]
+    if servo_mode not in options:
+        print "Wrong number, quitting..."
+        return
+    mode_list = [servo_mode]*18
+    BulkWrite(ADDR_MX_OPERATION_MODE, LEN_1BYTE,mode_list)
+    print ReadAllOperationModes()
+
+def WriteAllPositions(POS18VALUES_LIST):
+    BulkWrite(ADDR_MX_GOAL_POSITION, LEN_4BYTES, POS18VALUES_LIST)
+
+
 ######################################
 #######  Commands for 1 servo  #######
 ######################################
@@ -204,6 +276,15 @@ def Read1Velocity(servo_id):
         return dxl_present_velocity
     else:
         return dxl_present_velocity
+def Change1ID():
+    old_id = int(raw_input("Which servo ID? (old): "))
+    new_id = int(raw_input("Change to (new)      : "))
+    dxl_comm_result, dxl_error = packetHandler.write1ByteTxRx(portHandler, old_id, ADDR_MX_ID, new_id) # Values from -885 to +885
+    if dxl_comm_result != COMM_SUCCESS:
+        print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
+    elif dxl_error != 0:
+        print("%s" % packetHandler.getRxPacketError(dxl_error))
+    print Read1ID(new_id)
 def Read1ID(servo_id):
     dxl_id, dxl_comm_result, dxl_error = packetHandler.read1ByteTxRx(portHandler, servo_id, ADDR_MX_ID)
     return dxl_id
@@ -241,7 +322,7 @@ def Read1SecondaryID(servo_id):
     dxl_secondary_id, dxl_comm_result, dxl_error = packetHandler.read1ByteTxRx(portHandler, servo_id, ADDR_MX_SECONDARY_ID)
     print dxl_secondary_id
 def ChangeBaudrate(servo_id):
-    dxl_comm_result, dxl_error = packetHandler.write1ByteTxRx(portHandler, servo_id, 8, 6) # 16 - PWM Control Mode
+    dxl_comm_result, dxl_error = packetHandler.write1ByteTxRx(portHandler, servo_id, ADDR_MX_BAUDRATE, 3) # 16 - PWM Control Mode
     if dxl_comm_result != COMM_SUCCESS:
         print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
     elif dxl_error != 0:
@@ -249,3 +330,6 @@ def ChangeBaudrate(servo_id):
 def read1byte(servo_id,addr):
         data, dxl_comm_result, dxl_error = packetHandler.read1ByteTxRx(portHandler, servo_id, addr)
         print data
+
+def isclose(a, b, rel_tol, abs_tol): # Comparing two numbers with tolerances.
+    return abs(a-b) <= max(rel_tol * max(abs(a), abs(b)), abs_tol)
