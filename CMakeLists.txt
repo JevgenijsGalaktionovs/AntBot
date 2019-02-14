@@ -5,7 +5,6 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
   std_msgs
-  dynamixel_msgs
   dynamixel_sdk
   message_generation
 )
