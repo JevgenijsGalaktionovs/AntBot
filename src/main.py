@@ -61,28 +61,5 @@ if __name__=='__main__':
 			Inverse_kinemat_gait2(x/2,y/2,z)
 			Inverse_kinemat_gait2(x,y,-z)
 			stand_up()
-
-
-		# Inverse_kinemat(0,80,0)
-		# Inverse_kinemat(0,-80,0)
-		# Inverse_kinemat(0,-80,0)
-		# Inverse_kinemat(0,80,0)
-		# Inverse_kinemat(0,80,0)
-		# Inverse_kinemat(0,-80,0)
-		#
-		# Inverse_kinemat(0,0,80)
-		# Inverse_kinemat(0,0,-80)
-		# Inverse_kinemat(0,0,-80)
-		# Inverse_kinemat(0,0,80)
-		# Inverse_kinemat(0,0,80)
-		# Inverse_kinemat(0,0,-80)
-		#
-		# Inverse_kinemat(30,0,0)
-		# Inverse_kinemat(-30,0,0)
-		# Inverse_kinemat(-30,0,0)
-		# Inverse_kinemat(30,0,0)
-		# Inverse_kinemat(30,0,0)
-		# Inverse_kinemat(-30,0,0)
-
     except rospy.ROSInterruptException :
         portHandler.closePort()
