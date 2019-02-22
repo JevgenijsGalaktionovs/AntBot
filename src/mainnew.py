@@ -50,27 +50,18 @@ if __name__=='__main__':
 		time.sleep(2)
 		PrintForward()
 		#WALK()
+		y = int(input("How much do you want to move forward in mm pr step? "))
+		z=50#hight
+		x = int(input("How much do you want to move sideways in mm pr step? "))
+		while(1):
+			Inverse_kinemat_gait1(x/2,y/2,z)
+			Inverse_kinemat_gait1(x,y,-z)
+			Inverse_kinemat_gait2(x/2,y/2,z)
+			Inverse_kinemat_gait2(x,y,-z)
+			stand_up()
 
-		Inverse_kinemat(0,80,0)
-		Inverse_kinemat(0,-80,0)
-		Inverse_kinemat(0,-80,0)
-		Inverse_kinemat(0,80,0)
-		Inverse_kinemat(0,80,0)
-		Inverse_kinemat(0,-80,0)
 
-		Inverse_kinemat(0,0,80)
-		Inverse_kinemat(0,0,-80)
-		Inverse_kinemat(0,0,-80)
-		Inverse_kinemat(0,0,80)
-		Inverse_kinemat(0,0,80)
-		Inverse_kinemat(0,0,-80)
-
-		Inverse_kinemat(30,0,0)
-		Inverse_kinemat(-30,0,0)
-		Inverse_kinemat(-30,0,0)
-		Inverse_kinemat(30,0,0)
-		Inverse_kinemat(30,0,0)
-		Inverse_kinemat(-30,0,0)
+		
 
     except rospy.ROSInterruptException :
         portHandler.closePort()
