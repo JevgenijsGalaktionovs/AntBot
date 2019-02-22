@@ -8,6 +8,8 @@ from dynamixel_sdk import *                     # Uses Dynamixel SDK library
 ADDR_MX_ID                 = 7
 ADDR_MX_BAUDRATE           = 8
 ADDR_MX_PWM_LIMIT          = 36
+ADDR_MX_CURRENT_LIMIT      = 38
+ADDR_MX_VELOCITY_LIMIT     = 44
 ADDR_MX_TORQUE_ENABLE      = 64                 # Control table address is different in Dynamixel model
 ADDR_MX_GOAL_POSITION      = 116
 ADDR_MX_PRESENT_POSITION   = 132
@@ -217,13 +219,22 @@ def ReadAllPWM():
     return all_pwm
 def ReadAllPWMlimits():
     print BulkRead(ADDR_MX_PWM_LIMIT, LEN_2BYTES)
+def ReadAllVelocitylimits():
+    print BulkRead(ADDR_MX_VELOCITY_LIMIT, LEN_4BYTES)
+def ReadAllCurrents():
+        all_currents = BulkRead(ADDR_MX_PRESENT_LOAD, LEN_2BYTES)
+        for x in range(0,len(all_currents)):
+            if all_currents[x] > (MAX_UINT16_VALUE*0.8): # dirty hack. we read 2 bytes = uint32 ;It has values from 0 to 65535
+                all_currents[x] -= MAX_UINT16_VALUE
+        print all_currents
+
 
 def ReadAllVelocity():
     all_velocities =  BulkRead(ADDR_MX_PRESENT_VELOCITY, LEN_4BYTES)
     for x in range(0,len(all_velocities)):
         if all_velocities[x] > (MAX_UINT32_VALUE*0.8): # dirty hack. we read 2 bytes = uint32 ;It has values from 0 to 65535
             all_velocities[x] -= MAX_UINT32_VALUE
-    return all_velocities
+    print all_velocities
 def WriteAllPWM(PWM18VALUES_LIST):
     BulkWrite(ADDR_MX_GOAL_PWM, LEN_2BYTES, PWM18VALUES_LIST)
 def ReadAllOperationModes():
@@ -240,7 +251,6 @@ def WriteAllOperationModes():
     mode_list = [servo_mode]*18
     BulkWrite(ADDR_MX_OPERATION_MODE, LEN_1BYTE,mode_list)
     print ReadAllOperationModes()
-
 def WriteAllPositions(POS18VALUES_LIST):
     BulkWrite(ADDR_MX_GOAL_POSITION, LEN_4BYTES, POS18VALUES_LIST)
 
@@ -301,8 +311,11 @@ def Write1Pos(servo_id,val_pos):
         elif dxl_error != 0:
             print("%s" % packetHandler.getRxPacketError(dxl_error))
 def Read1LimitPWM(servo_id):
-    dxl_limit_pwm, dxl_comm_result, dxl_error = packetHandler.read2ByteTxRx(portHandler, servo_id, 36)
+    dxl_limit_pwm, dxl_comm_result, dxl_error = packetHandler.read2ByteTxRx(portHandler, servo_id, ADDR_MX_PWM_LIMIT)
     print dxl_limit_pwm
+def Read1LimitCurrent(servo_id):
+    dxl_limit_current, dxl_comm_result, dxl_error = packetHandler.read2ByteTxRx(portHandler, servo_id, ADDR_MX_CURRENT_LIMIT)
+    print dxl_limit_current
 def Read1OperatingMode(servo_id):
     dxl_operation_mode, dxl_comm_result, dxl_error = packetHandler.read1ByteTxRx(portHandler, servo_id, ADDR_MX_OPERATION_MODE)
     print dxl_operation_mode
@@ -330,6 +343,29 @@ def ChangeBaudrate(servo_id):
 def read1byte(servo_id,addr):
         data, dxl_comm_result, dxl_error = packetHandler.read1ByteTxRx(portHandler, servo_id, addr)
         print data
+def read4byte(servo_id,addr):
+        data, dxl_comm_result, dxl_error = packetHandler.read4ByteTxRx(portHandler, servo_id, addr)
+        print data
+def write4byte(servo_id,addr,value):
+        dxl_comm_result, dxl_error = packetHandler.write4ByteTxRx(portHandler, servo_id, addr,value) # 16 - PWM Control Mode
+        if dxl_comm_result != COMM_SUCCESS:
+            print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
+        elif dxl_error != 0:
+            print("%s" % packetHandler.getRxPacketError(dxl_error))
 
 def isclose(a, b, rel_tol, abs_tol): # Comparing two numbers with tolerances.
     return abs(a-b) <= max(rel_tol * max(abs(a), abs(b)), abs_tol)
+
+def WritePWMLimit(servo_id, pwm_limit):
+    dxl_comm_result, dxl_error = packetHandler.write2ByteTxRx(portHandler, servo_id, ADDR_MX_PWM_LIMIT, pwm_limit) # Values from -885 to +885
+    if dxl_comm_result != COMM_SUCCESS:
+        print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
+    elif dxl_error != 0:
+        print("%s" % packetHandler.getRxPacketError(dxl_error))
+
+def Write1VelocitLimit(servo_id,velocity_limt):
+        dxl_comm_result, dxl_error = packetHandler.write4ByteTxRx(portHandler, servo_id, ADDR_MX_VELOCITY_LIMIT,velocity_limt) # 16 - PWM Control Mode
+        if dxl_comm_result != COMM_SUCCESS:
+            print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
+        elif dxl_error != 0:
+            print("%s" % packetHandler.getRxPacketError(dxl_error))
