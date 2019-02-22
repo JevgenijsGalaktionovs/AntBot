@@ -461,7 +461,7 @@ def CalculateInverseLeg4(x,y,z,endtip_xyz):
     L2        =  92.17   # CONSTANT FOR ALL LEGS
     L3        =  193.66  # CONSTANT FOR ALL LEGS
     offsetang = -math.pi
-    theta11 = math.atan2(Y1, X1) +offsetang
+    theta11 = math.atan2(Y1, X1) -offsetang
     newx = math.cos(-1*offsetang)*X1 - math.sin(-1*offsetang)*Y1
     newy = math.sin(-1*offsetang)*X1 + math.cos(-1*offsetang)*Y1
     x1 = math.cos(theta11)*(newx) + math.sin(theta11)*(newy) - L1
@@ -568,6 +568,9 @@ def Inverse_kinemat(x,y,z):
     servo16 =int(b[15])
     servo17 = int(b[16])
     servo18 =int(b[17])
+    if servo10 > 4096:
+	servo10 = servo10-4096
+    print(servo10)
 
     Write1Pos(1,servo1)
     Write1Pos(2,servo2)
@@ -590,6 +593,76 @@ def Inverse_kinemat(x,y,z):
 
 
     return servo_array #OUTPUT: 18 servo thetas to accomplish this motion (rads)
+
+def Inverse_kinemat_gait1(x,y,z): 
+    endtip_xyz = Forward_kinematics()
+    servo_array = []
+    servo_array.extend(CalculateInverseLeg1(x,y,z,endtip_xyz))
+    #servo_array.extend(CalculateInverseLeg2(x,y,z,endtip_xyz))
+    #servo_array.extend(CalculateInverseLeg3(x,y,z,endtip_xyz))
+    servo_array.extend(CalculateInverseLeg4(x,y,z,endtip_xyz))
+    servo_array.extend(CalculateInverseLeg5(x,y,z,endtip_xyz))
+    #servo_array.extend(CalculateInverseLeg6(x,y,z,endtip_xyz))
+
+    b=[float(i) for i in servo_array]	
+    servo1 = int(b[0])
+    servo2 =int(b[1])
+    servo3 = int(b[2])
+    servo10 = int(b[3])
+    servo11 =int(b[4])
+    servo12 = int(b[5])
+    servo13 = int(b[6])
+    servo14 =int(b[7])
+    servo15 = int(b[8])
+    if servo10 > 4096:
+	servo10 = servo10-4096
+    print(servo10)
+
+    Write1Pos(1,servo1)
+    Write1Pos(2,servo2)
+    Write1Pos(3,servo3)
+    Write1Pos(10,servo10)
+    Write1Pos(11,servo11)
+    Write1Pos(12,servo12)
+    Write1Pos(13,servo13)
+    Write1Pos(14,servo14)
+    Write1Pos(15,servo15)
+    
+    return servo_array #OUTPUT: 18 servo thetas to accomplish this motion (rads)
+
+def Inverse_kinemat_gait2(x,y,z): 
+    endtip_xyz = Forward_kinematics()
+    servo_array = []
+    #servo_array.extend(CalculateInverseLeg1(x,y,z,endtip_xyz))
+    servo_array.extend(CalculateInverseLeg2(x,y,z,endtip_xyz))
+    servo_array.extend(CalculateInverseLeg3(x,y,z,endtip_xyz))
+    #servo_array.extend(CalculateInverseLeg4(x,y,z,endtip_xyz))
+    #servo_array.extend(CalculateInverseLeg5(x,y,z,endtip_xyz))
+    servo_array.extend(CalculateInverseLeg6(x,y,z,endtip_xyz))
+    b=[float(i) for i in servo_array]	
+    servo4 = int(b[0])
+    servo5 =int(b[1])
+    servo6 = int(b[2])
+    servo7 = int(b[3])
+    servo8 =int(b[4])
+    servo9 = int(b[5])
+    servo16 = int(b[6])
+    servo17 =int(b[7])
+    servo18 = int(b[8])
+
+    Write1Pos(4,servo4)
+    Write1Pos(5,servo5)
+    Write1Pos(6,servo6)
+    Write1Pos(7,servo7)
+    Write1Pos(8,servo8)
+    Write1Pos(9,servo9)
+    Write1Pos(16,servo16)
+    Write1Pos(17,servo17)
+    Write1Pos(18,servo18)
+    
+    return servo_array #OUTPUT: 18 servo thetas to accomplish this motion (rads)
+
+
 
 
 
