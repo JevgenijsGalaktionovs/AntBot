@@ -26,7 +26,7 @@ def alternative_stand_up():
 	Write1Pos(16,2048)
 	Write1Pos(17,1878)
 	Write1Pos(18,3048)
-	time.sleep(1)
+	time.sleep(0.5)
 
     #Leg 3
 	Write1Pos(7,2048)
@@ -46,10 +46,10 @@ def stand_up():
 	Write1Pos(1,2048)
 	Write1Pos(2,2218)
 	Write1Pos(3,1024)
-    #Leg 4
-	Write1Pos(10,2048)
-	Write1Pos(11,1878)
-	Write1Pos(12,3048)
+    # #Leg 4
+	# Write1Pos(10,2048)
+	# Write1Pos(11,1878)
+	# Write1Pos(12,3048)
     #Leg 5
 	Write1Pos(13,2048)
 	Write1Pos(14,2218)
@@ -60,10 +60,10 @@ def stand_up():
 	Write1Pos(4,2048)
 	Write1Pos(5,1878)
 	Write1Pos(6,3048)
-    #Leg 3
-	Write1Pos(7,2048)
-	Write1Pos(8,2218)
-	Write1Pos(9,1024)
+    # #Leg 3
+	# Write1Pos(7,2048)
+	# Write1Pos(8,2218)
+	# Write1Pos(9,1024)
     #Leg 6
 	Write1Pos(16,2048)
 	Write1Pos(17,1878)
