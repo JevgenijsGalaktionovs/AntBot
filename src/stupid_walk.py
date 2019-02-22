@@ -15,7 +15,7 @@ def alternative_stand_up():
 	Write1Pos(4,2048)
 	Write1Pos(5,1878)
 	Write1Pos(6,3048)
-	time.sleep(1)
+	time.sleep(0.5)
 
     #Leg 5
 	Write1Pos(13,2048)

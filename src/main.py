@@ -11,32 +11,34 @@ from stupid_walk import *
 
 if __name__=='__main__':
     try:
+		DisableTorqueAllServos()
+		time.sleep(3)
 		EnableTorqueAllServos()
-		stand_up()
+		alternative_stand_up()
 		time.sleep(2)
-		PrintForward()
+		# PrintForward()
 		#WALK()
 
-		Inverse_kinemat(0,80,0)
-		Inverse_kinemat(0,-80,0)
-		Inverse_kinemat(0,-80,0)
-		Inverse_kinemat(0,80,0)
-		Inverse_kinemat(0,80,0)
-		Inverse_kinemat(0,-80,0)
-
-		Inverse_kinemat(0,0,80)
-		Inverse_kinemat(0,0,-80)
-		Inverse_kinemat(0,0,-80)
-		Inverse_kinemat(0,0,80)
-		Inverse_kinemat(0,0,80)
-		Inverse_kinemat(0,0,-80)
-
-		Inverse_kinemat(30,0,0)
-		Inverse_kinemat(-30,0,0)
-		Inverse_kinemat(-30,0,0)
-		Inverse_kinemat(30,0,0)
-		Inverse_kinemat(30,0,0)
-		Inverse_kinemat(-30,0,0)
+		# Inverse_kinemat(0,80,0)
+		# Inverse_kinemat(0,-80,0)
+		# Inverse_kinemat(0,-80,0)
+		# Inverse_kinemat(0,80,0)
+		# Inverse_kinemat(0,80,0)
+		# Inverse_kinemat(0,-80,0)
+		#
+		# Inverse_kinemat(0,0,80)
+		# Inverse_kinemat(0,0,-80)
+		# Inverse_kinemat(0,0,-80)
+		# Inverse_kinemat(0,0,80)
+		# Inverse_kinemat(0,0,80)
+		# Inverse_kinemat(0,0,-80)
+		#
+		# Inverse_kinemat(30,0,0)
+		# Inverse_kinemat(-30,0,0)
+		# Inverse_kinemat(-30,0,0)
+		# Inverse_kinemat(30,0,0)
+		# Inverse_kinemat(30,0,0)
+		# Inverse_kinemat(-30,0,0)
 
     except rospy.ROSInterruptException :
         portHandler.closePort()
