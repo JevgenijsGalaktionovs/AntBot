@@ -33,6 +33,6 @@ def master():
 
 if __name__ == '__main__':
     try:
-		master()
+	master()
     except rospy.ROSInterruptException:
         pass

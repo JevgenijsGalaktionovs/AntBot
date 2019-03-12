@@ -154,6 +154,34 @@ def BulkWrite(ADDR_MX, DATA_LEN, list_18_values): # Takes ~0.003sec to read
         print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
 
     gbw.clearParam()
+
+def BulkWriteRight(ADDR_MX, DATA_LEN, list_18_values): # Takes ~0.003sec to read
+    value_byte_array = list()
+    if   DATA_LEN == 1:
+        for x in range(0,len(list_18_values)):
+            value_byte_array.append([list_18_values[x]])
+    elif DATA_LEN == 2:
+        for x in range(0,len(list_18_values)):
+            value_byte_array.append(ConvertTo2Bytes(list_18_values[x]))
+    elif DATA_LEN == 4:
+        for x in range(0,len(list_18_values)):
+            value_byte_array.append(ConvertTo4Bytes(list_18_values[x]))
+
+    for ID in range (1,19):
+        if ID%2 != 0:
+            dxl_addparam_result = gbw.addParam(ID, ADDR_MX, DATA_LEN, value_byte_array[ID-1])
+            if dxl_addparam_result != True:
+                print("[ID:%03d] groupBulkRead addparam failed" % ID)
+                quit()
+        else:
+            pass
+
+    dxl_comm_result = gbw.txPacket()
+    if dxl_comm_result != COMM_SUCCESS:
+        print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
+
+    gbw.clearParam()
+
 def BulkRead(ADDR_MX,DATA_LEN): # Takes ~0.023sec to read
 
     data = list()
@@ -254,6 +282,8 @@ def WriteAllOperationModes():
 def WriteAllPositions(POS18VALUES_LIST):
     BulkWrite(ADDR_MX_GOAL_POSITION, LEN_4BYTES, POS18VALUES_LIST)
 
+def WriteAllRightPositions(POS18VALUES_LIST):
+    BulkWriteRight(ADDR_MX_GOAL_POSITION, LEN_4BYTES, POS18VALUES_LIST)
 
 ######################################
 #######  Commands for 1 servo  #######

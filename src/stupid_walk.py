@@ -15,7 +15,6 @@ def stand_up():
 	Write1Pos(4,2048)
 	Write1Pos(5,1878)
 	Write1Pos(6,3048)
-	time.sleep(0.5)
 
     #Leg 5
 	Write1Pos(13,2048)
@@ -26,7 +25,6 @@ def stand_up():
 	Write1Pos(16,2048)
 	Write1Pos(17,1878)
 	Write1Pos(18,3048)
-	time.sleep(0.5)
 
     #Leg 3
 	Write1Pos(7,2048)
@@ -39,7 +37,7 @@ def stand_up():
 	Write1Pos(11,1878)
 	Write1Pos(12,3048)
 	time.sleep(1)
-
+	
 # Iteration 1 : Australopithecus
 ############################
 def step1():

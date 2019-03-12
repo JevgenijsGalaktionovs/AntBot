@@ -11,7 +11,6 @@ def callback_leg1_femur(data):
 def callback_leg1_tibia(data):
     c = data.data
 
-
 old_positions = []
 
 def slave():
@@ -30,4 +29,7 @@ def slave():
         rate.sleep()
 
 if __name__ == '__main__':
-    slave()
+	try:
+            slave()
+	except rospy.ROSInterruptException:
+	    pass
