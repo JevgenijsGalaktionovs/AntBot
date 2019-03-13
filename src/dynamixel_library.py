@@ -129,7 +129,7 @@ def ConvertTo4Bytes(data):
 def ConvertTo2Bytes(data):
     data_2bytes = [DXL_LOBYTE(data), DXL_HIBYTE(data)]
     return data_2bytes # Allocate value into 2 byte array (Example: Goal PWM must be 4 bytes long)
-def BulkWrite(ADDR_MX, DATA_LEN, list_18_values): # Takes ~0.003sec to read
+def BulkWrite(ADDR_MX, DATA_LEN, list_18_values):
 
     value_byte_array = list()
 
@@ -155,7 +155,7 @@ def BulkWrite(ADDR_MX, DATA_LEN, list_18_values): # Takes ~0.003sec to read
 
     gbw.clearParam()
 
-def BulkWriteRight(ADDR_MX, DATA_LEN, list_18_values): # Takes ~0.003sec to read
+def BulkWriteTripodGait(ADDR_MX, DATA_LEN, list_18_values, leg_case):
     value_byte_array = list()
     if   DATA_LEN == 1:
         for x in range(0,len(list_18_values)):
@@ -167,14 +167,24 @@ def BulkWriteRight(ADDR_MX, DATA_LEN, list_18_values): # Takes ~0.003sec to read
         for x in range(0,len(list_18_values)):
             value_byte_array.append(ConvertTo4Bytes(list_18_values[x]))
 
-    for ID in range (1,19):
-        if ID%2 != 0:
-            dxl_addparam_result = gbw.addParam(ID, ADDR_MX, DATA_LEN, value_byte_array[ID-1])
-            if dxl_addparam_result != True:
-                print("[ID:%03d] groupBulkRead addparam failed" % ID)
-                quit()
-        else:
-            pass
+    if leg_case == 1:  # LEG 1,4,5 (First Tripod Group)
+        for ID in range (1,19):
+            if 1<= ID <= 3 or 10 <= ID <= 12 or 13<= ID <= 15:
+                dxl_addparam_result = gbw.addParam(ID, ADDR_MX, DATA_LEN, value_byte_array[ID-1])
+                if dxl_addparam_result != True:
+                    print("[ID:%03d] groupBulkRead addparam failed" % ID)
+                    quit()
+                else:
+                    pass
+    else:  # LEG 2,3,6 (First Tripod Group)
+        for ID in range (1,19):
+            if 4 <= ID <= 6 or 7 <= ID <= 9 or 16 <= ID <= 18:
+                dxl_addparam_result = gbw.addParam(ID, ADDR_MX, DATA_LEN, value_byte_array[ID-1])
+                if dxl_addparam_result != True:
+                    print("[ID:%03d] groupBulkRead addparam failed" % ID)
+                    quit()
+                else:
+                    pass
 
     dxl_comm_result = gbw.txPacket()
     if dxl_comm_result != COMM_SUCCESS:
@@ -205,7 +215,12 @@ def BulkRead(ADDR_MX,DATA_LEN): # Takes ~0.023sec to read
     gbr.clearParam()
     return data
 
-
+def read1byte(servo_id,addr):
+        data, dxl_comm_result, dxl_error = packetHandler.read1ByteTxRx(portHandler, servo_id, addr)
+        print data
+def read4byte(servo_id,addr):
+        data, dxl_comm_result, dxl_error = packetHandler.read4ByteTxRx(portHandler, servo_id, addr)
+        print data
 ######################################
 #######  All servo commands  #########
 ######################################
@@ -282,8 +297,8 @@ def WriteAllOperationModes():
 def WriteAllPositions(POS18VALUES_LIST):
     BulkWrite(ADDR_MX_GOAL_POSITION, LEN_4BYTES, POS18VALUES_LIST)
 
-def WriteAllRightPositions(POS18VALUES_LIST):
-    BulkWriteRight(ADDR_MX_GOAL_POSITION, LEN_4BYTES, POS18VALUES_LIST)
+def WriteTripodGait(POS18VALUES_LIST,leg_case):
+    BulkWriteTripodGait(ADDR_MX_GOAL_POSITION, LEN_4BYTES, POS18VALUES_LIST,leg_case)
 
 ######################################
 #######  Commands for 1 servo  #######
@@ -370,12 +385,6 @@ def ChangeBaudrate(servo_id):
         print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
     elif dxl_error != 0:
         print("%s" % packetHandler.getRxPacketError(dxl_error))
-def read1byte(servo_id,addr):
-        data, dxl_comm_result, dxl_error = packetHandler.read1ByteTxRx(portHandler, servo_id, addr)
-        print data
-def read4byte(servo_id,addr):
-        data, dxl_comm_result, dxl_error = packetHandler.read4ByteTxRx(portHandler, servo_id, addr)
-        print data
 def write4byte(servo_id,addr,value):
         dxl_comm_result, dxl_error = packetHandler.write4ByteTxRx(portHandler, servo_id, addr,value) # 16 - PWM Control Mode
         if dxl_comm_result != COMM_SUCCESS:
@@ -386,13 +395,8 @@ def write4byte(servo_id,addr,value):
 def isclose(a, b, rel_tol, abs_tol): # Comparing two numbers with tolerances.
     return abs(a-b) <= max(rel_tol * max(abs(a), abs(b)), abs_tol)
 
-def WritePWMLimit(servo_id, pwm_limit):
-    dxl_comm_result, dxl_error = packetHandler.write2ByteTxRx(portHandler, servo_id, ADDR_MX_PWM_LIMIT, pwm_limit) # Values from -885 to +885
-    if dxl_comm_result != COMM_SUCCESS:
-        print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
-    elif dxl_error != 0:
-        print("%s" % packetHandler.getRxPacketError(dxl_error))
-
+def WritePWMLimit(PWM_LIMIT_LIST):
+    BulkWrite(ADDR_MX_PWM_LIMIT, LEN_2BYTES,PWM_LIMIT_LIST)
 def Write1VelocitLimit(servo_id,velocity_limt):
         dxl_comm_result, dxl_error = packetHandler.write4ByteTxRx(portHandler, servo_id, ADDR_MX_VELOCITY_LIMIT,velocity_limt) # 16 - PWM Control Mode
         if dxl_comm_result != COMM_SUCCESS:

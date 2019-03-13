@@ -4,40 +4,46 @@ import time
 
 
 def stand_up():
-
+	initial_pos = [2048,2218,1024,
+				   2048,1878,3048,
+				   2048,2218,1024,
+				   2048,1878,3048,
+				   2048,2218,1024,
+				   2048,1878,3048]
+	WriteAllPositions(initial_pos)
     # First Tripod
     #Leg 1
-	Write1Pos(1,2048)
-	Write1Pos(2,2218)
-	Write1Pos(3,1024)
-	#time.sleep(1)
-    #Leg 2
-	Write1Pos(4,2048)
-	Write1Pos(5,1878)
-	Write1Pos(6,3048)
+	# Write1Pos(1,2048)
+	# Write1Pos(2,2218)
+	# Write1Pos(3,1024)
+	# # time.sleep(1)
+    # #Leg 2
+	# Write1Pos(4,2048)
+	# Write1Pos(5,1878)
+	# Write1Pos(6,3048)
+	#
+    # #Leg 5
+	# Write1Pos(13,2048)
+	# Write1Pos(14,2218)
+	# Write1Pos(15,1024)
+	# # time.sleep(1)
+    # #Leg 6
+	# Write1Pos(16,2048)
+	# Write1Pos(17,1878)
+	# Write1Pos(18,3048)
+	#
+    # #Leg 3
+	# Write1Pos(7,2048)
+	# Write1Pos(8,2218)
+	# Write1Pos(9,1024)
+	# # time.sleep(1)
+	#
+    # # Leg 4
+	# Write1Pos(10,2048)
+	# Write1Pos(11,1878)
+	# Write1Pos(12,3048)
+	# time.sleep(1)
 
-    #Leg 5
-	Write1Pos(13,2048)
-	Write1Pos(14,2218)
-	Write1Pos(15,1024)
-	#time.sleep(1)
-    #Leg 6
-	Write1Pos(16,2048)
-	Write1Pos(17,1878)
-	Write1Pos(18,3048)
-
-    #Leg 3
-	Write1Pos(7,2048)
-	Write1Pos(8,2218)
-	Write1Pos(9,1024)
-	#time.sleep(1)
-
-    # Leg 4
-	Write1Pos(10,2048)
-	Write1Pos(11,1878)
-	Write1Pos(12,3048)
-	time.sleep(1)
-	
 # Iteration 1 : Australopithecus
 ############################
 def step1():

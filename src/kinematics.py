@@ -50,13 +50,12 @@ class Kinematics(object):
         return ee_xyz
 
     def calc_IKine(self, x, y, z, ee_xyz, leg):
-        print x,y,z
         init_X   = ee_xyz[0]
         init_Y   = ee_xyz[1]
         init_Z   = ee_xyz[2]
         X        = init_X + (x) - leg.x_off
         Y        = init_Y + (y) - leg.y_off
-        Z        = init_Z - (z) - leg.z_off
+        Z        = init_Z + (z) - leg.z_off
         theta1   = atan2(Y,X)   + leg.ang_off
         if theta1 < -pi:
            theta1 += 2*pi
@@ -86,7 +85,7 @@ class Kinematics(object):
         thetas.extend(self.calc_IKine(x, y, z, ee_xyz[15:18], self.leg6 ))
         thetas = [x / pi * 2048 + 2048 for x in thetas] # Convert from pi to steps
         return thetas
-        
+
     def PrintForward(self):
         coord_list = self.DoFKine()
         RoundedCoords = [ '%.4f' % elem for elem in coord_list ]
