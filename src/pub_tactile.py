@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
 
+import time
 import rospy
 import RPi.GPIO as GPIO
-import time
-from std_msgs.msg import String
+from std_msgs.msg import Int16
 
 # determine board pin numbering
 GPIO.setmode(GPIO.BCM)
@@ -34,54 +34,49 @@ def rc_time (sensor):
     return count
 
 def tac_pub():
-    pub_tac_1 = rospy.Publisher('tactile_1', String, queue_size=10)
-    pub_tac_2 = rospy.Publisher('tactile_2', String, queue_size=10)
-    pub_tac_3 = rospy.Publisher('tactile_3', String, queue_size=10)
-    pub_tac_4 = rospy.Publisher('tactile_4', String, queue_size=10)
-    pub_tac_5 = rospy.Publisher('tactile_5', String, queue_size=10)
-    pub_tac_6 = rospy.Publisher('tactile_6', String, queue_size=10)
+    tac_1_pub = rospy.Publisher('tactile_1', Int16, queue_size=10)
+    tac_2_pub = rospy.Publisher('tactile_2', Int16, queue_size=10)
+    tac_3_pub = rospy.Publisher('tactile_3', Int16, queue_size=10)
+    tac_4_pub = rospy.Publisher('tactile_4', Int16, queue_size=10)
+    tac_5_pub = rospy.Publisher('tactile_5', Int16, queue_size=10)
+    tac_6_pub = rospy.Publisher('tactile_6', Int16, queue_size=10)
     rospy.init_node('pub_tactile', anonymous=True)
-    rate = rospy.Rate(10) # 5 hz
-    while not rospy.is_shutdown():
-        tac_1_input = rc_time (tac_1_pin)    # take a reading from sensor
-        if (tac_1_input > 20):                # is the reading low enough to be pressure
-            tac_1_str = "Leg 1: Ground Contact: %s"  % (tac_1_input)   # format the string to pass to the topic
-            rospy.loginfo(tac_1_str)            # prints the message to screen, log and rosout
-            pub_tac_1.publish(tac_1_str)        # send the string to the publishe
+    rate = rospy.Rate(10)                         # 10 hz
+    while not rospy.is_shutdown():                # when no ctrl+c is called in terminal.
+
+        tac_1_input = rc_time (tac_1_pin)         # take a reading from sensor
+        if True: #(tac_1_input > 20):             # is the reading low enough to be pressure
+            rospy.loginfo(tac_1_input)            # prints the message to screen, log and rosout
+            tac_1_pub.publish(tac_1_input)        # send the string to the publishe
 
         tac_2_input = rc_time (tac_2_pin)
-        if (tac_2_input > 20):
-            tac_2_str = "Leg 2: Ground Contact: %s" % (tac_2_input)
-            rospy.loginfo(tac_2_str)
-            pub_tac_2.publish(tac_2_str)
+        if True: #(tac_2_input > 20):
+            rospy.loginfo(tac_2_input)
+            tac_2_pub.publish(tac_2_input)
         rate.sleep()
 
         tac_3_input = rc_time (tac_3_pin)
-        if (tac_3_input > 20):
-            tac_3_str = "Leg 3: Ground Contact: %s" % (tac_3_input)
-            rospy.loginfo(tac_3_str)
-            pub_tac_3.publish(tac_3_str)
+        if True: #(tac_3_input > 20):
+            rospy.loginfo(tac_3_input)
+            tac_3_pub.publish(tac_3_input)
         rate.sleep()
 
         tac_4_input = rc_time (tac_4_pin)
-        if (tac_4_input > 20):
-            tac_4_str = "Leg 4: Ground Contact: %s" % (tac_4_input)
-            rospy.loginfo(tac_4_str)
-            pub_tac_4.publish(tac_4_str)
+        if True: #(tac_4_input > 20):
+            rospy.loginfo(tac_4_input)
+            tac_4_pub.publish(tac_4_input)
         rate.sleep()
 
         tac_5_input = rc_time (tac_5_pin)
-        if (tac_5_input > 20):
-            tac_5_str = "Leg 5: Ground Contact: %s" % (tac_5_input)
-            rospy.loginfo(tac_5_str)
-            pub_tac_5.publish(tac_5_str)
+        if True: #(tac_5_input > 20):
+            rospy.loginfo(tac_5_input)
+            tac_5_tac.publish(tac_5_input)
         rate.sleep()
 
         tac_6_input = rc_time (tac_6_pin)
-        if (tac_6_input > 20):
-            tac_6_str = "Leg 6: Ground Contact: %s" % (tac_6_input)
-            rospy.loginfo(tac_6_str)
-            pub_tac_6.publish(tac_6_str)
+        if True: #(tac_6_input > 20):
+            rospy.loginfo(tac_6_input)
+            tac_6_pub.publish(tac_6_input)
         rate.sleep()
 
 if __name__ == '__main__':
