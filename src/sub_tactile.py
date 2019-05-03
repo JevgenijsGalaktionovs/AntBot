@@ -2,10 +2,10 @@
 
 
 import rospy
-from std_msgs.msg import String
+from std_msgs.msg import Int16
 
-def callback(data):
-    rospy.loginfo(rospy.get_caller_id() + 'I heard %s', data.data)
+def callback(msg):
+    rospy.loginfo(rospy.get_caller_id() + 'I heard %s', msg.data)
 
 def tac_sub():
 
@@ -16,12 +16,12 @@ def tac_sub():
     # run simultaneously.
     rospy.init_node('sub_tactile', anonymous=True)
 
-    rospy.Subscriber('tactile_1', String, callback)
-    rospy.Subscriber('tactile_2', String, callback)
-    rospy.Subscriber('tactile_3', String, callback)
-    rospy.Subscriber('tactile_4', String, callback)
-    rospy.Subscriber('tactile_5', String, callback)
-    rospy.Subscriber('tactile_6', String, callback)
+    rospy.Subscriber('tactile_1', Int16, callback)
+    rospy.Subscriber('tactile_2', Int16, callback)
+    rospy.Subscriber('tactile_3', Int16, callback)
+    rospy.Subscriber('tactile_4', Int16, callback)
+    rospy.Subscriber('tactile_5', Int16, callback)
+    rospy.Subscriber('tactile_6', Int16, callback)
 
     # spin() simply keeps python from exiting until this node is stopped
     rospy.spin()
