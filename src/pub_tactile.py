@@ -70,7 +70,7 @@ def tac_pub():
         tac_5_input = rc_time (tac_5_pin)
         if True: #(tac_5_input > 20):
             rospy.loginfo(tac_5_input)
-            tac_5_tac.publish(tac_5_input)
+            tac_5_pub.publish(tac_5_input)
         rate.sleep()
 
         tac_6_input = rc_time (tac_6_pin)
