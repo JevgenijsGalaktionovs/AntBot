@@ -6,11 +6,11 @@ import rospy
 import RPi.GPIO as GPIO
 from std_msgs.msg import Int16
 
-# determine board pin numbering
+# define board pin numbering
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
 
-# pin for sensor
+# pins for sensor
 tac_1_pin = 5
 tac_2_pin = 6
 tac_3_pin = 13
@@ -18,7 +18,7 @@ tac_4_pin = 19
 tac_5_pin = 26
 tac_6_pin = 21
 
-# record pressure duration
+# record duration of pressure
 def rc_time (sensor):
     count = 0
     GPIO.setup(sensor, GPIO.OUT)
@@ -44,10 +44,10 @@ def tac_pub():
     rate = rospy.Rate(10)                         # 10 hz
     while not rospy.is_shutdown():                # when no ctrl+c is called in terminal.
 
-        tac_1_input = rc_time (tac_1_pin)         # take a reading from sensor
-        if True: #(tac_1_input > 20):             # is the reading low enough to be pressure
+        tac_1_input = rc_time (tac_1_pin)         # take a reading from pressure function
+        if True: #(tac_1_input > 20):             # is the reading low enough to be pressure?
             rospy.loginfo(tac_1_input)            # prints the message to screen, log and rosout
-            tac_1_pub.publish(tac_1_input)        # send the string to the publishe
+            tac_1_pub.publish(tac_1_input)        # send the string to the publisher
 
         tac_2_input = rc_time (tac_2_pin)
         if True: #(tac_2_input > 20):
