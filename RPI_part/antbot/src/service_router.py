@@ -62,6 +62,10 @@ def readPos():
     return read_pos_all_request(1)
 
 
+def readPwm():
+    return read_pwn_all_request(1)
+
+
 # Requests
 
 def read_pos_all_request(command):
@@ -69,6 +73,16 @@ def read_pos_all_request(command):
     try:
         read_all_pos = rospy.ServiceProxy('read_all_pos', pos_key)
         response = read_all_pos(command)
+        return response.reply
+    except rospy.ServiceException, e:
+        print "Service call failed: %s" % e
+
+
+def read_pwn_all_request(command):
+    rospy.wait_for_service('read_all_pwm')
+    try:
+        read_all_pwm = rospy.ServiceProxy('read_all_pwm', pos_key)
+        response = read_all_pwm(command)
         return response.reply
     except rospy.ServiceException, e:
         print "Service call failed: %s" % e

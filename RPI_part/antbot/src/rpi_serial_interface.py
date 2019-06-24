@@ -38,6 +38,7 @@ class ArduinoCommunication:
         rospy.Service('write_acc_N',   list_key, self.acc_N_service)
         rospy.Service('write_pwm_N',   list_key, self.pwm_N_service)
         rospy.Service('read_all_pos',  pos_key,  self.read_pos_all_service)
+        rospy.Service('read_all_pwm',  pos_key,  self.read_pwm_all_service)
         rospy.Service('read_IR',       pos_key,  self.read_IR_service)
 
         rate = rospy.Rate(100)  # 100hz
@@ -148,6 +149,20 @@ class ArduinoCommunication:
                     sr_pos  = json.loads(in_data).get('sr_pos')
                     if sr_pos is not None:
                         return pos_keyResponse(sr_pos)
+                except ValueError:
+                    pass  # do nothing, not a valid json
+
+    def read_pwm_all_service(self, req):
+        data_to_send = dict(read_pwm_all=req.command)
+        self.sendSerial(data_to_send)
+        while True:
+            # time.sleep(0.01)
+            while self.ser.inWaiting() > 0:
+                in_data = self.ser.readline()
+                try:  # Take only non-corrupted JSON messages
+                    sr_pwm  = json.loads(in_data).get('sr_pwm')
+                    if sr_pwm is not None:
+                        return pos_keyResponse(sr_pwm)
                 except ValueError:
                     pass  # do nothing, not a valid json
 

@@ -1,3 +1,0 @@
-<launch>
-  <node name="ArduinoCommunication" pkg="antbot" type="rpi_serial_interface.py" output="screen" />
-</launch>

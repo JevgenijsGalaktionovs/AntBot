@@ -541,7 +541,7 @@ def put_down(alpha,beta,gama,leg_case):
         tac = allTactiles()
         tac_oneleg = tac[j]
         if tac_oneleg == 0:
-            ae = K.DoIKine(0,0,-5,alpha,beta,gama,leg_case)
+            ae = K.doIKine(0,0,-5,alpha,beta,gama,leg_case)
             steps = [int(i) for i in ae]
             Write1Pos(3*j+2,steps[3*j+1])
             Write1Pos(3*j+3,steps[3*j+2])

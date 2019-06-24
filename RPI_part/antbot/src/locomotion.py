@@ -5,6 +5,13 @@ from math import pi
 from service_router import *
 from kinematics     import Kinematics
 
+
+######################################################
+#  UNCOMMENT NEXT LINE IF THE PROGRAM IS ON RASPBERY PI
+# from tactiles       import allTactiles
+
+
+ALL  = [1, 2, 3,   4, 5, 6,   7, 8, 9,   10, 11, 12,   13, 14, 15,   16, 17, 18]
 TG_1 = [1, 2, 3,  10, 11, 12,  13, 14, 15]  # Leg 1,4,5 servo IDs "Tripod Group 1"
 TG_2 = [4, 5, 6,  7,  8,  9,   16, 17, 18]  # Leg 2,3,6 servo IDs "Tripod Group 2"
 l1   = [1, 2, 3]     # Leg 1
@@ -37,6 +44,24 @@ def standUp():
     time.sleep(1)
 
 
+def parallelGait(alpha, beta, gamma, dist_x, dist_y, dist_z):
+    alpha_rad = alpha * pi / 180
+    beta_rad  = beta  * pi / 180
+    gamma_rad = gamma * pi / 180
+    current_pos = readPos()
+    next_pos = K.doIkineRotationEuler(current_pos, alpha_rad, beta_rad, gamma_rad, dist_x, dist_y, dist_z)
+    scaler = [50] * 18
+    velocityAll(scaler)
+    accelerationAll(scaler)
+    positionAll(next_pos)
+    time.sleep(0.35)
+
+
+def translationZ(distance):
+    pos = [0, 0, distance]
+    do_motion(pos, ALL)
+
+
 def yawRotation(degrees):
     delay = 0.3
     alpha_rad   = degrees * pi / 180
@@ -45,7 +70,7 @@ def yawRotation(degrees):
     time.sleep(delay)
 
     current_pos = readPos()
-    next_pos    = K.doIkineRotationEuler(current_pos, alpha_rad, 0, 0)
+    next_pos    = K.doIkineRotationEuler(current_pos, alpha_rad, 0, 0, 0, 0, 0)
     pos_list    = list_combine(TG_1, next_pos)
     positionN(pos_list)
     time.sleep(delay)
@@ -139,9 +164,9 @@ def waveGait(x, y, z, iterations):
 
 
 def tripodGait(x, y, z, iterations):
-    
-    tripodGait_start(x, y, z)
-    tripodGait_full(x, y, z, iterations)
+
+    start_pos = tripodGait_start(x, y, z)
+    tripodGait_full(x, y, z, iterations, start_pos=start_pos)
     tripodGait_finish(x, y, z)
 
 
@@ -212,10 +237,6 @@ def tripodGait_full(x, y, z, iterations, start_pos=None):
 def tripodGait_finish(x, y, z):
     delay = 0.15
 
-    init_pos = [2048, 2218, 1024,   2048, 1878, 3048,
-                2048, 2218, 1024,   2048, 1878, 3048,
-                2048, 2218, 1024,   2048, 1878, 3048]
-
     TG1_m1 = [0,  0,  z]   # Tripod Group 1 : Motion 1
     TG1_m2 = [x,  y,  0]   # Tripod Group 1 : Motion 2
     TG1_m3 = [0,  0, -z]   # Tripod Group 1 : Motion 3
@@ -247,9 +268,20 @@ def tripodGait_finish(x, y, z):
     do_motion(TG2_m6, TG_2)
     time.sleep(delay)
 
-    # Motion 7
-    positionAll(init_pos)
-    time.sleep(delay)
+
+def stepDown(leg_case):
+    j = int(leg_case - 1)
+    for x in range(40):
+        tac = allTactiles()
+        tac_oneleg = tac[j]
+        if tac_oneleg == 0:
+            init_pos = readPos()
+            steps = K.doIkine(init_pos, 0, 0, -5, leg=leg_case)
+            position1(3 * j + 2, steps[3 * j + 1])
+            position1(3 * j + 3, steps[3 * j + 2])
+            time.sleep(0.3)
+        else:
+            return
 
 
 def list_combine(id_list, value_list):
@@ -271,7 +303,7 @@ def calc_scaler(thetas):
 
 
 def do_motion(xyz_list, ID_list):
-    """Parameters: xyz_list: list of x,y,z changes to accomplish
+    """Parameters: xyz_list: list of 3 integers with x,y,z changes to accomplish
                    ID_list:  list of servo IDs
        Example call  : do_motion([0, 30, 20], [7, 8, 9])
        Example result: Position of servo ID7, ID8 and ID9 (Leg 3) will be

@@ -1,10 +1,9 @@
 #!/usr/bin/env python2
 import rospy
+from service_router import readPwm, readPos
 
-from path_planning import pathPlanning
 
 if __name__ == '__main__':
     try:
-        pathPlanning()
     except rospy.ROSInterruptException:
         SystemExit

@@ -90,17 +90,18 @@ class Kinematics(object):
         result = [int(each_theta) for each_theta in self.rad_to_step(thetas)]
         return result
 
-    def doIkineRotationEuler(self, all_positions, alpha_rad, beta_rad, gama_rad):
+    def doIkineRotationEuler(self, all_positions, alpha_rad, beta_rad, gama_rad, dist_x, dist_y, dist_z):
         ''' Function:   computes inverse kinematics and body rotation (Parallel kinematics)
             Parameters: all_positions: list with 18 values of servo positions in steps from ID1 to ID18;
                         alpha,beta,gama: desired degree change in x,y,z coordinates of robot's body
+                        dist_x,dist_y,dist_z : desired translation along x,y,z of body
             Return:     list of 18 integers with servo steps
         '''
         final_eexyz, ee_xyz = self.calc_rot_matrix(all_positions, alpha_rad, beta_rad, gama_rad)
         thetas = []
         j = 0
         for i in xrange(0, 16, 3):
-            thetas.extend(self.calc_ikine(final_eexyz[i], final_eexyz[i + 1], final_eexyz[i + 2], ee_xyz[i:i + 3], self.leg_list[j]))
+            thetas.extend(self.calc_ikine(final_eexyz[i] - dist_x, final_eexyz[i + 1] - dist_y, final_eexyz[i + 2] - dist_z, ee_xyz[i:i + 3], self.leg_list[j]))
             j += 1
         result = [int(each_theta) for each_theta in self.rad_to_step(thetas)]
         return result
@@ -179,14 +180,12 @@ class Kinematics(object):
         try:
             t3_term = (-pow(s, 2) + pow(leg.f_len, 2) + pow(leg.t_len, 2)) / (2 * leg.f_len * leg.t_len)
             t3       = pi - acos(t3_term)
-            print t3
         except ValueError:
             print "Cannot compute acos(", t3_term, ") for ", leg.leg_nr
             if t3_term < 0:
                 t3 = pi - acos(-0.99)
             else:
                 t3 = pi - acos(0.99)
-            print t3
         if leg.side == "right":  # ODD LEGS
             theta3 = -t3 - leg.t_ang_off
             theta2 = -(-atan2(Z, final_x) - atan2(leg.t_len * sin(t3), leg.f_len + leg.t_len * cos(t3)) + leg.f_ang_off)
