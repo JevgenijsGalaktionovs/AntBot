@@ -1,12 +1,25 @@
-Continuation of the AntBot development
+AntBot 2 Milestones
 
-This is a version 2.0 - "The Stupid Robot". The idea behind creating this amateur walking pattern was to make the robot move as SOON as possible, regardless of the methodology
+Robot body upgrades:
+    Radial symmetric body
+    Carbon fiber parts
+    IR tower
+    Tactile foot tips
 
+Motion mechanics:
+    Motions via serial kinematics
+    Motions via parallel kinematics
+    Motions with body rotation
 
-Patch Notes:
+Hardware additions:
+    Distributed control with controller and computer units
+    Dynamic walking with tactile sensors
+    Full robot remote control via PS3 controller
 
-AntBot_v2.0.0
-+ Replaced servo brackets (Aluminium > Steel)
-+ Added *stupid* straight-walking function
-- Removed RPI camera and neck assembly
-- Removed irrelevant code parts
+New features:
+    Autonomous navigation on a known map
+    Omnidirectional walking
+    Kalman filter
+    Three walking gaits: Tripod, Wave, Ripple
+    Stair climbing
+    Incline Ascension
