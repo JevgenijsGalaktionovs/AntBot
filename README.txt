@@ -20,12 +20,6 @@ The project tree is as follows:
 		All Python files necessary to execute path-planner and serial communication with Arduino.
 
 
-LATEST VERSION OF THE CODE CAN BE OBTAINED IN THE FOLLOWING GitHub REPOSITORY:
-https://github.com/JevgenijsGalaktionovs/AntBot
-
-
-
-
 AntBot 2 Milestones
 
 Robot body upgrades: Radial symmetric body; Carbon fiber parts; IR tower; Tactile foot tips
