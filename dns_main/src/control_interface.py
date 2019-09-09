@@ -6,35 +6,36 @@ from service_router import *
 from demo import *
 from locomotion import tripodGait, rippleGait, waveGait
 
+# Mapping is shifted for RPI. If used on laptop : use commented values.
+PS3_BUTTON_SELECT           =  8 #0
+PS3_BUTTON_STICK_LEFT       = 11 #1
+PS3_BUTTON_STICK_RIGHT      = 12 #2
+PS3_BUTTON_START            = 9 #3
+PS3_BUTTON_CROSS_UP         = 13 #4
+PS3_BUTTON_CROSS_RIGHT      = 15 #5
+PS3_BUTTON_CROSS_DOWN       = 14 #6
+PS3_BUTTON_CROSS_LEFT       = 16 #7
+PS3_BUTTON_LEFT_BUMPER      = 6 #8 
+PS3_BUTTON_RIGHT_BUMPER     = 7 #9
+PS3_BUTTON_LEFT_TRIGGER     = 4 #10 
+PS3_BUTTON_RIGHT_TRIGGER    = 5 #11
+PS3_BUTTON_ACTION_TRIANGLE  = 2 #12
+PS3_BUTTON_ACTION_CIRCLE    = 1 #13
+PS3_BUTTON_ACTION_CROSS     = 0 #14
+PS3_BUTTON_ACTION_SQUARE    = 3 #15
+PS3_BUTTON_PAIRING          = 11 #16
 
-PS3_BUTTON_SELECT           = 0
-PS3_BUTTON_STICK_LEFT       = 1
-PS3_BUTTON_STICK_RIGHT      = 2
-PS3_BUTTON_START            = 3
-PS3_BUTTON_CROSS_UP         = 4
-PS3_BUTTON_CROSS_RIGHT      = 5
-PS3_BUTTON_CROSS_DOWN       = 6
-PS3_BUTTON_CROSS_LEFT       = 7
-PS3_BUTTON_LEFT_BUMPER      = 8
-PS3_BUTTON_RIGHT_BUMPER     = 9
-PS3_BUTTON_LEFT_TRIGGER     = 10
-PS3_BUTTON_RIGHT_TRIGGER    = 11
-PS3_BUTTON_ACTION_TRIANGLE  = 12
-PS3_BUTTON_ACTION_CIRCLE    = 13
-PS3_BUTTON_ACTION_CROSS     = 14
-PS3_BUTTON_ACTION_SQUARE    = 15
-PS3_BUTTON_PAIRING          = 16
-
-PS3_AXIS_STICK_LEFT_LEFTWARDS   = 0
+PS3_AXIS_STICK_LEFT_LEFTWARDS   = 0 
 PS3_AXIS_STICK_LEFT_UPWARDS     = 1
-PS3_AXIS_STICK_RIGHT_LEFTWARDS  = 2
-PS3_AXIS_STICK_RIGHT_UPWARDS    = 3
-
+PS3_LEFT_BUMBER  = 2 #new
+PS3_AXIS_STICK_RIGHT_LEFTWARDS  = 3
+PS3_AXIS_STICK_RIGHT_UPWARDS    = 4
+PS3_RIGHT_BUMPER   = 5 #new
 
 class JoystickPS3:
 
-    button_inputs = 17 * [0]  # Button presse
-    axes_inputs = 20 * [0]      # axes
+    button_inputs = 17 * [0] 
+    axes_inputs = 20 * [0]
     toggle_torque = False
     curr_goal_pwm = 0
     gait_type = 1

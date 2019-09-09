@@ -1,5 +1,5 @@
 <launch>
   <include file="$(find ps3joy)/launch/ps3.launch" />
-  <node name="ArduinoCommunication" pkg="antbot" type="rpi_serial_interface.py" output="screen" />
-  <node name="JoystickPS3" pkg="antbot" type="control_interface.py" output="screen" />
+  <node name="ArduinoCommunication" pkg="dns" type="rpi_serial_interface.py" output="screen" />
+  <node name="JoystickPS3" pkg="dns" type="control_interface.py" output="screen" />
 </launch>
