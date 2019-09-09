@@ -8,6 +8,8 @@ from math              import pi,cos,sin,atan2,acos,sqrt,pow
 from Tactiles          import *
 
 K = Kinematics()
+
+
 def TripodGait(x,y,z,alpha,beta,gama,iteration_num):
     initial_pos = ReadAllPositions()
     init_pos = [int(i) for i in initial_pos]
@@ -72,7 +74,6 @@ def TripodGait(x,y,z,alpha,beta,gama,iteration_num):
 
         WriteAllPositions(init_pos)
         time.sleep(1)
-
 def RippleGait(x,y,z,alpha,beta,gama,iteration_num):
     initial_pos = ReadAllPositions()
     init_pos = [int(i) for i in initial_pos]
@@ -189,10 +190,6 @@ def RippleGait(x,y,z,alpha,beta,gama,iteration_num):
         print("3")
         WriteAllPositions(init_pos)
         time.sleep(1)
-
-
-
-
 def WaveGait(x,y,z,alpha,beta,gama,iteration_num):
     initial_pos = ReadAllPositions()
     init_pos = [int(i) for i in initial_pos]
@@ -413,7 +410,6 @@ def WaveGait(x,y,z,alpha,beta,gama,iteration_num):
 
         WriteAllPositions(init_pos)
         time.sleep(1)
-
 def rotationz(degrees):
     temp_stand_up = ReadAllPositions()
     alpha_rad = degrees*pi/180
@@ -438,41 +434,6 @@ def rotationz(degrees):
     Write1Pos(13,2048)
     time.sleep(1)
     WriteTripodGait(temp_stand_up,1)
-
-
-def rippleMirror(x,y,z,alpha,beta,gama,leg_case):
-        ee_xyz = K.DoFKine()
-        if leg_case == 1:
-            my_list = K.DoIKine(x,y,z,alpha,beta,gama,1)
-            ae = [int(i) for i in my_list]
-            my_listi = K.DoIKine(-x,y,z,alpha,beta,gama,2)
-            aa = [int(i) for i in my_listi]
-            velocity_list = calc_Velocity(aa)
-            WriteRippleVel(velocity_list,leg_case)
-            WriteRippleAcc(velocity_list,leg_case)
-            WriteParallel(ae,1)
-            WriteParallel(aa,2)
-        elif leg_case == 2:
-            my_list = K.DoIKine(x,y,z,alpha,beta,gama,3)
-            ae = [int(i) for i in my_list]
-            my_listi = K.DoIKine(-x,y,z,alpha,beta,gama,4)
-            aa = [int(i) for i in my_listi]
-            velocity_list = calc_Velocity(ae)
-            WriteRippleVel(velocity_list,leg_case)
-            WriteRippleAcc(velocity_list,leg_case)
-            WriteParallel(ae,3)
-            WriteParallel(aa,4)
-        else:
-            my_list = K.DoIKine(x,y,z, alpha,beta,gama,5)
-            ae = [int(i) for i in my_list]
-            my_listi = K.DoIKine(-x,y,z,alpha,beta,gama,6)
-            aa = [int(i) for i in my_listi]
-            velocity_list = calc_Velocity(aa)
-            WriteRippleVel(velocity_list,leg_case)
-            WriteRippleAcc(velocity_list,leg_case)
-            WriteParallel(ae,5)
-            WriteParallel(aa,0)
-
 def parallelGait(alpha, beta, gama, dist_x, dist_y, dist_z):
         alpha_rad = alpha*pi/180
         beta_rad = beta*pi/180
@@ -489,6 +450,21 @@ def parallelGait(alpha, beta, gama, dist_x, dist_y, dist_z):
         my_valx = K.DoIKine(-dist_x, -dist_y, -dist_z,0,0,0,0)
         ae_valx = [int(i) for i in my_valx]
         WriteAllPositions(ae_valx)
+def put_down(alpha,beta,gama,leg_case):
+    j = int(leg_case-1)
+    for x in range(40):
+        tac = allTactiles()
+        tac_oneleg = tac[j]
+        if tac_oneleg == 0:
+            ae = K.doIKine(0,0,-5,alpha,beta,gama,leg_case)
+            steps = [int(i) for i in ae]
+            Write1Pos(3*j+2,steps[3*j+1])
+            Write1Pos(3*j+3,steps[3*j+2])
+            time.sleep(0.3)
+        else:
+            return
+
+
 def singleLeg(x,y,z,alpha,beta,gama,leg_case):
         ee_xyz = K.DoFKine()
         if leg_case == 1:
@@ -535,16 +511,35 @@ def singleLeg(x,y,z,alpha,beta,gama,leg_case):
             WriteRippleAcc(velocity_list,leg_case)
             WriteParallel(ae,0)
 
-def put_down(alpha,beta,gama,leg_case):
-    j = int(leg_case-1)
-    for x in range(40):
-        tac = allTactiles()
-        tac_oneleg = tac[j]
-        if tac_oneleg == 0:
-            ae = K.doIKine(0,0,-5,alpha,beta,gama,leg_case)
-            steps = [int(i) for i in ae]
-            Write1Pos(3*j+2,steps[3*j+1])
-            Write1Pos(3*j+3,steps[3*j+2])
-            time.sleep(0.3)
+def rippleMirror(x,y,z,alpha,beta,gama,leg_case):
+        ee_xyz = K.DoFKine()
+        if leg_case == 1:
+            my_list = K.DoIKine(x,y,z,alpha,beta,gama,1)
+            ae = [int(i) for i in my_list]
+            my_listi = K.DoIKine(-x,y,z,alpha,beta,gama,2)
+            aa = [int(i) for i in my_listi]
+            velocity_list = calc_Velocity(aa)
+            WriteRippleVel(velocity_list,leg_case)
+            WriteRippleAcc(velocity_list,leg_case)
+            WriteParallel(ae,1)
+            WriteParallel(aa,2)
+        elif leg_case == 2:
+            my_list = K.DoIKine(x,y,z,alpha,beta,gama,3)
+            ae = [int(i) for i in my_list]
+            my_listi = K.DoIKine(-x,y,z,alpha,beta,gama,4)
+            aa = [int(i) for i in my_listi]
+            velocity_list = calc_Velocity(ae)
+            WriteRippleVel(velocity_list,leg_case)
+            WriteRippleAcc(velocity_list,leg_case)
+            WriteParallel(ae,3)
+            WriteParallel(aa,4)
         else:
-            return
+            my_list = K.DoIKine(x,y,z, alpha,beta,gama,5)
+            ae = [int(i) for i in my_list]
+            my_listi = K.DoIKine(-x,y,z,alpha,beta,gama,6)
+            aa = [int(i) for i in my_listi]
+            velocity_list = calc_Velocity(aa)
+            WriteRippleVel(velocity_list,leg_case)
+            WriteRippleAcc(velocity_list,leg_case)
+            WriteParallel(ae,5)
+            WriteParallel(aa,0)

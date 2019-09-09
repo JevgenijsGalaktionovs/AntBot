@@ -112,17 +112,3 @@ def gait_with_keypresses():
     # time.sleep(1)
     # WriteAllPositions(init_pos)
     # time.sleep(1)
-
-
-if __name__=='__main__':
-    try:
-        CheckStatus()
-        pwm_list =[500]*18        # Checks if all 18 servos are connected
-        WritePWMLimit(pwm_list) # Modify PWM Limit (torque must be off)
-        K = Kinematics()        # Creates Kinematics class object "K"
-        EnableTorqueAllServos() # Enable Torque, duuh
-        #W = WalkingGaits()
-
-        gait_with_keypresses()  # tripod gait that expects keyboard press between steps
-    except rospy.ROSInterruptException :
-        portHandler.closePort()
