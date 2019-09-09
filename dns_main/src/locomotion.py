@@ -311,15 +311,15 @@ def calc_scaler(thetas):
     return [i * 1 for i in thetas]
 
 
-def do_motion(xyz_list, ID_list, body_orient=None):
+def do_motion(xyz_list, ID_list, orientation=None):
     """Parameters: xyz_list: list of 3 integers with x,y,z changes to accomplish
                    ID_list:  list of servo IDs
        Example call  : do_motion([0, 30, 20], [7, 8, 9])
        Example result: Position of servo ID7, ID8 and ID9 (Leg 3) will be
                        changed to reach end-tip x= +0, y= +30 and z= +20 position."""
     current_pos = readPos()
-    if body_orient:
-        next_pos    = K.doIkine(current_pos, xyz_list[0], xyz_list[1], xyz_list[2], body_orient=[alpha, beta, gama])
+    if orientation:
+        next_pos    = K.doIkine(current_pos, xyz_list[0], xyz_list[1], xyz_list[2], body_orient=orientation)
     else:
         next_pos    = K.doIkine(current_pos, xyz_list[0], xyz_list[1], xyz_list[2])
 
@@ -334,4 +334,4 @@ def do_motion(xyz_list, ID_list, body_orient=None):
 
 def singleLeg(x, y, z, alpha, beta, gama, leg_case):
     ID_list = legs[leg_case]
-    do_motion([x, y, z], ID_list, body_orient=[alpha, beta, gama])
+    do_motion([x, y, z], ID_list, orientation=[alpha, beta, gama])
