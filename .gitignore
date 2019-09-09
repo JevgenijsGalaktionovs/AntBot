@@ -180,6 +180,10 @@ venv.bak/
 .dmypy.json
 dmypy.json
 
+# For PlatformIO stuff:
+.DS_Store
+npm-debug.log
+node_modules
 # Pyre type checker
 .pyre/
 # .gitignore

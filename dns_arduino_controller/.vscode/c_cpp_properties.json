@@ -1,0 +1,57 @@
+{
+    "configurations": [
+        {
+            "name": "!!! WARNING !!! AUTO-GENERATED FILE, PLEASE DO NOT MODIFY IT AND USE https://docs.platformio.org/page/projectconf/section_env_build.html#build-flags"
+        },
+        {
+            "name": "Linux",
+            "includePath": [
+                "/home/eugeneswag/.platformio/packages/framework-arduinoavr/cores/arduino",
+                "/home/eugeneswag/.platformio/packages/framework-arduinoavr/variants/mega",
+                "/home/eugeneswag/Desktop/vs_workspace/Arduino_Controller_cppbuild/lib/ArduinoJson/src",
+                "/home/eugeneswag/Desktop/vs_workspace/Arduino_Controller_cppbuild/lib/millisDelay",
+                "/home/eugeneswag/.platformio/packages/framework-arduinoavr/libraries/__cores__/arduino/EEPROM/src",
+                "/home/eugeneswag/.platformio/packages/framework-arduinoavr/libraries/__cores__/arduino/HID/src",
+                "/home/eugeneswag/.platformio/packages/framework-arduinoavr/libraries/__cores__/arduino/SPI/src",
+                "/home/eugeneswag/.platformio/packages/framework-arduinoavr/libraries/__cores__/arduino/SoftwareSerial/src",
+                "/home/eugeneswag/.platformio/packages/framework-arduinoavr/libraries/__cores__/arduino/Wire/src",
+                "/home/eugeneswag/.platformio/packages/tool-unity",
+                "/home/eugeneswag/Desktop/vs_workspace/Arduino_Controller_cppbuild/src",
+                ""
+            ],
+            "browse": {
+                "limitSymbolsToIncludedHeaders": true,
+                "databaseFilename": "${workspaceRoot}/.vscode/.browse.c_cpp.db",
+                "path": [
+                    "/home/eugeneswag/.platformio/packages/framework-arduinoavr/cores/arduino",
+                    "/home/eugeneswag/.platformio/packages/framework-arduinoavr/variants/mega",
+                    "/home/eugeneswag/Desktop/vs_workspace/Arduino_Controller_cppbuild/lib/ArduinoJson/src",
+                    "/home/eugeneswag/Desktop/vs_workspace/Arduino_Controller_cppbuild/lib/millisDelay",
+                    "/home/eugeneswag/.platformio/packages/framework-arduinoavr/libraries/__cores__/arduino/EEPROM/src",
+                    "/home/eugeneswag/.platformio/packages/framework-arduinoavr/libraries/__cores__/arduino/HID/src",
+                    "/home/eugeneswag/.platformio/packages/framework-arduinoavr/libraries/__cores__/arduino/SPI/src",
+                    "/home/eugeneswag/.platformio/packages/framework-arduinoavr/libraries/__cores__/arduino/SoftwareSerial/src",
+                    "/home/eugeneswag/.platformio/packages/framework-arduinoavr/libraries/__cores__/arduino/Wire/src",
+                    "/home/eugeneswag/.platformio/packages/tool-unity",
+                    "/home/eugeneswag/Desktop/vs_workspace/Arduino_Controller_cppbuild/src",
+                    ""
+                ]
+            },
+            "defines": [
+                "PLATFORMIO=30607",
+                "ARDUINO_AVR_MEGA2560",
+                "SERIAL_RX_BUFFER_SIZE=512",
+                "F_CPU=16000000L",
+                "ARDUINO_ARCH_AVR",
+                "ARDUINO=10805",
+                "__AVR_ATmega2560__",
+                ""
+            ],
+            "intelliSenseMode": "clang-x64",
+            "cStandard": "c11",
+            "cppStandard": "c++11",
+            "compilerPath": "\"/home/eugeneswag/.platformio/packages/toolchain-atmelavr/bin/avr-gcc\" -mmcu=atmega2560"
+        }
+    ],
+    "version": 4
+}
