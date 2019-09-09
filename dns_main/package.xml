@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>antbot</name>
+  <name>dns</name>
   <version>0.0.0</version>
-  <description>The antbot package</description>
+  <description>Definitely-Not-A-Spider package</description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag -->
   <!-- Example:  -->
