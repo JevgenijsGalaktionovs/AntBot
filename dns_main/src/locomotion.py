@@ -330,8 +330,25 @@ def do_motion(xyz_list, ID_list, orientation=None):
 
     motion = list_combine(ID_list, next_pos)
     positionN(motion)
+    return next_pos
+
 
 
 def singleLeg(x, y, z, alpha, beta, gama, leg_case):
     ID_list = legs[leg_case]
     do_motion([x, y, z], ID_list, orientation=[alpha, beta, gama])
+
+
+def continiousMotion(x, y, z, iterations):
+    init_pos = readPos()
+    one_leg_motion_up  = [x, y, z]
+    one_leg_motion_down  = [0, 0, -z]
+    one_push_leg_motion = [-x, -y , 0]
+        for i in range(iterations):
+        a = do_motion(one_leg_motion_up, l1)
+        print(a)
+            for x in range (10)
+                current_pos = readPos()
+                x = current_pos[0] , current_pos[1], current_pos[2]
+
+
