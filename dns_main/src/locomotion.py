@@ -21,6 +21,15 @@ l4   = [10, 11, 12]  # Leg 4
 l5   = [13, 14, 15]  # Leg 5
 l6   = [16, 17, 18]  # Leg 6
 
+legs = {
+    1 : [1, 2, 3],     # Leg 1
+    2 : [4, 5, 6],     # Leg 2
+    3 : [7, 8, 9],     # Leg 3
+    4 : [10, 11, 12],  # Leg 4
+    5 : [13, 14, 15],  # Leg 5
+    6 : [16, 17, 18]   # Leg 6
+}
+
 K = Kinematics()
 
 
@@ -302,19 +311,27 @@ def calc_scaler(thetas):
     return [i * 1 for i in thetas]
 
 
-def do_motion(xyz_list, ID_list):
+def do_motion(xyz_list, ID_list, orientation=None):
     """Parameters: xyz_list: list of 3 integers with x,y,z changes to accomplish
                    ID_list:  list of servo IDs
        Example call  : do_motion([0, 30, 20], [7, 8, 9])
        Example result: Position of servo ID7, ID8 and ID9 (Leg 3) will be
                        changed to reach end-tip x= +0, y= +30 and z= +20 position."""
     current_pos = readPos()
-    next_pos    = K.doIkine(current_pos, xyz_list[0], xyz_list[1], xyz_list[2])
+    if orientation:
+        next_pos    = K.doIkine(current_pos, xyz_list[0], xyz_list[1], xyz_list[2], body_orient=orientation)
+    else:
+        next_pos    = K.doIkine(current_pos, xyz_list[0], xyz_list[1], xyz_list[2])
 
-    scaler   = calc_scaler(next_pos)
+    scaler = calc_scaler(next_pos)
     vel_acc_value = list_combine(ID_list, scaler)
     velocityN(vel_acc_value)  # Setting same value for velocity and acceleration is a valid method for Dynamixels
     accelerationN(vel_acc_value)
 
     motion = list_combine(ID_list, next_pos)
     positionN(motion)
+
+
+def singleLeg(x, y, z, alpha, beta, gama, leg_case):
+    ID_list = legs[leg_case]
+    do_motion([x, y, z], ID_list, orientation=[alpha, beta, gama])
