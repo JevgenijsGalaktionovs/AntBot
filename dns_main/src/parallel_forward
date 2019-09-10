@@ -1,0 +1,11 @@
+#!/usr/bin/env python2
+import time
+from math import pi
+
+from service_router import *
+from kinematics     import Kinematics
+######
+K = Kinematics()
+
+ee_xyz, s = K.ervoPosdoFkine(all_positions)
+print(ee_xyz)
