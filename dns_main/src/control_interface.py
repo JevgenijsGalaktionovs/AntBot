@@ -93,7 +93,7 @@ class JoystickPS3:
         elif b[PS3_BUTTON_ACTION_CIRCLE]:
             print("Circle pressed. SingleLeg Demo")
             # demo_wavegait()
-            rippleMirror(0, 15, 0, 0, 0, 0, 1)
+            rippleMirror(0, 0, 20, 0, 0, 0, 2)
             self.pub.publish(self.CreateEmptyMsgJoy())
 
         elif b[PS3_BUTTON_ACTION_TRIANGLE]:

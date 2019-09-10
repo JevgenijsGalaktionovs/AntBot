@@ -342,11 +342,11 @@ def singleLeg(x, y, z, alpha, beta, gama, leg_case):
 
 def rippleMirror(x, y, z, alpha, beta, gama, leg_pair):
     if leg_pair == 1:  # Front legs
-        legs = [leg[1] + leg[2]]
+        legs = leg[1] + leg[2]
     elif leg_pair == 2:  # Middle legs
-        legs = [leg[3] + leg[4]]
+        legs = leg[3] + leg[4]
     elif leg_pair == 3:  # Rear legs
-        legs = [leg[5] + leg[6]]
+        legs = leg[5] + leg[6]
     else:
         raise ValueError('leg_pair value must be 1,2 or 3. Your value:', leg_pair)
 
