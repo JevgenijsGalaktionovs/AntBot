@@ -347,11 +347,38 @@ def continiousMotion(x, y, z, iterations):
 	for i in range(iterations):
 		a = do_motion(one_leg_motion_up, l1)
 		ae=a[:3]
-		for x in range (10):
+		for x in range (10): 
 			current_pos = readPos()
 			x = current_pos[:3]
 			possition_error=x[0]-ae[0],x[1]-ae[1],x[2]-ae[2]
-			print([abs(x) for x in possition_error])
-			
-#continiousMotion(10,0,10,1)
+			absoluteError= [abs(x) for x in possition_error]
+            for i in absoluteError:
+                if i < 10:
+                return
+        b = do_motion(one_leg_motion_down, l1)
+		ae=b[:3]
+		for x in range (10): 
+			current_pos = readPos()
+			x = current_pos[:3]
+			possition_error=x[0]-ae[0],x[1]-ae[1],x[2]-ae[2]
+			absoluteError= [abs(x) for x in possition_error]
+            for i in absoluteError:
+                if i < 10:
+                return
+        c = do_motion(one_push_leg_motion, l1)
+		ae=c[:3]
+		for x in range (10): 
+			current_pos = readPos()
+			x = current_pos[:3]
+			possition_error=x[0]-ae[0],x[1]-ae[1],x[2]-ae[2]
+			absoluteError= [abs(x) for x in possition_error]
+            for i in absoluteError:
+                if i < 10:
+                return
+
+
+
+
+      
+continiousMotion(10,0,10,1)
 
