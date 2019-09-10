@@ -7,5 +7,5 @@ from kinematics     import Kinematics
 ######
 K = Kinematics()
 
-ee_xyz, = K.servoPosdoFkine(all_positions)
+ee_xyz, servoPos = K.doFkine(all_positions)
 print(ee_xyz)
