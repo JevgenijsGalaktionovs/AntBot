@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+﻿#!/usr/bin/env python2
 import rospy
 
 from antbot.srv import *
@@ -56,6 +56,11 @@ def readIR():
     IR_right = tmp_IR[1]
     IR_left  = tmp_IR[2]
     return IR_front, IR_right, IR_left
+
+def readTactile():
+    tmp_tactile = read_tactile_request()
+    tactile = tmp_tactile
+    return tactile
 
 
 def readPos():

@@ -249,6 +249,20 @@ void json_getIR_kalman(JsonObject& json_object){
       }
   }
 
+void json_getTactile(JsonObject& json_object){
+  bool hasReadTactile = json_object.containsKey("read_tactile");
+  if(hasReadTactile){ 
+      struct DataContainer data_package;
+      float  *filtered_ir;
+      tactile_val = Tactile.read_preassure();
+      }
+      data_package = CreatePackage1(tactile_fil_dist);
+      JsonObject& msg_tx = SerializeData1(data_package);
+      msg_tx.printTo(Serial);
+      Serial.println();
+      }
+  }
+
   void demo_IR(){
       float  *filtered_ir;
       float *raw_ir;
