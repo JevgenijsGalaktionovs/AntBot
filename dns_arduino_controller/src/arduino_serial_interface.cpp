@@ -6,6 +6,7 @@
 #include "json_router.h"
 #include "dynamixel_driver.h"
 #include "kalman_filter.h"
+#include "tactile.h"
 
 #define FREQUENCY_HZ(hz) (1000 / hz)
 #define BAUDRATE          1000000
