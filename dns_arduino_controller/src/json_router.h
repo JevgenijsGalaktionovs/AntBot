@@ -30,10 +30,12 @@ void json_setNVprof      (JsonObject& json_object);
 void json_setNAprof      (JsonObject& json_object);
 void json_setNPWMLimit   (JsonObject& json_object);
 
+
 // Getters
 void json_get18Position  (JsonObject& json_object);
 void json_get18PWM       (JsonObject& json_object);
 void json_getIR_kalman   (JsonObject& json_object);
+void json_getTactile     (JsonObject& json_object);
 void json_checkRequests  (JsonObject& json_object);
 void json_parse_data     (String inData);
 

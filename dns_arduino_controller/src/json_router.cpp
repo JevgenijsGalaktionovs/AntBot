@@ -2,6 +2,7 @@
 #include "dynamixel_driver.h"
 #include "json_router.h"
 #include "kalman_filter.h"
+#include "tactile.h"
 
 // Serialization & Parsing
 DataContainer CreatePackage1(unsigned int (&IR)[3]){ 
