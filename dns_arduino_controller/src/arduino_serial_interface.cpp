@@ -51,7 +51,8 @@ void loop(){
         if (ir_loop_timer.isFinished()) {
             ir_loop_timer.repeat();
             Kalman.updatePrediction(); // Update IR prediction
-            //demo_IR();
+            Tactile.read_value();
+            demo_tactile();
         } // ir_loop_timer stops here.
 
     } // serial_loop_timer stops here.

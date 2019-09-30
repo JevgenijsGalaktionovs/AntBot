@@ -7,10 +7,10 @@ const byte TACTILE_1  = A3;
 class TactileClass {
 
 public:
-    float read_preassure();
+    float * read_pressure();
     void read_value();
 private:
-    float tactile;   
+    float tactile[1];   
 
 };
 

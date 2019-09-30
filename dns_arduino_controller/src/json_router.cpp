@@ -23,6 +23,12 @@ DataContainer CreatePackage3(int (&pwm)[18]){
   return data;
 }
 
+DataContainer CreatePackage4(unsigned int (&tactile)[1]){ 
+  DataContainer data;
+  memcpy(data.tactile_pressure,tactile,sizeof tactile);
+  return data;
+}
+
 JsonObject& SerializeData1(DataContainer &data_package){
   const size_t capacity_tx = JSON_OBJECT_SIZE(1) + JSON_ARRAY_SIZE(3); // USE https://arduinojson.org/v5/assistant/ to calculate this!!!
   StaticJsonBuffer<capacity_tx> buffer_tx;
@@ -59,6 +65,16 @@ JsonObject& SerializeData2(DataContainer &data_package){
   for (int i=0; i < 18; i++){
     sr_pwm.add(data_package.servo_pwm[i]);
   }
+  return msg_tx;
+  }
+
+JsonObject& SerializeData4(DataContainer &data_package){
+  const size_t capacity_tx = JSON_OBJECT_SIZE(1); // USE https://arduinojson.org/v5/assistant/ to calculate this!!!
+  StaticJsonBuffer<capacity_tx> buffer_tx;
+  JsonObject& msg_tx = buffer_tx.createObject();
+  JSONcheck(msg_tx);
+  JsonArray& tactile_read = msg_tx.createNestedArray("tactile_read");
+  tactile_read.add(data_package.tactile_pressure[1]);
   return msg_tx;
   }
 
@@ -254,11 +270,12 @@ void json_getTactile(JsonObject& json_object){
   bool hasReadTactile = json_object.containsKey("read_tactile");
   if(hasReadTactile){ 
       struct DataContainer data_package;
-      float  *filtered_ir;
-      tactile_val = Tactile.read_preassure();
-      }
-      data_package = CreatePackage1(tactile_fil_dist);
-      JsonObject& msg_tx = SerializeData1(data_package);
+      float *tactile_tmp;
+      unsigned int tactile_value[1];
+      tactile_tmp = Tactile.read_pressure();
+      tactile_value[1] = tactile_tmp[1];
+      data_package = CreatePackage4(tactile_value);
+      JsonObject& msg_tx = SerializeData4(data_package);
       msg_tx.printTo(Serial);
       Serial.println();
       }
@@ -281,6 +298,14 @@ void json_getTactile(JsonObject& json_object){
       Serial.println(IR_fil_dist[1]);
   }
 
+    void demo_tactile(){
+      float  *tactile_tmp;
+      tactile_tmp = Tactile.read_pressure();
+      unsigned int tactile_value[0];
+      tactile_value[0] = tactile_tmp[0];
+      Serial.println(tactile_value[0]);
+  }
+
 void json_checkRequests(JsonObject& json_object){
   json_setReboot       (json_object);
   json_setTorque       (json_object);
@@ -296,6 +321,7 @@ void json_checkRequests(JsonObject& json_object){
   json_get18Position   (json_object);
   json_get18PWM        (json_object);
   json_getIR_kalman    (json_object);
+  json_getTactile      (json_object);
   }
 
 void json_parse_data(String inData){ 

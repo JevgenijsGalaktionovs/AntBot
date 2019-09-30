@@ -5,16 +5,19 @@ struct DataContainer{
     unsigned int true_IR[3];
     int servo_pos[18];
     int servo_pwm[18];
+    int tactile_pressure[1];
 };
 
 // Serialization & Parsing
 DataContainer CreatePackage1(unsigned int (&IR)[3]);
 DataContainer CreatePackage2(int (&pos)[18]);
 DataContainer CreatePackage3(int (&pwm)[18]);
+DataContainer CreatePackage4(int (&tactile)[1]);
 
 JsonObject& SerializeData1(DataContainer &data_package); // Takes struct and converts to a JSON string
 JsonObject& SerializeData2(DataContainer &data_package);
 JsonObject& SerializeData3(DataContainer &data_package);
+JsonObject& SerializeData4(DataContainer &data_package);
 
 void JSONcheck    (JsonObject& json_object);
 // Setters
@@ -40,5 +43,6 @@ void json_checkRequests  (JsonObject& json_object);
 void json_parse_data     (String inData);
 
 void demo_IR();
+void demo_tactile();
 
 #endif // json_router_h
