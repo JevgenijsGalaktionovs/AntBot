@@ -2,11 +2,17 @@
 #include "dynamixel_driver.h"
 #include "json_router.h"
 #include "kalman_filter.h"
+#include "fsr_sensor.h"
+#include "IR_sensor.h"
 
-// Serialization & Parsing
-DataContainer CreatePackage1(unsigned int (&IR)[3]){ 
+
+extern KalmanFilterClass<3>KalmanIR;
+extern KalmanFilterClass<6>KalmanFSR;
+
+// Serialization 
+DataContainer CreatePackage1(float (&IR)[3]){ 
   DataContainer data;
-  memcpy(data.true_IR,   IR,  sizeof IR);
+  memcpy(data.IR_distance, IR, sizeof IR);
   return data;
   }
 
@@ -20,7 +26,12 @@ DataContainer CreatePackage3(int (&pwm)[18]){
   DataContainer data;
   memcpy(data.servo_pwm, pwm, sizeof pwm);
   return data;
-}
+  }
+DataContainer CreatePackage4(unsigned int (&tactile)[6]){ 
+  DataContainer data;
+  memcpy(data.FSR_pressure,tactile, sizeof tactile);
+  return data;
+  }
 
 JsonObject& SerializeData1(DataContainer &data_package){
   const size_t capacity_tx = JSON_OBJECT_SIZE(1) + JSON_ARRAY_SIZE(3); // USE https://arduinojson.org/v5/assistant/ to calculate this!!!
@@ -30,7 +41,7 @@ JsonObject& SerializeData1(DataContainer &data_package){
   JsonArray& IR_dist = msg_tx.createNestedArray("IR_dist");
 
   for (int i=0; i < 3; i++){
-    IR_dist.add(data_package.true_IR[i]);
+    IR_dist.add(data_package.IR_distance[i]);
     }
   return msg_tx;
   }
@@ -60,6 +71,20 @@ JsonObject& SerializeData2(DataContainer &data_package){
   }
   return msg_tx;
   }
+
+JsonObject& SerializeData4(DataContainer &data_package){
+  const size_t capacity_tx = JSON_OBJECT_SIZE(1) + JSON_ARRAY_SIZE(6); // USE https://arduinojson.org/v5/assistant/ to calculate this!!!
+  StaticJsonBuffer<capacity_tx> buffer_tx;
+  JsonObject& msg_tx = buffer_tx.createObject();
+  JSONcheck(msg_tx);
+  JsonArray& FSR_pres = msg_tx.createNestedArray("FSR_pres");
+  for (int i=0; i < 6; i++){
+    FSR_pres.add(data_package.FSR_pressure[i]);
+  }
+  return msg_tx;
+  }
+
+
 
 void JSONcheck(JsonObject& json_object){
   if(!json_object.success()){
@@ -233,12 +258,12 @@ void json_get18Position(JsonObject& json_object){
   }   
 
 void json_getIR_kalman(JsonObject& json_object){
-  bool hasReadIR = json_object.containsKey("read_IR");
+  bool hasReadIR = json_object.containsKey("read_IR_filtered");
   if(hasReadIR){ 
       struct DataContainer data_package;
       float  *filtered_ir;
-      filtered_ir = Kalman.getPrediction();
-      unsigned int  IR_fil_dist[3];
+      filtered_ir = KalmanIR.getPrediction();
+      float  IR_fil_dist[3];
       for (int i=0;i<3;i++){
       IR_fil_dist[i] = filtered_ir[i];
       }
@@ -249,22 +274,38 @@ void json_getIR_kalman(JsonObject& json_object){
       }
   }
 
-  void demo_IR(){
-      float  *filtered_ir;
-      float *raw_ir;
-      raw_ir = Kalman.getRaw();
-      filtered_ir = Kalman.getPrediction();
-
-      unsigned int  IR_raw_dist[3];
-      unsigned int  IR_fil_dist[3];
-      for (int i=0;i<3;i++){
-        IR_raw_dist[i] = raw_ir[i];
-        IR_fil_dist[i] = filtered_ir[i];
+void json_getFSR(JsonObject& json_object){
+  bool hasReadTactile = json_object.containsKey("read_FSR_raw");
+  if(hasReadTactile){ 
+      struct DataContainer data_package;
+      unsigned int  *tactile_tmp;
+      unsigned int tactile_value[6];
+      tactile_tmp = FSR.getFSR();
+      for (int i=0;i<6;i++){
+      tactile_value[i] = tactile_tmp[i];
       }
-      Serial.print(IR_raw_dist[1]);
-      Serial.print(",");
-      Serial.println(IR_fil_dist[1]);
-  }
+      data_package = CreatePackage4(tactile_value);
+      JsonObject& msg_tx = SerializeData4(data_package);
+      msg_tx.printTo(Serial);
+      Serial.println();
+      }
+}
+// void json_getIR(JsonObject& json_object){
+//   bool hasReadRawIR = json_object.containsKey("read_IR_raw");
+//   if(hasReadRawIR){ 
+//       struct DataContainer data_package;
+//       unsigned int   *raw_ir;
+//       raw_ir = IR.getIR();
+//       float  IR_dist[3];
+//       for (int i=0;i<3;i++){
+//       IR_dist[i] = raw_ir[i];
+//       }
+//       data_package = CreatePackage1(IR_dist);
+//       JsonObject& msg_tx = SerializeData1(data_package);
+//       msg_tx.printTo(Serial);
+//       Serial.println();
+//       }
+// }
 
 void json_checkRequests(JsonObject& json_object){
   json_setReboot       (json_object);
@@ -280,6 +321,8 @@ void json_checkRequests(JsonObject& json_object){
   json_setNPWMLimit    (json_object);
   json_get18Position   (json_object);
   json_get18PWM        (json_object);
+  // json_getIR           (json_object);  
+  json_getFSR          (json_object);
   json_getIR_kalman    (json_object);
   }
 
@@ -290,4 +333,4 @@ void json_parse_data(String inData){
         JsonObject& msg_rx = buffer_rx.parseObject(inData);
         json_checkRequests(msg_rx);
         buffer_rx.clear();
-}
+  }

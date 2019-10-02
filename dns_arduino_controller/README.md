@@ -1,3 +1,0 @@
-# Arduino_Controller
-Serial communication with JSON objects from Raspberry Pi to Arduino that controls Dynamixel servos on AntBot hexapod.
-TBA...

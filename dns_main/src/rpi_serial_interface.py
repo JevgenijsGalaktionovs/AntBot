@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+﻿#!/usr/bin/env python2
 import serial
 import sys
 import glob
@@ -40,6 +40,7 @@ class ArduinoCommunication:
         rospy.Service('read_all_pos',  pos_key,  self.read_pos_all_service)
         rospy.Service('read_all_pwm',  pos_key,  self.read_pwm_all_service)
         rospy.Service('read_IR',       pos_key,  self.read_IR_service)
+		 rospy.Service('read_tactile',  pos_key,  self.read_tactile_service)
 
         rate = rospy.Rate(100)  # 100hz
         while not rospy.is_shutdown():
@@ -173,10 +174,26 @@ class ArduinoCommunication:
             # time.sleep(0.01)
             while self.ser.inWaiting() > 0:
                 in_data = self.ser.readline()
+
                 try:  # Take only non-corrupted JSON messages
                     IR_dist  = json.loads(in_data).get('IR_dist')
                     if IR_dist is not None:
                         return pos_keyResponse(IR_dist)
+                except ValueError:
+                    pass  # do nothing, not a valid json
+
+    def read_tactile_service(self, req):
+        data_to_send = dict(read_tactile=req.command)
+        self.sendSerial(data_to_send)
+        while True:
+            # time.sleep(0.01)
+            while self.ser.inWaiting() > 0:
+                in_data = self.ser.readline()
+
+                try:  # Take only non-corrupted JSON messages
+                    tactile_read  = json.loads(in_data).get('tactile_read')
+                    if tactile_read is not None:
+                        return pos_keyResponse(tactile_read)
                 except ValueError:
                     pass  # do nothing, not a valid json
 
