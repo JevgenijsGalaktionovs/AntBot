@@ -31,7 +31,7 @@ TBA
 
 * **Jevgenijs Galaktionovs**        - *Group member* - [eugenegalaxy](https://github.com/eugenegalaxy)
 * **Karl Hugo Bartolomeus Markoff** - *Group member* - [HugoMarkoff](https://github.com/HugoMarkoff)
-* **Lars Væhrens** 									- *Group member* - [Larsv8](https://github.com/Larsv8)
+* **Lars Væhrens** 									- *Group member* - [LarsVaehrens](https://github.com/LarsVaehrens)
 * **Rebecca Nekou Malihi** 		      - *Group member* - [rebeccamalihi](https://github.com/rebeccamalihi)
 
 ## License
