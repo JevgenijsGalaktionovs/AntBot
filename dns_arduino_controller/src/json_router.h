@@ -1,18 +1,19 @@
 #ifndef json_router_h
 #define json_router_h
 
+
 struct DataContainer{
-    unsigned int true_IR[3];
     int servo_pos[18];
     int servo_pwm[18];
-    int tactile_pressure[1];
+    unsigned int FSR_pressure[6];
+    float IR_distance[3];
 };
 
 // Serialization & Parsing
-DataContainer CreatePackage1(unsigned int (&IR)[3]);
+DataContainer CreatePackage1(float (&IR)[3]);
 DataContainer CreatePackage2(int (&pos)[18]);
 DataContainer CreatePackage3(int (&pwm)[18]);
-DataContainer CreatePackage4(int (&tactile)[1]);
+DataContainer CreatePackage4(unsigned int (&tactile)[6]);
 
 JsonObject& SerializeData1(DataContainer &data_package); // Takes struct and converts to a JSON string
 JsonObject& SerializeData2(DataContainer &data_package);
@@ -37,12 +38,13 @@ void json_setNPWMLimit   (JsonObject& json_object);
 // Getters
 void json_get18Position  (JsonObject& json_object);
 void json_get18PWM       (JsonObject& json_object);
+void json_getIR          (JsonObject& json_object);
 void json_getIR_kalman   (JsonObject& json_object);
-void json_getTactile     (JsonObject& json_object);
+void json_getFSR         (JsonObject& json_object);
 void json_checkRequests  (JsonObject& json_object);
 void json_parse_data     (String inData);
 
 void demo_IR();
 void demo_tactile();
-
+void demo_IR2();
 #endif // json_router_h
