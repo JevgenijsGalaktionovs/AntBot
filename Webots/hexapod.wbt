@@ -1,0 +1,806 @@
+#VRML_SIM R2019b utf8
+WorldInfo {
+}
+Viewpoint {
+  orientation -0.3288256360717367 0.9374659934217257 0.11415433517757842 1.1559482683204745
+  position 1.6630587266427779 0.7284876741578047 0.6932995683419418
+}
+TexturedBackground {
+}
+TexturedBackgroundLight {
+}
+RectangleArena {
+}
+Robot {
+  translation 0 0.12 0
+  rotation 1 0 0 -1.5707996938995747
+  children [
+    DEF BODY Solid {
+      children [
+        Transform {
+          children [
+            DEF HEXAGON Shape {
+              appearance PBRAppearance {
+                baseColor 0 0 0
+                roughness 1
+                metalness 0
+              }
+              geometry IndexedFaceSet {
+                coord Coordinate {
+                  point [
+                    0.0716 0.12096 0
+                    0.0716 0.12096 -0.0345
+                    0.14133 0 0
+                    0.14133 0 -0.0345
+                    0.0716 -0.12096 0
+                    0.0716 -0.12096 -0.0345
+                    -0.0716 -0.12096 0
+                    -0.0716 -0.12096 -0.0345
+                    -0.14133 0 0
+                    -0.14133 0 -0.0345
+                    -0.0716 0.12096 0
+                    -0.0716 0.12096 -0.0345
+                  ]
+                }
+                ccw FALSE
+                coordIndex [
+                  0, 2, 4, 6, 8, 10, -1, 11, 9, 7, 5, 3, 1, -1, 0, 1, 3, 2, -1, 2, 3, 5, 4, -1, 4, 5, 7, 6, -1, 6, 7, 9, 8, -1, 8, 9, 11, 10, -1, 10, 11, 1, 0, -1
+                ]
+              }
+            }
+          ]
+        }
+      ]
+      boundingObject USE HEXAGON
+      physics Physics {
+        density -1
+        mass 1
+      }
+    }
+    DEF LEG-1-COXA HingeJoint {
+      jointParameters HingeJointParameters {
+        axis 0 1 0
+        anchor 0.0716 0.12096 0
+      }
+      device [
+        RotationalMotor {
+          name "coxa1"
+        }
+      ]
+      endPoint Solid {
+        translation 0.0716 0.12096 -0.017
+        rotation 1 0 0 1.5707996938995747
+        children [
+          Transform {
+            rotation 0 1 0 1.0471996938995747
+            children [
+              DEF SERVO-CYLINDER Shape {
+                appearance PBRAppearance {
+                  roughness 1
+                  metalness 0
+                }
+                geometry Cylinder {
+                  height 0.0345
+                  radius 0.01
+                }
+              }
+              Solid {
+                translation 0.03325 0 0
+                rotation 0 0 1 1.5707996938995747
+                children [
+                  DEF FEMUR-1-CYLINDER-SHAPE Shape {
+                    appearance PBRAppearance {
+                      baseColor 1 0 0
+                      roughness 1
+                      metalness 0
+                    }
+                    geometry Cylinder {
+                      height 0.0665
+                      radius 0.007
+                    }
+                  }
+                  Transform {
+                    translation 0 -0.03325 0
+                    rotation 1 0 0 1.5707996938995747
+                    children [
+                      DEF LEG-1-FEMUR HingeJoint {
+                        jointParameters HingeJointParameters {
+                          axis 0 0 1
+                        }
+                        device [
+                          RotationalMotor {
+                            name "femur1"
+                          }
+                        ]
+                        endPoint Solid {
+                          children [
+                            USE SERVO-CYLINDER
+                            Transform {
+                              rotation 0 1 0 0.349066
+                              children [
+                                Solid {
+                                  translation 0 0 0.046085
+                                  rotation 1 0 0 1.5707996938995747
+                                  children [
+                                    DEF FEMUR-2-CYLINDER-SHAPE Shape {
+                                      appearance PBRAppearance {
+                                        baseColor 0 1 0
+                                        roughness 1
+                                        metalness 0
+                                      }
+                                      geometry Cylinder {
+                                        height 0.09217
+                                        radius 0.007
+                                      }
+                                    }
+                                    Transform {
+                                      translation 0 0.046085 0
+                                      children [
+                                        DEF LEG-1-TIBIA HingeJoint {
+                                          jointParameters HingeJointParameters {
+                                            axis 0 0 1
+                                          }
+                                          device [
+                                            RotationalMotor {
+                                              name "tibia1"
+                                            }
+                                          ]
+                                          endPoint Solid {
+                                            rotation 1 0 0 -1.5707996938995747
+                                            children [
+                                              USE SERVO-CYLINDER
+                                              Transform {
+                                                rotation 0 1 0 -0.925408
+                                                children [
+                                                  Solid {
+                                                    translation 0 0 0.09683
+                                                    rotation 1 0 0 1.5707996938995747
+                                                    children [
+                                                      DEF END-EFFECTOR Shape {
+                                                        appearance PBRAppearance {
+                                                          baseColor 0 0 1
+                                                          roughness 1
+                                                          metalness 0
+                                                        }
+                                                        geometry Cylinder {
+                                                          height 0.19366
+                                                          radius 0.007
+                                                        }
+                                                      }
+                                                    ]
+                                                    name "LEG-1-END-EFFECTOR"
+                                                    boundingObject USE END-EFFECTOR
+                                                    physics DEF END-EFFECTOR-PHYSICS Physics {
+                                                      density -1
+                                                      mass 1
+                                                    }
+                                                  }
+                                                ]
+                                              }
+                                            ]
+                                            name "LEG-1-TIBIA-SERVO"
+                                            boundingObject USE SERVO-CYLINDER
+                                            physics DEF TIBIA-SERVO-PHYSICS Physics {
+                                              density -1
+                                              mass 1
+                                            }
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                  name "LEG-1-FEMUR-2-CYLINDER-SHAPE"
+                                  boundingObject USE FEMUR-2-CYLINDER-SHAPE
+                                  physics DEF FEMUR-2-PHYSICS Physics {
+                                    density -1
+                                    mass 1
+                                  }
+                                }
+                              ]
+                            }
+                          ]
+                          name "LEG-1-COXA-SERVO"
+                          boundingObject USE SERVO-CYLINDER
+                          physics DEF FEMUR-SERVO-PHYSICS Physics {
+                            density -1
+                            mass 1
+                          }
+                        }
+                      }
+                    ]
+                  }
+                ]
+                name "LEG-1-FEMUR-1-CYLINDER-SHAPE"
+                boundingObject USE FEMUR-1-CYLINDER-SHAPE
+                physics DEF FEMUR-1-PHYSICS Physics {
+                  density -1
+                  mass 1
+                }
+              }
+            ]
+          }
+        ]
+        name "LEG-1-COXA-SERVO-SOLID"
+        boundingObject USE SERVO-CYLINDER
+        physics DEF COXA-PHYSICS Physics {
+          density -1
+          mass 1
+        }
+      }
+    }
+    DEF LEG-2-COXA HingeJoint {
+      jointParameters HingeJointParameters {
+        axis 0 1 0
+        anchor -0.0716 0.12096 0
+      }
+      device [
+        RotationalMotor {
+          name "coxa2"
+        }
+      ]
+      endPoint Solid {
+        translation -0.0717 0.12096 -0.017
+        rotation 1 0 0 1.5707996938995747
+        children [
+          Transform {
+            rotation 0 1 0 -4.188789693899575
+            children [
+              USE SERVO-CYLINDER
+              Solid {
+                translation 0.03325 0 0
+                rotation 0 0 1 -1.5707996938995747
+                children [
+                  USE FEMUR-1-CYLINDER-SHAPE
+                  Transform {
+                    translation 0 0.03325 0
+                    rotation 1 0 0 1.5707996938995747
+                    children [
+                      DEF LEG-2-FEMUR HingeJoint {
+                        jointParameters HingeJointParameters {
+                          axis 0 0 1
+                        }
+                        device [
+                          RotationalMotor {
+                            name "femur2"
+                          }
+                        ]
+                        endPoint Solid {
+                          children [
+                            USE SERVO-CYLINDER
+                            Transform {
+                              rotation 0 1 0 3.49066
+                              children [
+                                Solid {
+                                  translation 0 0 0.046085
+                                  rotation 1 0 0 1.5708003061004252
+                                  children [
+                                    USE FEMUR-2-CYLINDER-SHAPE
+                                    Transform {
+                                      translation 0 0.046085 0
+                                      children [
+                                        DEF LEG-2-TIBIA HingeJoint {
+                                          jointParameters HingeJointParameters {
+                                            axis 0 0 1
+                                          }
+                                          device [
+                                            RotationalMotor {
+                                              name "tibia2"
+                                            }
+                                          ]
+                                          endPoint Solid {
+                                            rotation 1 0 0 -1.5707996938995747
+                                            children [
+                                              USE SERVO-CYLINDER
+                                              Transform {
+                                                rotation 0 1 0 -0.925408
+                                                children [
+                                                  Solid {
+                                                    translation 0 0 0.09683
+                                                    rotation 1 0 0 1.5707996938995747
+                                                    children [
+                                                      USE END-EFFECTOR
+                                                    ]
+                                                    name "LEG-2-END-EFFECTOR"
+                                                    boundingObject USE END-EFFECTOR
+                                                    physics USE END-EFFECTOR-PHYSICS
+                                                  }
+                                                ]
+                                              }
+                                            ]
+                                            name "LEG-2-TIBIA-SERVO"
+                                            boundingObject USE SERVO-CYLINDER
+                                            physics USE TIBIA-SERVO-PHYSICS
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                  name "LEG-2-FEMUR-2-CYLINDER-SHAPE"
+                                  boundingObject USE FEMUR-2-CYLINDER-SHAPE
+                                  physics USE FEMUR-2-PHYSICS
+                                }
+                              ]
+                            }
+                          ]
+                          name "LEG-2-COXA-SERVO"
+                          boundingObject USE SERVO-CYLINDER
+                          physics USE FEMUR-SERVO-PHYSICS
+                        }
+                      }
+                    ]
+                  }
+                ]
+                name "LEG-2-FEMUR-1-CYLINDER-SHAPE"
+                boundingObject USE FEMUR-1-CYLINDER-SHAPE
+                physics USE FEMUR-1-PHYSICS
+              }
+            ]
+          }
+        ]
+        name "LEG-2-COXA-SERVO-SOLID"
+        boundingObject USE SERVO-CYLINDER
+        physics USE COXA-PHYSICS
+      }
+    }
+    DEF LEG-3-COXA HingeJoint {
+      jointParameters HingeJointParameters {
+        axis 0 1 0
+        anchor 0.14133 0 0
+      }
+      device [
+        RotationalMotor {
+          name "coxa3"
+        }
+      ]
+      endPoint Solid {
+        translation 0.14133 0 -0.017
+        rotation 1 0 0 1.5708003061004252
+        children [
+          Transform {
+            children [
+              USE SERVO-CYLINDER
+              Solid {
+                translation 0.03325 0 0
+                rotation 0 0 1 -1.5707996938995747
+                children [
+                  USE FEMUR-1-CYLINDER-SHAPE
+                  Transform {
+                    translation 0 0.03325 0
+                    rotation 1 0 0 1.5707996938995747
+                    children [
+                      DEF LEG-2-FEMUR HingeJoint {
+                        jointParameters HingeJointParameters {
+                          axis 0 0 1
+                        }
+                        device [
+                          RotationalMotor {
+                            name "femur3"
+                          }
+                        ]
+                        endPoint Solid {
+                          children [
+                            USE SERVO-CYLINDER
+                            Transform {
+                              rotation 0 1 0 3.49066
+                              children [
+                                Solid {
+                                  translation 0 0 0.046085
+                                  rotation 1 0 0 1.5708003061004252
+                                  children [
+                                    USE FEMUR-2-CYLINDER-SHAPE
+                                    Transform {
+                                      translation 0 0.046085 0
+                                      children [
+                                        DEF LEG-3-TIBIA HingeJoint {
+                                          jointParameters HingeJointParameters {
+                                            axis 0 0 1
+                                          }
+                                          device [
+                                            RotationalMotor {
+                                              name "tibia3"
+                                            }
+                                          ]
+                                          endPoint Solid {
+                                            rotation 1 0 0 -1.5707996938995747
+                                            children [
+                                              USE SERVO-CYLINDER
+                                              Transform {
+                                                rotation 0 1 0 -0.925408
+                                                children [
+                                                  Solid {
+                                                    translation 0 0 0.09683
+                                                    rotation 1 0 0 1.5707996938995747
+                                                    children [
+                                                      USE END-EFFECTOR
+                                                    ]
+                                                    name "LEG-3-END-EFFECTOR"
+                                                    boundingObject USE END-EFFECTOR
+                                                    physics USE END-EFFECTOR-PHYSICS
+                                                  }
+                                                ]
+                                              }
+                                            ]
+                                            name "LEG-3-TIBIA-SERVO"
+                                            boundingObject USE SERVO-CYLINDER
+                                            physics USE TIBIA-SERVO-PHYSICS
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                  name "LEG-3-FEMUR-2-CYLINDER-SHAPE"
+                                  boundingObject USE FEMUR-2-CYLINDER-SHAPE
+                                  physics USE FEMUR-2-PHYSICS
+                                }
+                              ]
+                            }
+                          ]
+                          name "LEG-3-COXA-SERVO"
+                          boundingObject USE SERVO-CYLINDER
+                          physics USE FEMUR-SERVO-PHYSICS
+                        }
+                      }
+                    ]
+                  }
+                ]
+                name "LEG-3-FEMUR-1-CYLINDER-SHAPE"
+                boundingObject USE FEMUR-1-CYLINDER-SHAPE
+                physics USE FEMUR-1-PHYSICS
+              }
+            ]
+          }
+        ]
+        name "LEG-3-COXA-SERVO-SOLID"
+        boundingObject USE SERVO-CYLINDER
+        physics USE COXA-PHYSICS
+      }
+    }
+    DEF LEG-4-COXA HingeJoint {
+      jointParameters HingeJointParameters {
+        axis 0 1 0
+        anchor -0.14133 0 0
+      }
+      device [
+        RotationalMotor {
+          name "coxa4"
+        }
+      ]
+      endPoint Solid {
+        translation -0.14133 0 -0.017
+        rotation 1 0 0 1.5708003061004252
+        children [
+          Transform {
+            rotation 0 1 0 3.141592653589793
+            children [
+              USE SERVO-CYLINDER
+              Solid {
+                translation 0.03325 0 0
+                rotation 0 0 1 -1.5707996938995747
+                children [
+                  USE FEMUR-1-CYLINDER-SHAPE
+                  Transform {
+                    translation 0 0.03325 0
+                    rotation 1 0 0 1.5707996938995747
+                    children [
+                      DEF LEG-4-FEMUR HingeJoint {
+                        jointParameters HingeJointParameters {
+                          axis 0 0 1
+                        }
+                        device [
+                          RotationalMotor {
+                            name "femur4"
+                          }
+                        ]
+                        endPoint Solid {
+                          children [
+                            USE SERVO-CYLINDER
+                            Transform {
+                              rotation 0 1 0 3.49066
+                              children [
+                                Solid {
+                                  translation 0 0 0.046085
+                                  rotation 1 0 0 1.5708003061004252
+                                  children [
+                                    USE FEMUR-2-CYLINDER-SHAPE
+                                    Transform {
+                                      translation 0 0.046085 0
+                                      children [
+                                        DEF LEG-4-TIBIA HingeJoint {
+                                          jointParameters HingeJointParameters {
+                                            axis 0 0 1
+                                          }
+                                          device [
+                                            RotationalMotor {
+                                              name "tibia4"
+                                            }
+                                          ]
+                                          endPoint Solid {
+                                            rotation 1 0 0 -1.5707996938995747
+                                            children [
+                                              USE SERVO-CYLINDER
+                                              Transform {
+                                                rotation 0 1 0 -0.925408
+                                                children [
+                                                  Solid {
+                                                    translation 0 0 0.09683
+                                                    rotation 1 0 0 1.5707996938995747
+                                                    children [
+                                                      USE END-EFFECTOR
+                                                    ]
+                                                    name "LEG-4-END-EFFECTOR"
+                                                    boundingObject USE END-EFFECTOR
+                                                    physics USE END-EFFECTOR-PHYSICS
+                                                  }
+                                                ]
+                                              }
+                                            ]
+                                            name "LEG-4-TIBIA-SERVO"
+                                            boundingObject USE SERVO-CYLINDER
+                                            physics USE TIBIA-SERVO-PHYSICS
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                  name "LEG-4-FEMUR-2-CYLINDER-SHAPE"
+                                  boundingObject USE FEMUR-2-CYLINDER-SHAPE
+                                  physics USE FEMUR-2-PHYSICS
+                                }
+                              ]
+                            }
+                          ]
+                          name "LEG-4-COXA-SERVO"
+                          boundingObject USE SERVO-CYLINDER
+                          physics USE FEMUR-SERVO-PHYSICS
+                        }
+                      }
+                    ]
+                  }
+                ]
+                name "LEG-4-FEMUR-1-CYLINDER-SHAPE"
+                boundingObject USE FEMUR-1-CYLINDER-SHAPE
+                physics USE FEMUR-1-PHYSICS
+              }
+            ]
+          }
+        ]
+        name "LEG-4-COXA-SERVO-SOLID"
+        boundingObject USE SERVO-CYLINDER
+        physics USE COXA-PHYSICS
+      }
+    }
+    DEF LEG-5-COXA HingeJoint {
+      jointParameters HingeJointParameters {
+        axis 0 1 0
+        anchor 0.0716 -0.12096 0
+      }
+      device [
+        RotationalMotor {
+          name "coxa5"
+        }
+      ]
+      endPoint Solid {
+        translation 0.0717 -0.12096 -0.017
+        rotation 1 0 0 1.5707996938995747
+        children [
+          Transform {
+            rotation 0 1 0 -1.0472
+            children [
+              USE SERVO-CYLINDER
+              Solid {
+                translation 0.03325 0 0
+                rotation 0 0 1 -1.5707996938995747
+                children [
+                  USE FEMUR-1-CYLINDER-SHAPE
+                  Transform {
+                    translation 0 0.03325 0
+                    rotation 1 0 0 1.5707996938995747
+                    children [
+                      DEF LEG-5-FEMUR HingeJoint {
+                        jointParameters HingeJointParameters {
+                          axis 0 0 1
+                        }
+                        device [
+                          RotationalMotor {
+                            name "femur5"
+                          }
+                        ]
+                        endPoint Solid {
+                          children [
+                            USE SERVO-CYLINDER
+                            Transform {
+                              rotation 0 1 0 3.49066
+                              children [
+                                Solid {
+                                  translation 0 0 0.046085
+                                  rotation 1 0 0 1.5708003061004252
+                                  children [
+                                    USE FEMUR-2-CYLINDER-SHAPE
+                                    Transform {
+                                      translation 0 0.046085 0
+                                      children [
+                                        DEF LEG-5-TIBIA HingeJoint {
+                                          jointParameters HingeJointParameters {
+                                            axis 0 0 1
+                                          }
+                                          device [
+                                            RotationalMotor {
+                                              name "tibia5"
+                                            }
+                                          ]
+                                          endPoint Solid {
+                                            rotation 1 0 0 -1.5707996938995747
+                                            children [
+                                              USE SERVO-CYLINDER
+                                              Transform {
+                                                rotation 0 1 0 -0.925408
+                                                children [
+                                                  Solid {
+                                                    translation 0 0 0.09683
+                                                    rotation 1 0 0 1.5707996938995747
+                                                    children [
+                                                      USE END-EFFECTOR
+                                                    ]
+                                                    name "LEG-5-END-EFFECTOR"
+                                                    boundingObject USE END-EFFECTOR
+                                                    physics USE END-EFFECTOR-PHYSICS
+                                                  }
+                                                ]
+                                              }
+                                            ]
+                                            name "LEG-5-TIBIA-SERVO"
+                                            boundingObject USE SERVO-CYLINDER
+                                            physics USE TIBIA-SERVO-PHYSICS
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                  name "LEG-5-FEMUR-2-CYLINDER-SHAPE"
+                                  boundingObject USE FEMUR-2-CYLINDER-SHAPE
+                                  physics USE FEMUR-2-PHYSICS
+                                }
+                              ]
+                            }
+                          ]
+                          name "LEG-5-COXA-SERVO"
+                          boundingObject USE SERVO-CYLINDER
+                          physics USE FEMUR-SERVO-PHYSICS
+                        }
+                      }
+                    ]
+                  }
+                ]
+                name "LEG-5-FEMUR-1-CYLINDER-SHAPE"
+                boundingObject USE FEMUR-1-CYLINDER-SHAPE
+                physics USE FEMUR-1-PHYSICS
+              }
+            ]
+          }
+        ]
+        name "LEG-5-COXA-SERVO-SOLID"
+        boundingObject USE SERVO-CYLINDER
+        physics USE COXA-PHYSICS
+      }
+    }
+    DEF LEG-6-COXA HingeJoint {
+      jointParameters HingeJointParameters {
+        axis 0 1 0
+        anchor -0.0716 -0.12096 0
+      }
+      device [
+        RotationalMotor {
+          name "coxa6"
+        }
+      ]
+      endPoint Solid {
+        translation -0.0717 -0.12096 -0.017
+        rotation 1 0 0 1.5707996938995747
+        children [
+          Transform {
+            rotation 0 1 0 -2.09439
+            children [
+              USE SERVO-CYLINDER
+              Solid {
+                translation 0.03325 0 0
+                rotation 0 0 1 -1.5707996938995747
+                children [
+                  USE FEMUR-1-CYLINDER-SHAPE
+                  Transform {
+                    translation 0 0.03325 0
+                    rotation 1 0 0 1.5707996938995747
+                    children [
+                      DEF LEG-6-FEMUR HingeJoint {
+                        jointParameters HingeJointParameters {
+                          axis 0 0 1
+                        }
+                        device [
+                          RotationalMotor {
+                            name "femur6"
+                          }
+                        ]
+                        endPoint Solid {
+                          children [
+                            USE SERVO-CYLINDER
+                            Transform {
+                              rotation 0 1 0 3.49066
+                              children [
+                                Solid {
+                                  translation 0 0 0.046085
+                                  rotation 1 0 0 1.5708003061004252
+                                  children [
+                                    USE FEMUR-2-CYLINDER-SHAPE
+                                    Transform {
+                                      translation 0 0.046085 0
+                                      children [
+                                        DEF LEG-6-TIBIA HingeJoint {
+                                          jointParameters HingeJointParameters {
+                                            axis 0 0 1
+                                          }
+                                          device [
+                                            RotationalMotor {
+                                              name "tibia6"
+                                            }
+                                          ]
+                                          endPoint Solid {
+                                            rotation 1 0 0 -1.5707996938995747
+                                            children [
+                                              USE SERVO-CYLINDER
+                                              Transform {
+                                                rotation 0 1 0 -0.925408
+                                                children [
+                                                  Solid {
+                                                    translation 0 0 0.09683
+                                                    rotation 1 0 0 1.5707996938995747
+                                                    children [
+                                                      USE END-EFFECTOR
+                                                    ]
+                                                    name "LEG-6-END-EFFECTOR"
+                                                    boundingObject USE END-EFFECTOR
+                                                    physics USE END-EFFECTOR-PHYSICS
+                                                  }
+                                                ]
+                                              }
+                                            ]
+                                            name "LEG-6-TIBIA-SERVO"
+                                            boundingObject USE SERVO-CYLINDER
+                                            physics USE TIBIA-SERVO-PHYSICS
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                  name "LEG-6-FEMUR-2-CYLINDER-SHAPE"
+                                  boundingObject USE FEMUR-2-CYLINDER-SHAPE
+                                  physics USE FEMUR-2-PHYSICS
+                                }
+                              ]
+                            }
+                          ]
+                          name "LEG-6-COXA-SERVO"
+                          boundingObject USE SERVO-CYLINDER
+                          physics USE FEMUR-SERVO-PHYSICS
+                        }
+                      }
+                    ]
+                  }
+                ]
+                name "LEG-6-FEMUR-1-CYLINDER-SHAPE"
+                boundingObject USE FEMUR-1-CYLINDER-SHAPE
+                physics USE FEMUR-1-PHYSICS
+              }
+            ]
+          }
+        ]
+        name "LEG-6-COXA-SERVO-SOLID"
+        boundingObject USE SERVO-CYLINDER
+        physics USE COXA-PHYSICS
+      }
+    }
+  ]
+  boundingObject USE HEXAGON
+  physics Physics {
+    density -1
+    mass 1
+  }
+}
