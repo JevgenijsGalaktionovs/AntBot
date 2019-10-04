@@ -1,7 +1,7 @@
 ﻿#!/usr/bin/env python2
 import rospy
 
-from antbot.srv import *
+from dns.srv import *
 
 
 # Wrappers (for user convenience)

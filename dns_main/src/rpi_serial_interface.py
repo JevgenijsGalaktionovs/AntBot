@@ -5,7 +5,7 @@ import glob
 import rospy
 import json
 
-from antbot.srv import bool_key, bool_keyResponse, list_key, \
+from dns.srv import bool_key, bool_keyResponse, list_key, \
     list_keyResponse, pos_key,  pos_keyResponse
 
 
