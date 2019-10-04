@@ -11,8 +11,8 @@ from antbot.srv import bool_key, bool_keyResponse, list_key, \
 
 class ArduinoCommunication:
     '''Serial interface that communicates with Arduino via JSON strings over serial port'''
-    baudrate   = 1000000
-    ser        = 0  # Placeholder for Serial Port object.
+    baudrate = 1000000
+    ser = 0  # Placeholder for Serial Port object.
 
     def __init__(self):
         self.ser = self.openSerialPort(self.baudrate)
@@ -26,21 +26,21 @@ class ArduinoCommunication:
     def serialNode(self):
         rospy.init_node('ArduinoCommunication')
 
-        rospy.Service('write_tor_all', bool_key, self.tor_service)
-        rospy.Service('write_rst_all', bool_key, self.rst_service)
-        rospy.Service('write_pos_1',   list_key, self.pos_1_service)
-        rospy.Service('write_pos_all', list_key, self.pos_all_service)
-        rospy.Service('write_vel_all', list_key, self.vel_all_service)
-        rospy.Service('write_acc_all', list_key, self.acc_all_service)
-        rospy.Service('write_pwm_all', list_key, self.pwm_all_service)
-        rospy.Service('write_pos_N',   list_key, self.pos_N_service)
-        rospy.Service('write_vel_N',   list_key, self.vel_N_service)
-        rospy.Service('write_acc_N',   list_key, self.acc_N_service)
-        rospy.Service('write_pwm_N',   list_key, self.pwm_N_service)
-        rospy.Service('read_all_pos',  pos_key,  self.read_pos_all_service)
-        rospy.Service('read_all_pwm',  pos_key,  self.read_pwm_all_service)
-        rospy.Service('read_IR',       pos_key,  self.read_IR_service)
-		 rospy.Service('read_tactile',  pos_key,  self.read_tactile_service)
+        rospy.Service('write_tor_all', bool_key, self.tor_srv)
+        rospy.Service('write_rst_all', bool_key, self.rst_srv)
+        rospy.Service('write_pos_1',   list_key, self.pos_1_srv)
+        rospy.Service('write_pos_all', list_key, self.pos_all_srv)
+        rospy.Service('write_vel_all', list_key, self.vel_all_srv)
+        rospy.Service('write_acc_all', list_key, self.acc_all_srv)
+        rospy.Service('write_pwm_all', list_key, self.pwm_all_srv)
+        rospy.Service('write_pos_N',   list_key, self.pos_N_srv)
+        rospy.Service('write_vel_N',   list_key, self.vel_N_srv)
+        rospy.Service('write_acc_N',   list_key, self.acc_N_srv)
+        rospy.Service('write_pwm_N',   list_key, self.pwm_N_srv)
+        rospy.Service('read_all_pos',  pos_key,  self.read_pos_all_srv)
+        rospy.Service('read_all_pwm',  pos_key,  self.read_pwm_all_srv)
+        rospy.Service('read_IR_filt',  pos_key,  self.read_IR_filt_srv)
+        rospy.Service('read_FSR_filt', pos_key,  self.read_FSR_filt_srv)
 
         rate = rospy.Rate(100)  # 100hz
         while not rospy.is_shutdown():
@@ -83,63 +83,63 @@ class ArduinoCommunication:
         self.ser.write(msg)
 
     # Services
-    def tor_service(self, req):
+    def tor_srv(self, req):
         data_to_send = dict(torque=req.command)
         self.sendSerial(data_to_send)
         return bool_keyResponse("Torque changed")
 
-    def rst_service(self, req):
+    def rst_srv(self, req):
         data_to_send = dict(reboot=req.command)
         self.sendSerial(data_to_send)
         return bool_keyResponse("Dynamixels Rebooted")
 
-    def pos_1_service(self, req):
+    def pos_1_srv(self, req):
         data_to_send = dict(pos_1=req.command)
         self.sendSerial(data_to_send)
         reply = "ID " + str(req.command[0]) + " >> Position " + str(req.command[1])
         return list_keyResponse(reply)
 
-    def pos_all_service(self, req):
+    def pos_all_srv(self, req):
         data_to_send = dict(pos_all=req.command)
         self.sendSerial(data_to_send)
         return list_keyResponse("All Positions changed")
 
-    def pwm_all_service(self, req):
+    def pwm_all_srv(self, req):
         data_to_send = dict(pwm_all=req.command)
         self.sendSerial(data_to_send)
         return list_keyResponse("All PWM Limits changed")
 
-    def acc_all_service(self, req):
+    def acc_all_srv(self, req):
         data_to_send = dict(aprof_all=req.command)
         self.sendSerial(data_to_send)
         return list_keyResponse("All Acceleration profiles changed")
 
-    def vel_all_service(self, req):
+    def vel_all_srv(self, req):
         data_to_send = dict(vprof_all=req.command)
         self.sendSerial(data_to_send)
         return list_keyResponse("All Velocity profiles changed")
 
-    def vel_N_service(self, req):
+    def vel_N_srv(self, req):
         data_to_send = dict(vprof_n=req.command)
         self.sendSerial(data_to_send)
         return list_keyResponse("Some Velocity profiles changed")
 
-    def pos_N_service(self, req):
+    def pos_N_srv(self, req):
         data_to_send = dict(pos_n=req.command)
         self.sendSerial(data_to_send)
         return list_keyResponse("Some Positions changed")
 
-    def pwm_N_service(self, req):
+    def pwm_N_srv(self, req):
         data_to_send = dict(pwm_n=req.command)
         self.sendSerial(data_to_send)
         return list_keyResponse("Some PWM Limits changed")
 
-    def acc_N_service(self, req):
+    def acc_N_srv(self, req):
         data_to_send = dict(aprof_n=req.command)
         self.sendSerial(data_to_send)
         return list_keyResponse("Some Acceleration profiles changed")
 
-    def read_pos_all_service(self, req):
+    def read_pos_all_srv(self, req):
         data_to_send = dict(read_pos_all=req.command)
         self.sendSerial(data_to_send)
         while True:
@@ -153,7 +153,7 @@ class ArduinoCommunication:
                 except ValueError:
                     pass  # do nothing, not a valid json
 
-    def read_pwm_all_service(self, req):
+    def read_pwm_all_srv(self, req):
         data_to_send = dict(read_pwm_all=req.command)
         self.sendSerial(data_to_send)
         while True:
@@ -167,8 +167,8 @@ class ArduinoCommunication:
                 except ValueError:
                     pass  # do nothing, not a valid json
 
-    def read_IR_service(self, req):
-        data_to_send = dict(read_IR=req.command)
+    def read_IR_filt_srv(self, req):
+        data_to_send = dict(read_IR_filt=req.command)
         self.sendSerial(data_to_send)
         while True:
             # time.sleep(0.01)
@@ -176,14 +176,14 @@ class ArduinoCommunication:
                 in_data = self.ser.readline()
 
                 try:  # Take only non-corrupted JSON messages
-                    IR_dist  = json.loads(in_data).get('IR_dist')
-                    if IR_dist is not None:
-                        return pos_keyResponse(IR_dist)
+                    IR_read  = json.loads(in_data).get('IR_dist')
+                    if IR_read is not None:
+                        return pos_keyResponse(IR_read)
                 except ValueError:
                     pass  # do nothing, not a valid json
 
-    def read_tactile_service(self, req):
-        data_to_send = dict(read_tactile=req.command)
+    def read_FSR_filt_srv(self, req):
+        data_to_send = dict(read_FSR_filt=req.command)
         self.sendSerial(data_to_send)
         while True:
             # time.sleep(0.01)
@@ -191,9 +191,9 @@ class ArduinoCommunication:
                 in_data = self.ser.readline()
 
                 try:  # Take only non-corrupted JSON messages
-                    tactile_read  = json.loads(in_data).get('tactile_read')
-                    if tactile_read is not None:
-                        return pos_keyResponse(tactile_read)
+                    FSR_read  = json.loads(in_data).get('FSR_pres')
+                    if FSR_read is not None:
+                        return pos_keyResponse(FSR_read)
                 except ValueError:
                     pass  # do nothing, not a valid json
 

@@ -53,6 +53,8 @@ CATKIN_IGNORE
 # For VScode stuff
 dns_arduino_controller/.vscode/*
 dns_arduino_controller/.gitignore
+dns_main/.vscode/*
+dns_main/.gitignore
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
