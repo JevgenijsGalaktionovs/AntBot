@@ -2,8 +2,8 @@
 WorldInfo {
 }
 Viewpoint {
-  orientation -0.3288256360717367 0.9374659934217257 0.11415433517757842 1.1559482683204745
-  position 1.6630587266427779 0.7284876741578047 0.6932995683419418
+  orientation -0.9740858771688133 -0.144640009333984 -0.1738849378184573 0.7162660455091262
+  position -0.03185805685751203 1.2604981812054712 1.4681694752559153
 }
 TexturedBackground {
 }
@@ -59,7 +59,7 @@ Robot {
     }
     DEF LEG-1-COXA HingeJoint {
       jointParameters HingeJointParameters {
-        axis 0 1 0
+        axis 0 0 1
         anchor 0.0716 0.12096 0
       }
       device [
@@ -105,7 +105,7 @@ Robot {
                     children [
                       DEF LEG-1-FEMUR HingeJoint {
                         jointParameters HingeJointParameters {
-                          axis 0 0 1
+                          axis 0 1 0
                         }
                         device [
                           RotationalMotor {
@@ -230,7 +230,7 @@ Robot {
     }
     DEF LEG-2-COXA HingeJoint {
       jointParameters HingeJointParameters {
-        axis 0 1 0
+        axis 0 0 1
         anchor -0.0716 0.12096 0
       }
       device [
@@ -257,7 +257,7 @@ Robot {
                     children [
                       DEF LEG-2-FEMUR HingeJoint {
                         jointParameters HingeJointParameters {
-                          axis 0 0 1
+                          axis 0 1 0
                         }
                         device [
                           RotationalMotor {
@@ -344,7 +344,7 @@ Robot {
     }
     DEF LEG-3-COXA HingeJoint {
       jointParameters HingeJointParameters {
-        axis 0 1 0
+        axis 0 0 1
         anchor 0.14133 0 0
       }
       device [
@@ -370,7 +370,7 @@ Robot {
                     children [
                       DEF LEG-2-FEMUR HingeJoint {
                         jointParameters HingeJointParameters {
-                          axis 0 0 1
+                          axis 0 1 0
                         }
                         device [
                           RotationalMotor {
@@ -457,7 +457,7 @@ Robot {
     }
     DEF LEG-4-COXA HingeJoint {
       jointParameters HingeJointParameters {
-        axis 0 1 0
+        axis 0 0 1
         anchor -0.14133 0 0
       }
       device [
@@ -484,7 +484,7 @@ Robot {
                     children [
                       DEF LEG-4-FEMUR HingeJoint {
                         jointParameters HingeJointParameters {
-                          axis 0 0 1
+                          axis 0 1 0
                         }
                         device [
                           RotationalMotor {
@@ -571,7 +571,7 @@ Robot {
     }
     DEF LEG-5-COXA HingeJoint {
       jointParameters HingeJointParameters {
-        axis 0 1 0
+        axis 0 0 1
         anchor 0.0716 -0.12096 0
       }
       device [
@@ -598,7 +598,7 @@ Robot {
                     children [
                       DEF LEG-5-FEMUR HingeJoint {
                         jointParameters HingeJointParameters {
-                          axis 0 0 1
+                          axis 0 1 0
                         }
                         device [
                           RotationalMotor {
@@ -685,7 +685,7 @@ Robot {
     }
     DEF LEG-6-COXA HingeJoint {
       jointParameters HingeJointParameters {
-        axis 0 1 0
+        axis 0 0 1
         anchor -0.0716 -0.12096 0
       }
       device [
@@ -712,7 +712,7 @@ Robot {
                     children [
                       DEF LEG-6-FEMUR HingeJoint {
                         jointParameters HingeJointParameters {
-                          axis 0 0 1
+                          axis 0 1 0
                         }
                         device [
                           RotationalMotor {
@@ -803,4 +803,5 @@ Robot {
     density -1
     mass 1
   }
+  controller "hexapod_controller"
 }
