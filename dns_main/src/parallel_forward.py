@@ -18,14 +18,17 @@ toggle_torque = True
 torque(toggle_torque)
 standUp()
 time.sleep(1)
-parallelGait(0, pi, -pi, 0, 0, 0)
+parallelGait(10, 0, 0, 0, 0, 0)
 time.sleep(2)
 ee_xyz,servopos = np.array( K.doFkine(readPos()))
+y_axis_unit = np.array([0,1,0])
 p1 =  ee_xyz[0:3]
 p2 =  ee_xyz[3:6]
 p3 =  ee_xyz[6:9]
 p4 =  ee_xyz[9:12]#np.around( ee_xyz[9:12])
 p5 =  ee_xyz[12:15]#np.around( ee_xyz[12:15])
+p6 =  ee_xyz[15:18]
+length_p1 =  sqrt(pow(p1[0],2)+pow(p1[1],2)+pow(p1[2],2))
 
 p45 = p4-p5#np.around(p4-p5, decimals = 2)
 p41 = p4-p1#np.around(p4-p1, decimals = 2)
@@ -38,15 +41,16 @@ p43 = p4-p3
 length_p43 = sqrt(pow(p43[0],2)+pow(p43[1],2)+pow(p43[2],2))
 normz = np.cross(p45,p41)
 normz_rounded = np.around(normz)
-print(normz_rounded)
+#print(normz_rounded)
 length_normz = sqrt(pow(normz[0],2)+pow(normz[1],2)+pow(normz[2],2))
 #unit_normz = np.around(pow(length_normz,-1)*normz)
 #print(unit_normz)
 beta = atan2(normz[0],normz[2])*180/pi
 gamma = -atan2(normz[1],normz[2])*180/pi
-print(beta)
-print(gamma)
-angle_p61_p52 = (180*np.dot(p61,p52))/(length_p61*lemgth_p52*pi)
-angle_p52_p43 = (180*np.dot(p52,p43))/(length_p52*lemgth_p43*pi)
+#print(beta)
+#print(gamma)
+angle_p61_p52 = acos(np.dot(p61,p52)/(length_p61*length_p52))*180/pi
+angle_p52_p43 = acos(np.dot(p52,p43)/(length_p52*length_p43))*180/pi
+angle_p1_yaxis = acos(np.dot(p1, y_axis_unit)/(length_p1)*180/pi
 print(angle_p61_p52)
-print(angle_p52_p43)
+print(angle_p1_yaxis)
