@@ -4,7 +4,7 @@ import rospy
 from sensor_msgs.msg import Joy
 from service_router import *
 from demo import *
-from locomotion import tripodGait, rippleGait, waveGait, singleLeg
+from locomotion import tripodGait, rippleGait, waveGait, singleLeg, rippleMirror
 
 # Mapping is shifted for RPI. If used on laptop : use commented values.
 PS3_BUTTON_SELECT           =  8 #0
@@ -93,7 +93,7 @@ class JoystickPS3:
         elif b[PS3_BUTTON_ACTION_CIRCLE]:
             print("Circle pressed. SingleLeg Demo")
             # demo_wavegait()
-            singleLeg(0, 0, 20, 10, 0, 15, 1)
+            rippleMirror(0, 0, 20, 0, 0, 0, 2)
             self.pub.publish(self.CreateEmptyMsgJoy())
 
         elif b[PS3_BUTTON_ACTION_TRIANGLE]:

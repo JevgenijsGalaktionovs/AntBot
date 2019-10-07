@@ -14,24 +14,22 @@ DataContainer CreatePackage1(float (&IR)[3]){
   DataContainer data;
   memcpy(data.IR_distance, IR, sizeof IR);
   return data;
-  }
-
+}
 DataContainer CreatePackage2(int (&pos)[18]){ 
   DataContainer data;
   memcpy(data.servo_pos, pos, sizeof pos);
   return data;
-  }
-
+}
 DataContainer CreatePackage3(int (&pwm)[18]){ 
   DataContainer data;
   memcpy(data.servo_pwm, pwm, sizeof pwm);
   return data;
-  }
+}
 DataContainer CreatePackage4(unsigned int (&tactile)[6]){ 
   DataContainer data;
   memcpy(data.FSR_pressure,tactile, sizeof tactile);
   return data;
-  }
+}
 
 JsonObject& SerializeData1(DataContainer &data_package){
   const size_t capacity_tx = JSON_OBJECT_SIZE(1) + JSON_ARRAY_SIZE(3); // USE https://arduinojson.org/v5/assistant/ to calculate this!!!
@@ -44,8 +42,7 @@ JsonObject& SerializeData1(DataContainer &data_package){
     IR_dist.add(data_package.IR_distance[i]);
     }
   return msg_tx;
-  }
-
+}
 JsonObject& SerializeData2(DataContainer &data_package){
   const size_t capacity_tx = JSON_OBJECT_SIZE(1) + JSON_ARRAY_SIZE(18); // USE https://arduinojson.org/v5/assistant/ to calculate this!!!
   StaticJsonBuffer<capacity_tx> buffer_tx;
@@ -57,9 +54,8 @@ JsonObject& SerializeData2(DataContainer &data_package){
     sr_pos.add(data_package.servo_pos[i]);
   }
   return msg_tx;
-  }
-
-  JsonObject& SerializeData3(DataContainer &data_package){
+}
+JsonObject& SerializeData3(DataContainer &data_package){
   const size_t capacity_tx = JSON_OBJECT_SIZE(1) + JSON_ARRAY_SIZE(18); // USE https://arduinojson.org/v5/assistant/ to calculate this!!!
   StaticJsonBuffer<capacity_tx> buffer_tx;
   JsonObject& msg_tx = buffer_tx.createObject();
@@ -70,8 +66,7 @@ JsonObject& SerializeData2(DataContainer &data_package){
     sr_pwm.add(data_package.servo_pwm[i]);
   }
   return msg_tx;
-  }
-
+}
 JsonObject& SerializeData4(DataContainer &data_package){
   const size_t capacity_tx = JSON_OBJECT_SIZE(1) + JSON_ARRAY_SIZE(6); // USE https://arduinojson.org/v5/assistant/ to calculate this!!!
   StaticJsonBuffer<capacity_tx> buffer_tx;
@@ -82,15 +77,14 @@ JsonObject& SerializeData4(DataContainer &data_package){
     FSR_pres.add(data_package.FSR_pressure[i]);
   }
   return msg_tx;
-  }
-
+}
 
 
 void JSONcheck(JsonObject& json_object){
   if(!json_object.success()){
     Serial.println("createObject() failed");
   }
-  }
+}
 
 // Setters
 void json_setTorque(JsonObject& json_object){
@@ -258,14 +252,14 @@ void json_get18Position(JsonObject& json_object){
   }   
 
 void json_getIR_kalman(JsonObject& json_object){
-  bool hasReadIR = json_object.containsKey("read_IR_filtered");
+  bool hasReadIR = json_object.containsKey("read_IR_filt");
   if(hasReadIR){ 
       struct DataContainer data_package;
       float  *filtered_ir;
       filtered_ir = KalmanIR.getPrediction();
       float  IR_fil_dist[3];
       for (int i=0;i<3;i++){
-      IR_fil_dist[i] = filtered_ir[i];
+        IR_fil_dist[i] = filtered_ir[i];
       }
       data_package = CreatePackage1(IR_fil_dist);
       JsonObject& msg_tx = SerializeData1(data_package);
@@ -275,7 +269,7 @@ void json_getIR_kalman(JsonObject& json_object){
   }
 
 void json_getFSR(JsonObject& json_object){
-  bool hasReadTactile = json_object.containsKey("read_FSR_raw");
+  bool hasReadTactile = json_object.containsKey("read_FSR_filt");
   if(hasReadTactile){ 
       struct DataContainer data_package;
       unsigned int  *tactile_tmp;
