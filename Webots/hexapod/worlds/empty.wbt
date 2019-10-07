@@ -2,14 +2,15 @@
 WorldInfo {
 }
 Viewpoint {
-  orientation -0.9740858771688133 -0.144640009333984 -0.1738849378184573 0.7162660455091262
-  position -0.03185805685751203 1.2604981812054712 1.4681694752559153
+  orientation -0.15628588458127873 -0.8990561264533564 -0.40898998003292664 2.2768197114698894
+  position -1.1512682083891908 1.4741020628249808 -0.7244820365547866
 }
 TexturedBackground {
 }
 TexturedBackgroundLight {
 }
 RectangleArena {
+  floorSize 3 3
 }
 Robot {
   translation 0 0.12 0
@@ -52,10 +53,6 @@ Robot {
         }
       ]
       boundingObject USE HEXAGON
-      physics Physics {
-        density -1
-        mass 1
-      }
     }
     DEF LEG-1-COXA HingeJoint {
       jointParameters HingeJointParameters {
@@ -63,8 +60,14 @@ Robot {
         anchor 0.0716 0.12096 0
       }
       device [
+        PositionSensor {
+          name "c1_pos"
+          resolution 4096
+        }
         RotationalMotor {
-          name "coxa1"
+          name "c1_ser"
+          maxVelocity 1
+          maxTorque 100
         }
       ]
       endPoint Solid {
@@ -108,8 +111,14 @@ Robot {
                           axis 0 1 0
                         }
                         device [
+                          PositionSensor {
+                            name "f1_pos"
+                            resolution 4096
+                          }
                           RotationalMotor {
-                            name "femur1"
+                            name "f1_ser"
+                            maxVelocity 1
+                            maxTorque 100
                           }
                         ]
                         endPoint Solid {
@@ -141,8 +150,14 @@ Robot {
                                             axis 0 0 1
                                           }
                                           device [
+                                            PositionSensor {
+                                              name "t1_pos"
+                                              resolution 4096
+                                            }
                                             RotationalMotor {
-                                              name "tibia1"
+                                              name "t1_ser"
+                                              maxVelocity 1
+                                              maxTorque 100
                                             }
                                           ]
                                           endPoint Solid {
@@ -170,20 +185,12 @@ Robot {
                                                     ]
                                                     name "LEG-1-END-EFFECTOR"
                                                     boundingObject USE END-EFFECTOR
-                                                    physics DEF END-EFFECTOR-PHYSICS Physics {
-                                                      density -1
-                                                      mass 1
-                                                    }
                                                   }
                                                 ]
                                               }
                                             ]
                                             name "LEG-1-TIBIA-SERVO"
                                             boundingObject USE SERVO-CYLINDER
-                                            physics DEF TIBIA-SERVO-PHYSICS Physics {
-                                              density -1
-                                              mass 1
-                                            }
                                           }
                                         }
                                       ]
@@ -191,20 +198,12 @@ Robot {
                                   ]
                                   name "LEG-1-FEMUR-2-CYLINDER-SHAPE"
                                   boundingObject USE FEMUR-2-CYLINDER-SHAPE
-                                  physics DEF FEMUR-2-PHYSICS Physics {
-                                    density -1
-                                    mass 1
-                                  }
                                 }
                               ]
                             }
                           ]
                           name "LEG-1-COXA-SERVO"
                           boundingObject USE SERVO-CYLINDER
-                          physics DEF FEMUR-SERVO-PHYSICS Physics {
-                            density -1
-                            mass 1
-                          }
                         }
                       }
                     ]
@@ -212,20 +211,12 @@ Robot {
                 ]
                 name "LEG-1-FEMUR-1-CYLINDER-SHAPE"
                 boundingObject USE FEMUR-1-CYLINDER-SHAPE
-                physics DEF FEMUR-1-PHYSICS Physics {
-                  density -1
-                  mass 1
-                }
               }
             ]
           }
         ]
         name "LEG-1-COXA-SERVO-SOLID"
         boundingObject USE SERVO-CYLINDER
-        physics DEF COXA-PHYSICS Physics {
-          density -1
-          mass 1
-        }
       }
     }
     DEF LEG-2-COXA HingeJoint {
@@ -234,8 +225,14 @@ Robot {
         anchor -0.0716 0.12096 0
       }
       device [
+        PositionSensor {
+          name "c2_pos"
+          resolution 4096
+        }
         RotationalMotor {
-          name "coxa2"
+          name "c2_ser"
+          maxVelocity 1
+          maxTorque 100
         }
       ]
       endPoint Solid {
@@ -260,8 +257,14 @@ Robot {
                           axis 0 1 0
                         }
                         device [
+                          PositionSensor {
+                            name "f2_pos"
+                            resolution 4096
+                          }
                           RotationalMotor {
-                            name "femur2"
+                            name "f2_ser"
+                            maxVelocity 1
+                            maxTorque 100
                           }
                         ]
                         endPoint Solid {
@@ -283,8 +286,14 @@ Robot {
                                             axis 0 0 1
                                           }
                                           device [
+                                            PositionSensor {
+                                              name "t2_pos"
+                                              resolution 4096
+                                            }
                                             RotationalMotor {
-                                              name "tibia2"
+                                              name "t2_ser"
+                                              maxVelocity 1
+                                              maxTorque 100
                                             }
                                           ]
                                           endPoint Solid {
@@ -302,14 +311,12 @@ Robot {
                                                     ]
                                                     name "LEG-2-END-EFFECTOR"
                                                     boundingObject USE END-EFFECTOR
-                                                    physics USE END-EFFECTOR-PHYSICS
                                                   }
                                                 ]
                                               }
                                             ]
                                             name "LEG-2-TIBIA-SERVO"
                                             boundingObject USE SERVO-CYLINDER
-                                            physics USE TIBIA-SERVO-PHYSICS
                                           }
                                         }
                                       ]
@@ -317,14 +324,12 @@ Robot {
                                   ]
                                   name "LEG-2-FEMUR-2-CYLINDER-SHAPE"
                                   boundingObject USE FEMUR-2-CYLINDER-SHAPE
-                                  physics USE FEMUR-2-PHYSICS
                                 }
                               ]
                             }
                           ]
                           name "LEG-2-COXA-SERVO"
                           boundingObject USE SERVO-CYLINDER
-                          physics USE FEMUR-SERVO-PHYSICS
                         }
                       }
                     ]
@@ -332,14 +337,12 @@ Robot {
                 ]
                 name "LEG-2-FEMUR-1-CYLINDER-SHAPE"
                 boundingObject USE FEMUR-1-CYLINDER-SHAPE
-                physics USE FEMUR-1-PHYSICS
               }
             ]
           }
         ]
         name "LEG-2-COXA-SERVO-SOLID"
         boundingObject USE SERVO-CYLINDER
-        physics USE COXA-PHYSICS
       }
     }
     DEF LEG-3-COXA HingeJoint {
@@ -348,8 +351,14 @@ Robot {
         anchor 0.14133 0 0
       }
       device [
+        PositionSensor {
+          name "c3_pos"
+          resolution 4096
+        }
         RotationalMotor {
-          name "coxa3"
+          name "c3_ser"
+          maxVelocity 1
+          maxTorque 100
         }
       ]
       endPoint Solid {
@@ -373,8 +382,14 @@ Robot {
                           axis 0 1 0
                         }
                         device [
+                          PositionSensor {
+                            name "f3_pos"
+                            resolution 4096
+                          }
                           RotationalMotor {
-                            name "femur3"
+                            name "f3_ser"
+                            maxVelocity 1
+                            maxTorque 100
                           }
                         ]
                         endPoint Solid {
@@ -396,8 +411,14 @@ Robot {
                                             axis 0 0 1
                                           }
                                           device [
+                                            PositionSensor {
+                                              name "t3_pos"
+                                              resolution 4096
+                                            }
                                             RotationalMotor {
-                                              name "tibia3"
+                                              name "t3_ser"
+                                              maxVelocity 1
+                                              maxTorque 100
                                             }
                                           ]
                                           endPoint Solid {
@@ -415,14 +436,12 @@ Robot {
                                                     ]
                                                     name "LEG-3-END-EFFECTOR"
                                                     boundingObject USE END-EFFECTOR
-                                                    physics USE END-EFFECTOR-PHYSICS
                                                   }
                                                 ]
                                               }
                                             ]
                                             name "LEG-3-TIBIA-SERVO"
                                             boundingObject USE SERVO-CYLINDER
-                                            physics USE TIBIA-SERVO-PHYSICS
                                           }
                                         }
                                       ]
@@ -430,14 +449,12 @@ Robot {
                                   ]
                                   name "LEG-3-FEMUR-2-CYLINDER-SHAPE"
                                   boundingObject USE FEMUR-2-CYLINDER-SHAPE
-                                  physics USE FEMUR-2-PHYSICS
                                 }
                               ]
                             }
                           ]
                           name "LEG-3-COXA-SERVO"
                           boundingObject USE SERVO-CYLINDER
-                          physics USE FEMUR-SERVO-PHYSICS
                         }
                       }
                     ]
@@ -445,14 +462,12 @@ Robot {
                 ]
                 name "LEG-3-FEMUR-1-CYLINDER-SHAPE"
                 boundingObject USE FEMUR-1-CYLINDER-SHAPE
-                physics USE FEMUR-1-PHYSICS
               }
             ]
           }
         ]
         name "LEG-3-COXA-SERVO-SOLID"
         boundingObject USE SERVO-CYLINDER
-        physics USE COXA-PHYSICS
       }
     }
     DEF LEG-4-COXA HingeJoint {
@@ -461,8 +476,14 @@ Robot {
         anchor -0.14133 0 0
       }
       device [
+        PositionSensor {
+          name "c4_pos"
+          resolution 4096
+        }
         RotationalMotor {
-          name "coxa4"
+          name "c4_ser"
+          maxVelocity 1
+          maxTorque 100
         }
       ]
       endPoint Solid {
@@ -487,8 +508,14 @@ Robot {
                           axis 0 1 0
                         }
                         device [
+                          PositionSensor {
+                            name "f4_pos"
+                            resolution 4096
+                          }
                           RotationalMotor {
-                            name "femur4"
+                            name "f4_ser"
+                            maxVelocity 1
+                            maxTorque 100
                           }
                         ]
                         endPoint Solid {
@@ -510,8 +537,14 @@ Robot {
                                             axis 0 0 1
                                           }
                                           device [
+                                            PositionSensor {
+                                              name "t4_pos"
+                                              resolution 4096
+                                            }
                                             RotationalMotor {
-                                              name "tibia4"
+                                              name "t4_ser"
+                                              maxVelocity 1
+                                              maxTorque 100
                                             }
                                           ]
                                           endPoint Solid {
@@ -529,14 +562,12 @@ Robot {
                                                     ]
                                                     name "LEG-4-END-EFFECTOR"
                                                     boundingObject USE END-EFFECTOR
-                                                    physics USE END-EFFECTOR-PHYSICS
                                                   }
                                                 ]
                                               }
                                             ]
                                             name "LEG-4-TIBIA-SERVO"
                                             boundingObject USE SERVO-CYLINDER
-                                            physics USE TIBIA-SERVO-PHYSICS
                                           }
                                         }
                                       ]
@@ -544,14 +575,12 @@ Robot {
                                   ]
                                   name "LEG-4-FEMUR-2-CYLINDER-SHAPE"
                                   boundingObject USE FEMUR-2-CYLINDER-SHAPE
-                                  physics USE FEMUR-2-PHYSICS
                                 }
                               ]
                             }
                           ]
                           name "LEG-4-COXA-SERVO"
                           boundingObject USE SERVO-CYLINDER
-                          physics USE FEMUR-SERVO-PHYSICS
                         }
                       }
                     ]
@@ -559,14 +588,12 @@ Robot {
                 ]
                 name "LEG-4-FEMUR-1-CYLINDER-SHAPE"
                 boundingObject USE FEMUR-1-CYLINDER-SHAPE
-                physics USE FEMUR-1-PHYSICS
               }
             ]
           }
         ]
         name "LEG-4-COXA-SERVO-SOLID"
         boundingObject USE SERVO-CYLINDER
-        physics USE COXA-PHYSICS
       }
     }
     DEF LEG-5-COXA HingeJoint {
@@ -575,8 +602,14 @@ Robot {
         anchor 0.0716 -0.12096 0
       }
       device [
+        PositionSensor {
+          name "c5_pos"
+          resolution 4096
+        }
         RotationalMotor {
-          name "coxa5"
+          name "c5_ser"
+          maxVelocity 1
+          maxTorque 100
         }
       ]
       endPoint Solid {
@@ -601,8 +634,14 @@ Robot {
                           axis 0 1 0
                         }
                         device [
+                          PositionSensor {
+                            name "f5_pos"
+                            resolution 4096
+                          }
                           RotationalMotor {
-                            name "femur5"
+                            name "f5_ser"
+                            maxVelocity 1
+                            maxTorque 100
                           }
                         ]
                         endPoint Solid {
@@ -624,8 +663,14 @@ Robot {
                                             axis 0 0 1
                                           }
                                           device [
+                                            PositionSensor {
+                                              name "t5_pos"
+                                              resolution 4096
+                                            }
                                             RotationalMotor {
-                                              name "tibia5"
+                                              name "t5_ser"
+                                              maxVelocity 1
+                                              maxTorque 100
                                             }
                                           ]
                                           endPoint Solid {
@@ -643,14 +688,12 @@ Robot {
                                                     ]
                                                     name "LEG-5-END-EFFECTOR"
                                                     boundingObject USE END-EFFECTOR
-                                                    physics USE END-EFFECTOR-PHYSICS
                                                   }
                                                 ]
                                               }
                                             ]
                                             name "LEG-5-TIBIA-SERVO"
                                             boundingObject USE SERVO-CYLINDER
-                                            physics USE TIBIA-SERVO-PHYSICS
                                           }
                                         }
                                       ]
@@ -658,14 +701,12 @@ Robot {
                                   ]
                                   name "LEG-5-FEMUR-2-CYLINDER-SHAPE"
                                   boundingObject USE FEMUR-2-CYLINDER-SHAPE
-                                  physics USE FEMUR-2-PHYSICS
                                 }
                               ]
                             }
                           ]
                           name "LEG-5-COXA-SERVO"
                           boundingObject USE SERVO-CYLINDER
-                          physics USE FEMUR-SERVO-PHYSICS
                         }
                       }
                     ]
@@ -673,14 +714,12 @@ Robot {
                 ]
                 name "LEG-5-FEMUR-1-CYLINDER-SHAPE"
                 boundingObject USE FEMUR-1-CYLINDER-SHAPE
-                physics USE FEMUR-1-PHYSICS
               }
             ]
           }
         ]
         name "LEG-5-COXA-SERVO-SOLID"
         boundingObject USE SERVO-CYLINDER
-        physics USE COXA-PHYSICS
       }
     }
     DEF LEG-6-COXA HingeJoint {
@@ -689,8 +728,14 @@ Robot {
         anchor -0.0716 -0.12096 0
       }
       device [
+        PositionSensor {
+          name "c6_pos"
+          resolution 4096
+        }
         RotationalMotor {
-          name "coxa6"
+          name "c6_ser"
+          maxVelocity 1
+          maxTorque 100
         }
       ]
       endPoint Solid {
@@ -715,8 +760,14 @@ Robot {
                           axis 0 1 0
                         }
                         device [
+                          PositionSensor {
+                            name "f6_pos"
+                            resolution 4096
+                          }
                           RotationalMotor {
-                            name "femur6"
+                            name "f6_ser"
+                            maxVelocity 1
+                            maxTorque 100
                           }
                         ]
                         endPoint Solid {
@@ -738,8 +789,14 @@ Robot {
                                             axis 0 0 1
                                           }
                                           device [
+                                            PositionSensor {
+                                              name "t6_pos"
+                                              resolution 4096
+                                            }
                                             RotationalMotor {
-                                              name "tibia6"
+                                              name "t6_ser"
+                                              maxVelocity 1
+                                              maxTorque 100
                                             }
                                           ]
                                           endPoint Solid {
@@ -757,14 +814,12 @@ Robot {
                                                     ]
                                                     name "LEG-6-END-EFFECTOR"
                                                     boundingObject USE END-EFFECTOR
-                                                    physics USE END-EFFECTOR-PHYSICS
                                                   }
                                                 ]
                                               }
                                             ]
                                             name "LEG-6-TIBIA-SERVO"
                                             boundingObject USE SERVO-CYLINDER
-                                            physics USE TIBIA-SERVO-PHYSICS
                                           }
                                         }
                                       ]
@@ -772,14 +827,12 @@ Robot {
                                   ]
                                   name "LEG-6-FEMUR-2-CYLINDER-SHAPE"
                                   boundingObject USE FEMUR-2-CYLINDER-SHAPE
-                                  physics USE FEMUR-2-PHYSICS
                                 }
                               ]
                             }
                           ]
                           name "LEG-6-COXA-SERVO"
                           boundingObject USE SERVO-CYLINDER
-                          physics USE FEMUR-SERVO-PHYSICS
                         }
                       }
                     ]
@@ -787,21 +840,15 @@ Robot {
                 ]
                 name "LEG-6-FEMUR-1-CYLINDER-SHAPE"
                 boundingObject USE FEMUR-1-CYLINDER-SHAPE
-                physics USE FEMUR-1-PHYSICS
               }
             ]
           }
         ]
         name "LEG-6-COXA-SERVO-SOLID"
         boundingObject USE SERVO-CYLINDER
-        physics USE COXA-PHYSICS
       }
     }
   ]
   boundingObject USE HEXAGON
-  physics Physics {
-    density -1
-    mass 1
-  }
   controller "hexapod_controller"
 }

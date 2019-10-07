@@ -1,48 +1,63 @@
 """hexapod_controller controller."""
 
-# You may need to import some classes of the controller module. Ex:
-#  from controller import Robot, Motor, DistanceSensor
-from controller import Robot
+from controller import Robot, Node, Motor, PositionSensor
 
-# create the Robot instance.
 TIME_STEP = 64
-robot = Robot()
+POSITION_SENSOR_SAMPLE_PERIOD = 100
 
-servos = []
-servosNames = ['coxa1', 'femur1', 'tibia1',
-               'coxa2', 'femur2', 'tibia2',
-               'coxa3', 'femur3', 'tibia3',
-               'coxa4', 'femur4', 'tibia4',
-               'coxa5', 'femur5', 'tibia5',
-               'coxa6', 'femur6', 'tibia6',]
-for i in range(18):
-    servos.append(robot.getMotor(servosNames[i]))
-    servos[i].setPosition(float('inf'))
-    servos[i].setVelocity(0.0)
 
-# get the time step of the current world.
-#timestep = int(robot.getBasicTimeStep())
+class Controller():
 
-MAX_SPEED = 6.28
+    def __init__(self):
 
-servos[2].setVelocity(0.1 * MAX_SPEED)
-servos[5].setVelocity(0.1 * MAX_SPEED)
-servos[8].setVelocity(0.1 * MAX_SPEED)
-servos[11].setVelocity(0.1 * MAX_SPEED)
-servos[14].setVelocity(0.1 * MAX_SPEED)
-servos[17].setVelocity(0.1 * MAX_SPEED)
+        # Initialize the Webots Supervisor.
+        self.robot = Robot()
+        self.timeStep = int(4 * self.robot.getBasicTimeStep())
+        self.keyboard = self.robot.getKeyboard()
 
-# Main loop:
-# - perform simulation steps until Webots is stopping the controller
-while robot.step(timestep) != -1:
-    # Read the sensors:
-    # Enter here functions to read sensor data, like:
-    #  val = ds.getValue()
+        # Initialize the arm motors.
+        self.servos = []
+        self.position_sensors = []
 
-    # Process sensor data here.
+        self.init_servos()
+        self.init_positional_sensors()
 
-    # Enter here functions to send actuator commands, like:
-    #  motor.setPosition(10.0)
-    pass
+    def init_servos(self):
+                         # coxa,      femur,    tibia
+        for servosName in ('c1_ser', 'f1_ser', 't1_ser',   # LEG 1
+                           'c2_ser', 'f2_ser', 't2_ser',   # LEG 2
+                           'c3_ser', 'f3_ser', 't3_ser',   # LEG 3
+                           'c4_ser', 'f4_ser', 't4_ser',   # LEG 4
+                           'c5_ser', 'f5_ser', 't5_ser',   # LEG 5
+                           'c6_ser', 'f6_ser', 't6_ser',): # LEG 6
+            servos = self.robot.getMotor(servosName)
+            # servos.setPosition(float('inf'))
+            # servos.setVelocity(0)
+            self.servos.append(servos)
 
-# Enter here exit cleanup code.
+    def init_positional_sensors(self):
+                                    # coxa,     femur,    tibia
+        for positionalsensorName in ('c1_pos', 'f1_pos', 't1_pos',   # LEG 1
+                                     'c2_pos', 'f2_pos', 't2_pos',   # LEG 2
+                                     'c3_pos', 'f3_pos', 't3_pos',   # LEG 3
+                                     'c4_pos', 'f4_pos', 't4_pos',   # LEG 4
+                                     'c5_pos', 'f5_pos', 't5_pos',   # LEG 5
+                                     'c6_pos', 'f6_pos', 't6_pos',): # LEG 6
+            positional_sensor = self.robot.getPositionSensor(positionalsensorName)
+            positional_sensor.enable(POSITION_SENSOR_SAMPLE_PERIOD)
+            self.position_sensors.append(positional_sensor)
+            
+    def run(self):
+        positions = [1.5, 1.5, 2]
+    
+        while self.robot.step(self.timeStep) != 1:
+            for servos, position in zip(self.servos, positions):
+                servos.setPosition(position)
+            
+if __name__ == "__main__":
+    controller = Controller()
+    controller.run()
+    print(controller)
+
+
+
