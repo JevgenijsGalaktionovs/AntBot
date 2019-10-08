@@ -187,7 +187,7 @@ def demo_menu():
         print " Press 7 for Tactile Stepdown"
         print " Press 8 for Torque"
         print " Press 9 for Reboot"
-        print  " Press 10 for QUIT"
+        print " Press 10 for QUIT"
         print ""
 
         options = {1: demo_standup,

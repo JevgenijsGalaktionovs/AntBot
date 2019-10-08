@@ -10,20 +10,20 @@ class Controller():
 
     def __init__(self):
 
-        # Initialize the Webots Supervisor.
+        # Initialise the Webots Supervisor.
         self.robot = Robot()
         self.timeStep = int(4 * self.robot.getBasicTimeStep())
         self.keyboard = self.robot.getKeyboard()
 
-        # Initialize the arm motors.
+        # Initialise the leg servos.
         self.servos = []
         self.position_sensors = []
-
+        # Initialise the servo position sensors
         self.init_servos()
-        self.init_positional_sensors()
+        self.init_position_sensors()
 
     def init_servos(self):
-                         # coxa,      femur,    tibia
+                          # coxa,     femur,    tibia
         for servosName in ('c1_ser', 'f1_ser', 't1_ser',   # LEG 1
                            'c2_ser', 'f2_ser', 't2_ser',   # LEG 2
                            'c3_ser', 'f3_ser', 't3_ser',   # LEG 3
@@ -35,20 +35,20 @@ class Controller():
             # servos.setVelocity(0)
             self.servos.append(servos)
 
-    def init_positional_sensors(self):
+    def init_position_sensors(self):
                                     # coxa,     femur,    tibia
-        for positionalsensorName in ('c1_pos', 'f1_pos', 't1_pos',   # LEG 1
-                                     'c2_pos', 'f2_pos', 't2_pos',   # LEG 2
-                                     'c3_pos', 'f3_pos', 't3_pos',   # LEG 3
-                                     'c4_pos', 'f4_pos', 't4_pos',   # LEG 4
-                                     'c5_pos', 'f5_pos', 't5_pos',   # LEG 5
-                                     'c6_pos', 'f6_pos', 't6_pos',): # LEG 6
-            positional_sensor = self.robot.getPositionSensor(positionalsensorName)
-            positional_sensor.enable(POSITION_SENSOR_SAMPLE_PERIOD)
-            self.position_sensors.append(positional_sensor)
+        for positionsensorName in ('c1_pos', 'f1_pos', 't1_pos',   # LEG 1
+                                   'c2_pos', 'f2_pos', 't2_pos',   # LEG 2
+                                   'c3_pos', 'f3_pos', 't3_pos',   # LEG 3
+                                   'c4_pos', 'f4_pos', 't4_pos',   # LEG 4
+                                   'c5_pos', 'f5_pos', 't5_pos',   # LEG 5
+                                   'c6_pos', 'f6_pos', 't6_pos',): # LEG 6
+            position_sensor = self.robot.getPositionSensor(positionsensorName)
+            position_sensor.enable(POSITION_SENSOR_SAMPLE_PERIOD)
+            self.position_sensors.append(position_sensor)
             
     def run(self):
-        positions = [1.5, 1.5, 2]
+        positions = [1.0, 1.0, 2, 1.0, 1.0, 2, 1.0, 1.0, 2, 1.0, 1.0, 2, 1.0, 1.0, 2, 1.0, 1.0, 2]
     
         while self.robot.step(self.timeStep) != 1:
             for servos, position in zip(self.servos, positions):
@@ -57,6 +57,7 @@ class Controller():
 if __name__ == "__main__":
     controller = Controller()
     controller.run()
+    # tripodGait(0, 20, 10, 1)
     print(controller)
 
 
