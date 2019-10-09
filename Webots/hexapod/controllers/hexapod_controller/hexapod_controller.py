@@ -4,6 +4,7 @@ from controller import Robot, Node, Motor, PositionSensor
 from locomotion import *
 from kinematics import Kinematics
 
+
 TIME_STEP = 64
 POSITION_SENSOR_SAMPLE_PERIOD = 100
 
@@ -19,10 +20,14 @@ class Controller():
 
         # Initialise the leg servos.
         self.servos = []
-        self.position_sensors = []
-        # Initialise the servo position sensors
         self.init_servos()
-        self.init_position_sensors()
+
+        # Initialise the servo position sensors
+        self.init_positional_sensors()
+        #self.position_sensors = []
+        self.psNames = []
+        self.ps = []
+        self.psValues = []
 
     def init_servos(self):
                           # coxa,     femur,    tibia
@@ -37,20 +42,30 @@ class Controller():
             # servos.setVelocity(0)
             self.servos.append(servos)
 
-    def init_position_sensors(self):
-                                    # coxa,     femur,    tibia
-        for positionsensorName in ('c1_pos', 'f1_pos', 't1_pos',   # LEG 1
-                                   'c2_pos', 'f2_pos', 't2_pos',   # LEG 2
-                                   'c3_pos', 'f3_pos', 't3_pos',   # LEG 3
-                                   'c4_pos', 'f4_pos', 't4_pos',   # LEG 4
-                                   'c5_pos', 'f5_pos', 't5_pos',   # LEG 5
-                                   'c6_pos', 'f6_pos', 't6_pos',): # LEG 6
-            position_sensor = self.robot.getPositionSensor(positionsensorName)
-            position_sensor.enable(POSITION_SENSOR_SAMPLE_PERIOD)
-            self.position_sensors.append(position_sensor)
-        for i in range(len(positionsensorName)):
-            a = self.position_sensors[i].getValue()
-        return  a
+#    def init_positional_sensors(self):
+#                                    # coxa,     femur,    tibia
+#        for positionsensorName in ('c1_pos', 'f1_pos', 't1_pos',   # LEG 1
+#                                   'c2_pos', 'f2_pos', 't2_pos',   # LEG 2
+#                                   'c3_pos', 'f3_pos', 't3_pos',   # LEG 3
+#                                   'c4_pos', 'f4_pos', 't4_pos',   # LEG 4
+#                                   'c5_pos', 'f5_pos', 't5_pos',   # LEG 5
+#                                   'c6_pos', 'f6_pos', 't6_pos',): # LEG 6
+#            positional_sensor = self.robot.getPositionSensor(positionsensorName)
+#            positional_sensor.enable(POSITION_SENSOR_SAMPLE_PERIOD)
+#            self.position_sensors.append(positional_sensor)
+            
+            
+    def init_positional_sensors(self):
+        ps = []
+        psNames = ['c1_pos', 'f1_pos', 't1_pos',   # LEG 1
+                   'c2_pos', 'f2_pos', 't2_pos',   # LEG 2
+                   'c3_pos', 'f3_pos', 't3_pos',   # LEG 3
+                   'c4_pos', 'f4_pos', 't4_pos',   # LEG 4
+                   'c5_pos', 'f5_pos', 't5_pos',   # LEG 5
+                   'c6_pos', 'f6_pos', 't6_pos',]  # LEG 6
+        for i in range(len(psNames)):
+            self.append(self.robot.getPositionSensor(psNames[i]))
+            self.ps[i].enable(POSITION_SENSOR_SAMPLE_PERIOD)
             
     def run(self):
         positions = [1.0, 1.0, 2, 1.0, 1.0, 2, 1.0, 1.0, 2, 1.0, 1.0, 2, 1.0, 1.0, 2, 1.0, 1.0, 2]
@@ -60,16 +75,17 @@ class Controller():
                 servos.setPosition(position)
             break
                 
-#    def read(self):
-#        while self.robot.step(self.timeStep) != 1:
-#            for position_sensor in zip(self.position_sensors):
-#                position_sensor = self.robot.getPositionSensor(positionsensorName)
-#        return  position_sensor
+    def read(self):
+        for i in range(len(self.psNames)):   
+            self.psValues.append(self.ps[i].getValue())
+        return  self.psValues
             
 if __name__ == "__main__":
     controller = Controller()
+    AE = controller.read()
+    print(AE)
     controller.run()
-    AE = controller.init_position_sensors()
+    AE = controller.read()
     print(AE)
     
     
