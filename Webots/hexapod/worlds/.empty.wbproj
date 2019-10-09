@@ -7,4 +7,4 @@ centralWidgetVisible: 1
 selectionDisabled: 0
 viewpointLocked: 0
 orthographicViewHeight: 1
-textFiles: 0 "controllers/hexapod_controller/hexapod_controller.py" "kinematics.py" "locomotion.py"
+textFiles: 0 "controllers/hexapod_controller/hexapod_controller.py" "controllers/hexapod_controller/kinematics.py" "controllers/hexapod_controller/locomotion.py"

@@ -112,32 +112,32 @@ class Kinematics(object):
         '''
         ee_list, theta_list = self.doFkine(all_positions)
         RoundedCoords = ['%.4f' % elem for elem in ee_list]
-        print ""
-        print "X,Y,Z coordinates of Leg end-points: "
-        print "       " + str(["X       ", " Y    ", "  Z   "])
-        print "Leg 1: " + str(RoundedCoords[0:3])
-        print "Leg 2: " + str(RoundedCoords[3:6])
-        print "Leg 3: " + str(RoundedCoords[6:9])
-        print "Leg 4: " + str(RoundedCoords[9:12])
-        print "Leg 5: " + str(RoundedCoords[12:15])
-        print "Leg 6: " + str(RoundedCoords[15:18])
-        print ""
+        print ("")
+        print ("X,Y,Z coordinates of Leg end-points: ")
+        print ("       " + str(["X       ", " Y    ", "  Z   "]))
+        print ("Leg 1: " + str(RoundedCoords[0:3]))
+        print ("Leg 2: " + str(RoundedCoords[3:6]))
+        print ("Leg 3: " + str(RoundedCoords[6:9]))
+        print ("Leg 4: " + str(RoundedCoords[9:12]))
+        print ("Leg 5: " + str(RoundedCoords[12:15]))
+        print ("Leg 6: " + str(RoundedCoords[15:18]))
+        print ("")
 
     def printInverse(self, theta_list):
         ''' Function:   Prints servo positions, in radians, needed to reach the position
             Parameters: theta_list: 18 servo positions in radians.
         '''
         RoundedThetas = ['%.4f' % elem for elem in theta_list]
-        print ""
-        print "Theta angles of each servo:"
-        print "       " + str(["Coxa    ", "Femur ", "Tibia"])
-        print "Leg 1: " + str(RoundedThetas[0:3])
-        print "Leg 2: " + str(RoundedThetas[3:6])
-        print "Leg 3: " + str(RoundedThetas[6:9])
-        print "Leg 4: " + str(RoundedThetas[9:12])
-        print "Leg 5: " + str(RoundedThetas[12:15])
-        print "Leg 6: " + str(RoundedThetas[15:18])
-        print ""
+        print ("")
+        print ("Theta angles of each servo:")
+        print ("       " + str(["Coxa    ", "Femur ", "Tibia"]))
+        print ("Leg 1: " + str(RoundedThetas[0:3]))
+        print ("Leg 2: " + str(RoundedThetas[3:6]))
+        print ("Leg 3: " + str(RoundedThetas[6:9]))
+        print ("Leg 4: " + str(RoundedThetas[9:12]))
+        print ("Leg 5: " + str(RoundedThetas[12:15]))
+        print ("Leg 6: " + str(RoundedThetas[15:18]))
+        print ("")
 
     def printKinematics(self, all_positions, x, y, z):
         self.printForward(all_positions)
@@ -181,7 +181,7 @@ class Kinematics(object):
             t3_term = (-pow(s, 2) + pow(leg.f_len, 2) + pow(leg.t_len, 2)) / (2 * leg.f_len * leg.t_len)
             t3       = pi - acos(t3_term)
         except ValueError:
-            print "Cannot compute acos(", t3_term, ") for ", leg.leg_nr
+            print ("Cannot compute acos(", t3_term, ") for ", leg.leg_nr)
             if t3_term < 0:
                 t3 = pi - acos(-0.99)
             else:

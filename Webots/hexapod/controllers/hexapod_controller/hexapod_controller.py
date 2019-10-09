@@ -1,6 +1,8 @@
 """hexapod_controller controller."""
 
 from controller import Robot, Node, Motor, PositionSensor
+from locomotion import *
+from kinematics import Kinematics
 
 TIME_STEP = 64
 POSITION_SENSOR_SAMPLE_PERIOD = 100
@@ -46,6 +48,9 @@ class Controller():
             position_sensor = self.robot.getPositionSensor(positionsensorName)
             position_sensor.enable(POSITION_SENSOR_SAMPLE_PERIOD)
             self.position_sensors.append(position_sensor)
+        for i in range(len(positionsensorName)):
+            a = self.position_sensors[i].getValue()
+        return  a
             
     def run(self):
         positions = [1.0, 1.0, 2, 1.0, 1.0, 2, 1.0, 1.0, 2, 1.0, 1.0, 2, 1.0, 1.0, 2, 1.0, 1.0, 2]
@@ -53,10 +58,21 @@ class Controller():
         while self.robot.step(self.timeStep) != 1:
             for servos, position in zip(self.servos, positions):
                 servos.setPosition(position)
+            break
+                
+#    def read(self):
+#        while self.robot.step(self.timeStep) != 1:
+#            for position_sensor in zip(self.position_sensors):
+#                position_sensor = self.robot.getPositionSensor(positionsensorName)
+#        return  position_sensor
             
 if __name__ == "__main__":
     controller = Controller()
     controller.run()
+    AE = controller.init_position_sensors()
+    print(AE)
+    
+    
     # tripodGait(0, 20, 10, 1)
     print(controller)
 

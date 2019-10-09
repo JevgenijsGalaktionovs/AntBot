@@ -2,7 +2,7 @@
 import time
 from math import pi
 
-from service_router import *
+#from service_router import *
 from kinematics     import Kinematics
 
 
