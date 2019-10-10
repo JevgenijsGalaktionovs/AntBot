@@ -850,5 +850,5 @@ Robot {
     }
   ]
   boundingObject USE HEXAGON
-  controller "hexapod_controller"
+  controller "test"
 }
