@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+﻿#!/usr/bin/env python2
 import rospy
 
 from dns.srv import *
@@ -51,11 +51,11 @@ def reboot():
 
 
 def readIR():
-    tmp_IR = read_IR_request()
-    IR_front = tmp_IR[0]
-    IR_right = tmp_IR[1]
-    IR_left  = tmp_IR[2]
-    return IR_front, IR_right, IR_left
+    return read_IR_request(1)
+
+
+def readFSR():
+    return read_FSR_request(1)
 
 
 def readPos():
@@ -78,6 +78,16 @@ def read_pos_all_request(command):
         print "Service call failed: %s" % e
 
 
+def read_FSR_request(command):
+    rospy.wait_for_service('read_FSR_filt')
+    try:
+        read_FSR = rospy.ServiceProxy('read_FSR_filt', pos_key)
+        response = read_FSR(command)
+        return response.reply
+    except rospy.ServiceException, e:
+        print "Service call failed: %s" % e
+
+
 def read_pwn_all_request(command):
     rospy.wait_for_service('read_all_pwm')
     try:
@@ -88,11 +98,11 @@ def read_pwn_all_request(command):
         print "Service call failed: %s" % e
 
 
-def read_IR_request():
-    rospy.wait_for_service('read_IR')
+def read_IR_request(command):
+    rospy.wait_for_service('read_IR_filt')
     try:
-        read_IR = rospy.ServiceProxy('read_IR', pos_key)
-        response = read_IR()
+        read_IR = rospy.ServiceProxy('read_IR_filt', pos_key)
+        response = read_IR(command)
         return response.reply
     except rospy.ServiceException, e:
         print "Service call failed: %s" % e
