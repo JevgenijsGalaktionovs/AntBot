@@ -850,5 +850,7 @@ Robot {
     }
   ]
   boundingObject USE HEXAGON
+  rotationStep 0.261799
   controller "test"
+  supervisor TRUE
 }
