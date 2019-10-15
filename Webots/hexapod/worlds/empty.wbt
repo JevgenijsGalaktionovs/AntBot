@@ -61,10 +61,10 @@ Robot {
       }
       device [
         PositionSensor {
-          name "c1_pos"
+          name "c1_position_sensor"
         }
         RotationalMotor {
-          name "c1_ser"
+          name "c1_motor"
           maxVelocity 1
           maxTorque 100
         }
@@ -111,11 +111,11 @@ Robot {
                         }
                         device [
                           PositionSensor {
-                            name "f1_pos"
+                            name "f1_position_sensor"
                             resolution -1
                           }
                           RotationalMotor {
-                            name "f1_ser"
+                            name "f1_motor"
                             maxVelocity 1
                             maxTorque 100
                           }
@@ -150,11 +150,11 @@ Robot {
                                           }
                                           device [
                                             PositionSensor {
-                                              name "t1_pos"
+                                              name "t1_position_sensor"
                                               resolution -1
                                             }
                                             RotationalMotor {
-                                              name "t1_ser"
+                                              name "t1_motor"
                                               maxVelocity 1
                                               maxTorque 100
                                             }
@@ -225,11 +225,11 @@ Robot {
       }
       device [
         PositionSensor {
-          name "c2_pos"
+          name "c2_position_sensor"
           resolution -1
         }
         RotationalMotor {
-          name "c2_ser"
+          name "c2_motor"
           maxVelocity 1
           maxTorque 100
         }
@@ -257,11 +257,11 @@ Robot {
                         }
                         device [
                           PositionSensor {
-                            name "f2_pos"
+                            name "f2_position_sensor"
                             resolution -1
                           }
                           RotationalMotor {
-                            name "f2_ser"
+                            name "f2_motor"
                             maxVelocity 1
                             maxTorque 100
                           }
@@ -286,11 +286,11 @@ Robot {
                                           }
                                           device [
                                             PositionSensor {
-                                              name "t2_pos"
+                                              name "t2_position_sensor"
                                               resolution -1
                                             }
                                             RotationalMotor {
-                                              name "t2_ser"
+                                              name "t2_motor"
                                               maxVelocity 1
                                               maxTorque 100
                                             }
@@ -351,11 +351,11 @@ Robot {
       }
       device [
         PositionSensor {
-          name "c3_pos"
+          name "c3_position_sensor"
           resolution -1
         }
         RotationalMotor {
-          name "c3_ser"
+          name "c3_motor"
           maxVelocity 1
           maxTorque 100
         }
@@ -382,11 +382,11 @@ Robot {
                         }
                         device [
                           PositionSensor {
-                            name "f3_pos"
+                            name "f3_position_sensor"
                             resolution -1
                           }
                           RotationalMotor {
-                            name "f3_ser"
+                            name "f3_motor"
                             maxVelocity 1
                             maxTorque 100
                           }
@@ -411,11 +411,11 @@ Robot {
                                           }
                                           device [
                                             PositionSensor {
-                                              name "t3_pos"
+                                              name "t3_position_sensor"
                                               resolution -1
                                             }
                                             RotationalMotor {
-                                              name "t3_ser"
+                                              name "t3_motor"
                                               maxVelocity 1
                                               maxTorque 100
                                             }
@@ -476,11 +476,11 @@ Robot {
       }
       device [
         PositionSensor {
-          name "c4_pos"
+          name "c4_position_sensor"
           resolution -1
         }
         RotationalMotor {
-          name "c4_ser"
+          name "c4_motor"
           maxVelocity 1
           maxTorque 100
         }
@@ -508,11 +508,11 @@ Robot {
                         }
                         device [
                           PositionSensor {
-                            name "f4_pos"
+                            name "f4_position_sensor"
                             resolution -1
                           }
                           RotationalMotor {
-                            name "f4_ser"
+                            name "f4_motor"
                             maxVelocity 1
                             maxTorque 100
                           }
@@ -537,11 +537,11 @@ Robot {
                                           }
                                           device [
                                             PositionSensor {
-                                              name "t4_pos"
+                                              name "t4_position_sensor"
                                               resolution -1
                                             }
                                             RotationalMotor {
-                                              name "t4_ser"
+                                              name "t4_motor"
                                               maxVelocity 1
                                               maxTorque 100
                                             }
@@ -602,11 +602,11 @@ Robot {
       }
       device [
         PositionSensor {
-          name "c5_pos"
+          name "c5_position_sensor"
           resolution -1
         }
         RotationalMotor {
-          name "c5_ser"
+          name "c5_motor"
           maxVelocity 1
           maxTorque 100
         }
@@ -634,11 +634,11 @@ Robot {
                         }
                         device [
                           PositionSensor {
-                            name "f5_pos"
+                            name "f5_position_sensor"
                             resolution -1
                           }
                           RotationalMotor {
-                            name "f5_ser"
+                            name "f5_motor"
                             maxVelocity 1
                             maxTorque 100
                           }
@@ -663,11 +663,11 @@ Robot {
                                           }
                                           device [
                                             PositionSensor {
-                                              name "t5_pos"
+                                              name "t5_position_sensor"
                                               resolution -1
                                             }
                                             RotationalMotor {
-                                              name "t5_ser"
+                                              name "t5_motor"
                                               maxVelocity 1
                                               maxTorque 100
                                             }
@@ -728,11 +728,11 @@ Robot {
       }
       device [
         PositionSensor {
-          name "c6_pos"
+          name "c6_position_sensor"
           resolution -1
         }
         RotationalMotor {
-          name "c6_ser"
+          name "c6_motor"
           maxVelocity 1
           maxTorque 100
         }
@@ -760,11 +760,11 @@ Robot {
                         }
                         device [
                           PositionSensor {
-                            name "f6_pos"
+                            name "f6_position_sensor"
                             resolution -1
                           }
                           RotationalMotor {
-                            name "f6_ser"
+                            name "f6_motor"
                             maxVelocity 1
                             maxTorque 100
                           }
@@ -789,11 +789,11 @@ Robot {
                                           }
                                           device [
                                             PositionSensor {
-                                              name "t6_pos"
+                                              name "t6_position_sensor"
                                               resolution -1
                                             }
                                             RotationalMotor {
-                                              name "t6_ser"
+                                              name "t6_motor"
                                               maxVelocity 1
                                               maxTorque 100
                                             }

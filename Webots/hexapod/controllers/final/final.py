@@ -1,72 +1,76 @@
 import math
 from controller import Supervisor, Node, Motor, PositionSensor
+from locomotion import *
+from kinematics import Kinematics
 
 POSITION_SENSOR_SAMPLE_PERIOD = 100
 
 class Controller():
 
-    def __init__(self):
+    jointNames = [
+       # coxa,  femur, tibia
+        'c1',  'f1',  't1',  # LEG 1
+        'c2',  'f2',  't2',  # LEG 2
+        'c3',  'f3',  't3',  # LEG 3
+        'c4',  'f4',  't4',  # LEG 4
+        'c5',  'f5',  't5',  # LEG 5
+        'c6',  'f6',  't6']  # LEG 6
 
+    def __init__(self):
         # Initialize the Webots Supervisor.
         self.supervisor = Supervisor()
         self.timeStep = int(4 * self.supervisor.getBasicTimeStep())
         self.keyboard = self.supervisor.getKeyboard()
 
-        # Initialize the arm motors.
+        # Define list for motors and position sensors
         self.motors = []
         self.position_sensors = []
-
+        # Initialise the motors and position sensors (could be moved into __init__ into a single for-loop)
         self.init_motors()
         self.init_positional_sensors()
 
     def init_motors(self):
-        for motorName in ('c1_ser', 'f1_ser', 't1_ser',   # LEG 1
-                          'c2_ser', 'f2_ser', 't2_ser',   # LEG 2
-                          'c3_ser', 'f3_ser', 't3_ser',   # LEG 3
-                          'c4_ser', 'f4_ser', 't4_ser',   # LEG 4
-                          'c5_ser', 'f5_ser', 't5_ser',   # LEG 5
-                          'c6_ser', 'f6_ser', 't6_ser',): # LEG 6
-            motor = self.supervisor.getMotor(motorName)
+        for name in Controller.jointNames:
+            motor = self.supervisor.getMotor(name + '_motor')
             # motor.setPosition(float('inf'))
             # motor.setVelocity(0)
             self.motors.append(motor)
 
     def init_positional_sensors(self):
-        for positional_sensor_name in (
-                'c1_pos', 'f1_pos', 't1_pos',   # LEG 1
-                'c2_pos', 'f2_pos', 't2_pos',   # LEG 2
-                'c3_pos', 'f3_pos', 't3_pos',   # LEG 3
-                'c4_pos', 'f4_pos', 't4_pos',   # LEG 4
-                'c5_pos', 'f5_pos', 't5_pos',   # LEG 5
-                'c6_pos', 'f6_pos', 't6_pos',): # LEG 6
-            positional_sensor = self.supervisor.getPositionSensor(positional_sensor_name)
+        for name in Controller.jointNames:
+            positional_sensor = self.supervisor.getPositionSensor(name + '_position_sensor')
             positional_sensor.enable(POSITION_SENSOR_SAMPLE_PERIOD)
             self.position_sensors.append(positional_sensor)
 
-    def run(self):
-        value = []
-        psValue = []
-
+    def positionN(self):
         while self.supervisor.step(self.timeStep) != 1:
             for motor, position in zip(self.motors, positions):
                 motor.setPosition(position)
             break
-                
-    def read(self):
-        value = []
-        psValue = []
 
-        while self.supervisor.step(self.timeStep) != 1:    
-            for i in range(18):
+    def readPos(self):
+        value = []
+        all_positions = []
+
+        while self.supervisor.step(self.timeStep) != 1:
+            for i in range(len(self.jointNames)):
                 value = self.position_sensors[i].getValue()
-                psValue.append(value)
+                all_positions.append(value)
             print(psValue)
-            psValue = []
+            if psValue == positions:
+                all_positions = []
+                return
+            all_positions = []
 
 
 if __name__ == "__main__":
     controller = Controller()
-    positions = [1.0, 1.0, 2, 1.0, 1.0, 2, 1.0, 1.0, 2, 1.0, 1.0, 2, 1.0, 1.0, 2, 1.0, 1.0, 2]
-    controller.run()
-    controller.read()
+    #positions = [0.1, 1.0, 2, 0.1, 1.0, 2, 0.1, 1.0, 2, 0.1, 1.0, 2, 0.1, 1.0, 2, 0.1, 1.0, 2]
+    #controller.positionN()
+    #controller.readPos()
+    #positions = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    #controller.positionN()
+    #controller.readPos()
+
+    tripodGait(0, 20, 10, 1)
     print(controller)
