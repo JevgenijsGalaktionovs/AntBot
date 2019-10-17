@@ -1,7 +1,7 @@
 import math
-from controller import Supervisor, Node, Motor, PositionSensor
-from locomotion import *
-from kinematics import Kinematics
+from controller import Robot, Node, Motor, PositionSensor
+#from locomotion import *
+#from kinematics import Kinematics
 
 POSITION_SENSOR_SAMPLE_PERIOD = 100
 
@@ -18,9 +18,9 @@ class Controller():
 
     def __init__(self):
         # Initialize the Webots Supervisor.
-        self.supervisor = Supervisor()
-        self.timeStep = int(4 * self.supervisor.getBasicTimeStep())
-        self.keyboard = self.supervisor.getKeyboard()
+        self.robot = Robot()
+        self.timeStep = int(4 * self.robot.getBasicTimeStep())
+        self.keyboard = self.robot.getKeyboard()
 
         # Define list for motors and position sensors
         self.motors = []
@@ -31,19 +31,19 @@ class Controller():
 
     def init_motors(self):
         for name in Controller.jointNames:
-            motor = self.supervisor.getMotor(name + '_motor')
+            motor = self.robot.getMotor(name + '_motor')
             # motor.setPosition(float('inf'))
             # motor.setVelocity(0)
             self.motors.append(motor)
 
     def init_positional_sensors(self):
         for name in Controller.jointNames:
-            positional_sensor = self.supervisor.getPositionSensor(name + '_position_sensor')
+            positional_sensor = self.robot.getPositionSensor(name + '_position_sensor')
             positional_sensor.enable(POSITION_SENSOR_SAMPLE_PERIOD)
             self.position_sensors.append(positional_sensor)
 
     def positionN(self):
-        while self.supervisor.step(self.timeStep) != 1:
+        while self.robot.step(self.timeStep) != 1:
             for motor, position in zip(self.motors, positions):
                 motor.setPosition(position)
             break
@@ -51,26 +51,34 @@ class Controller():
     def readPos(self):
         value = []
         all_positions = []
-
-        while self.supervisor.step(self.timeStep) != 1:
+        while self.robot.step(self.timeStep) != 1:
             for i in range(len(self.jointNames)):
                 value = self.position_sensors[i].getValue()
                 all_positions.append(value)
-            print(psValue)
-            if psValue == positions:
+            print(all_positions)
+            if all_positions == positions:
                 all_positions = []
                 return
             all_positions = []
+            #return # not sure about that one
+
+
+    def walk(self):
+        while self.robot.step(self.timeStep) != -1:
+            tripodGait(0, 20, 10, 1)
 
 
 if __name__ == "__main__":
     controller = Controller()
-    #positions = [0.1, 1.0, 2, 0.1, 1.0, 2, 0.1, 1.0, 2, 0.1, 1.0, 2, 0.1, 1.0, 2, 0.1, 1.0, 2]
-    #controller.positionN()
-    #controller.readPos()
-    #positions = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-    #controller.positionN()
-    #controller.readPos()
-
-    tripodGait(0, 20, 10, 1)
+    positions = [0.1, 1.0, 2, 0.1, 1.0, 2, 0.1, 1.0, 2, 0.1, 1.0, 2, 0.1, 1.0, 2, 0.1, 1.0, 2]
+    controller.positionN()
+    controller.readPos()
+    positions = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    controller.positionN()
+    controller.readPos()
+    
+    #controller.walk()
+    
+    #tripodGait(0, 20, 10, 1)
+        
     print(controller)

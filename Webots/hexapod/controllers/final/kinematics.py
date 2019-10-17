@@ -42,7 +42,7 @@ class Kinematics(object):
         servoPos = all_positions
         ee_xyz = []
         j = 0
-        for i in xrange(0, 16, 3):
+        for i in range(0, 16, 3):
             ee_xyz.extend(self.calc_fkine(servoPos[i:i + 3],   self.leg_list[j]))
             j += 1
         return ee_xyz, servoPos
@@ -83,11 +83,11 @@ class Kinematics(object):
                 thetas.extend(self.calc_ikine(x, y, z, ee_xyz[3 * j:3 * j + 3], self.leg_list[j]))
         else:
             # Compute inverse for all legs if not leg specified.
-            for i in xrange(0, 16, 3):
+            for i in range(0, 16, 3):
                 thetas.extend(self.calc_ikine(x, y, z, ee_xyz[i:i + 3],   self.leg_list[j]))
                 j += 1
 
-        result = [int(each_theta) for each_theta in thetas]
+        result = [int(each_theta) for each_theta in self.rad_to_step(thetas)]
         return result
 
     def doIkineRotationEuler(self, all_positions, alpha_rad, beta_rad, gama_rad, dist_x, dist_y, dist_z):
@@ -100,48 +100,48 @@ class Kinematics(object):
         final_eexyz, ee_xyz = self.calc_rot_matrix(all_positions, alpha_rad, beta_rad, gama_rad)
         thetas = []
         j = 0
-        for i in xrange(0, 16, 3):
+        for i in range(0, 16, 3):
             thetas.extend(self.calc_ikine(final_eexyz[i] - dist_x, final_eexyz[i + 1] - dist_y, final_eexyz[i + 2] - dist_z, ee_xyz[i:i + 3], self.leg_list[j]))
             j += 1
-        result = [int(each_theta) for each_theta in thetas]
+        result = [int(each_theta) for each_theta in self.rad_to_step(thetas)]
         return result
 
-#    def printForward(self, all_positions):
-#        ''' Function:   Prints x,y,z coordinates of each leg
-#            Parameters: all_positions: list with 18 values of servo positions in steps from ID1 to ID18;
-#        '''
-#        ee_list, theta_list = self.doFkine(all_positions)
-#        RoundedCoords = ['%.4f' % elem for elem in ee_list]
-#        print ("")
-#        print ("X,Y,Z coordinates of Leg end-points: ")
-#        print ("       " + str(["X       ", " Y    ", "  Z   "]))
-#        print ("Leg 1: " + str(RoundedCoords[0:3]))
-#        print ("Leg 2: " + str(RoundedCoords[3:6]))
-#        print ("Leg 3: " + str(RoundedCoords[6:9]))
-#        print ("Leg 4: " + str(RoundedCoords[9:12]))
-#        print ("Leg 5: " + str(RoundedCoords[12:15]))
-#        print ("Leg 6: " + str(RoundedCoords[15:18]))
-#        print ("")
+    def printForward(self, all_positions):
+        ''' Function:   Prints x,y,z coordinates of each leg
+            Parameters: all_positions: list with 18 values of servo positions in steps from ID1 to ID18;
+        '''
+        ee_list, theta_list = self.doFkine(all_positions)
+        RoundedCoords = ['%.4f' % elem for elem in ee_list]
+        print ("")
+        print ("X,Y,Z coordinates of Leg end-points: ")
+        print ("       " + str(["X       ", " Y    ", "  Z   "]))
+        print ("Leg 1: " + str(RoundedCoords[0:3]))
+        print ("Leg 2: " + str(RoundedCoords[3:6]))
+        print ("Leg 3: " + str(RoundedCoords[6:9]))
+        print ("Leg 4: " + str(RoundedCoords[9:12]))
+        print ("Leg 5: " + str(RoundedCoords[12:15]))
+        print ("Leg 6: " + str(RoundedCoords[15:18]))
+        print ("")
 
-#    def printInverse(self, theta_list):
-#        ''' Function:   Prints servo positions, in radians, needed to reach the position
-#            Parameters: theta_list: 18 servo positions in radians.
-#        '''
-#        RoundedThetas = ['%.4f' % elem for elem in theta_list]
-#        print ("")
-#        print ("Theta angles of each servo:")
-#        print ("       " + str(["Coxa    ", "Femur ", "Tibia"]))
-#        print ("Leg 1: " + str(RoundedThetas[0:3]))
-#        print ("Leg 2: " + str(RoundedThetas[3:6]))
-#        print ("Leg 3: " + str(RoundedThetas[6:9]))
-#        print ("Leg 4: " + str(RoundedThetas[9:12]))
-#        print ("Leg 5: " + str(RoundedThetas[12:15]))
-#        print ("Leg 6: " + str(RoundedThetas[15:18]))
-#        print ("")
+    def printInverse(self, theta_list):
+        ''' Function:   Prints servo positions, in radians, needed to reach the position
+            Parameters: theta_list: 18 servo positions in radians.
+        '''
+        RoundedThetas = ['%.4f' % elem for elem in theta_list]
+        print ("")
+        print ("Theta angles of each servo:")
+        print ("       " + str(["Coxa    ", "Femur ", "Tibia"]))
+        print ("Leg 1: " + str(RoundedThetas[0:3]))
+        print ("Leg 2: " + str(RoundedThetas[3:6]))
+        print ("Leg 3: " + str(RoundedThetas[6:9]))
+        print ("Leg 4: " + str(RoundedThetas[9:12]))
+        print ("Leg 5: " + str(RoundedThetas[12:15]))
+        print ("Leg 6: " + str(RoundedThetas[15:18]))
+        print ("")
 
-#    def printKinematics(self, all_positions, x, y, z):
-#        self.printForward(all_positions)
-#        self.printInverse(self.doIkine(all_positions, x, y, z))
+    def printKinematics(self, all_positions, x, y, z):
+        self.printForward(all_positions)
+        self.printInverse(self.doIkine(all_positions, x, y, z))
 
     #################
     # Private methods
@@ -208,7 +208,7 @@ class Kinematics(object):
     def calc_rot_matrix(self, all_positions, alpha_rad, beta_rad, gama_rad):
         ee_xyz, servoPos = self.doFkine(all_positions)
         rot_val_list = []
-        for i in xrange(0, 16, 3):
+        for i in range(0, 16, 3):
             rot_val_list.extend(self.calc_rot_displacement(alpha_rad, beta_rad, gama_rad, ee_xyz[i:i + 3]))
         return rot_val_list, ee_xyz
 
