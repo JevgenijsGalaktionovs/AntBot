@@ -1,9 +1,10 @@
 import math
 from controller import Robot, Node, Motor, PositionSensor
-#from locomotion import *
-#from kinematics import Kinematics
+from locomotion import *
+from kinematics import Kinematics
 
 POSITION_SENSOR_SAMPLE_PERIOD = 100
+all_positions = []
 
 class Controller():
 
@@ -50,17 +51,16 @@ class Controller():
 
     def readPos(self):
         value = []
-        all_positions = []
         while self.robot.step(self.timeStep) != 1:
             for i in range(len(self.jointNames)):
                 value = self.position_sensors[i].getValue()
                 all_positions.append(value)
             print(all_positions)
-            if all_positions == positions:
-                all_positions = []
-                return
-            all_positions = []
-            #return # not sure about that one
+            #if all_positions == positions:
+            #    all_positions = []
+            #    return
+            #all_positions = []
+            return # not sure about that one
 
 
     def walk(self):
@@ -69,16 +69,16 @@ class Controller():
 
 
 if __name__ == "__main__":
-    controller = Controller()
+    C = Controller()
     positions = [0.1, 1.0, 2, 0.1, 1.0, 2, 0.1, 1.0, 2, 0.1, 1.0, 2, 0.1, 1.0, 2, 0.1, 1.0, 2]
-    controller.positionN()
-    controller.readPos()
-    positions = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-    controller.positionN()
-    controller.readPos()
+    C.positionN()
+    #C.readPos()
+    #positions = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    #C.positionN()
+    #C.readPos()
     
     #controller.walk()
     
-    #tripodGait(0, 20, 10, 1)
+    tripodGait(0, 20, 10, 1)
         
-    print(controller)
+    print(C)

@@ -112,7 +112,6 @@ Robot {
                         device [
                           PositionSensor {
                             name "f1_position_sensor"
-                            resolution -1
                           }
                           RotationalMotor {
                             name "f1_motor"
@@ -151,7 +150,6 @@ Robot {
                                           device [
                                             PositionSensor {
                                               name "t1_position_sensor"
-                                              resolution -1
                                             }
                                             RotationalMotor {
                                               name "t1_motor"
@@ -226,7 +224,6 @@ Robot {
       device [
         PositionSensor {
           name "c2_position_sensor"
-          resolution -1
         }
         RotationalMotor {
           name "c2_motor"
@@ -258,7 +255,6 @@ Robot {
                         device [
                           PositionSensor {
                             name "f2_position_sensor"
-                            resolution -1
                           }
                           RotationalMotor {
                             name "f2_motor"
@@ -287,7 +283,6 @@ Robot {
                                           device [
                                             PositionSensor {
                                               name "t2_position_sensor"
-                                              resolution -1
                                             }
                                             RotationalMotor {
                                               name "t2_motor"
@@ -352,7 +347,6 @@ Robot {
       device [
         PositionSensor {
           name "c3_position_sensor"
-          resolution -1
         }
         RotationalMotor {
           name "c3_motor"
@@ -383,7 +377,6 @@ Robot {
                         device [
                           PositionSensor {
                             name "f3_position_sensor"
-                            resolution -1
                           }
                           RotationalMotor {
                             name "f3_motor"
@@ -412,7 +405,6 @@ Robot {
                                           device [
                                             PositionSensor {
                                               name "t3_position_sensor"
-                                              resolution -1
                                             }
                                             RotationalMotor {
                                               name "t3_motor"
@@ -477,7 +469,6 @@ Robot {
       device [
         PositionSensor {
           name "c4_position_sensor"
-          resolution -1
         }
         RotationalMotor {
           name "c4_motor"
@@ -509,7 +500,6 @@ Robot {
                         device [
                           PositionSensor {
                             name "f4_position_sensor"
-                            resolution -1
                           }
                           RotationalMotor {
                             name "f4_motor"
@@ -538,7 +528,6 @@ Robot {
                                           device [
                                             PositionSensor {
                                               name "t4_position_sensor"
-                                              resolution -1
                                             }
                                             RotationalMotor {
                                               name "t4_motor"
@@ -603,7 +592,6 @@ Robot {
       device [
         PositionSensor {
           name "c5_position_sensor"
-          resolution -1
         }
         RotationalMotor {
           name "c5_motor"
@@ -635,7 +623,6 @@ Robot {
                         device [
                           PositionSensor {
                             name "f5_position_sensor"
-                            resolution -1
                           }
                           RotationalMotor {
                             name "f5_motor"
@@ -664,7 +651,6 @@ Robot {
                                           device [
                                             PositionSensor {
                                               name "t5_position_sensor"
-                                              resolution -1
                                             }
                                             RotationalMotor {
                                               name "t5_motor"
@@ -729,7 +715,6 @@ Robot {
       device [
         PositionSensor {
           name "c6_position_sensor"
-          resolution -1
         }
         RotationalMotor {
           name "c6_motor"
@@ -761,7 +746,6 @@ Robot {
                         device [
                           PositionSensor {
                             name "f6_position_sensor"
-                            resolution -1
                           }
                           RotationalMotor {
                             name "f6_motor"
@@ -790,7 +774,6 @@ Robot {
                                           device [
                                             PositionSensor {
                                               name "t6_position_sensor"
-                                              resolution -1
                                             }
                                             RotationalMotor {
                                               name "t6_motor"
@@ -850,6 +833,6 @@ Robot {
   ]
   boundingObject USE HEXAGON
   rotationStep 0.261799
-  controller "final"
+  controller "test"
   supervisor TRUE
 }

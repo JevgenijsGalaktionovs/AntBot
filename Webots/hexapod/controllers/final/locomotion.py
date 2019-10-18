@@ -33,7 +33,7 @@ leg = {
 }
 
 K = Kinematics()
-C = Controller()
+#C = Controller()
 
 # Gaits
 def standUp():
