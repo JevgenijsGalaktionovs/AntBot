@@ -365,8 +365,7 @@ def continiousMotion(x, y, z, iterations):
 	one_leg_calculation_up  = [x, y, z]
 	one_leg_calculation_down  = [x, y, 0]
 	one_push_leg_calculation = [0, 0 , 0]
-	
-    a=calculate_motion(one_leg_calculation_up, l1)
+	a=calculate_motion(one_leg_calculation_up, l1)
 	b=calculate_motion(one_leg_calculation_down, l1)
 	c=calculate_motion(one_push_leg_calculation, l1)
 	
@@ -384,7 +383,7 @@ def continiousMotion(x, y, z, iterations):
 				print(absoluteError, "1")
 				break
 		else:	
-                print("NotGood")
+                	print("NotGood")
 
 		positionN([1,b[0],2,b[1],3,b[2]])
 		ae=b[:3]
@@ -398,7 +397,7 @@ def continiousMotion(x, y, z, iterations):
 				print(absoluteError,"2")
 				break
 		else:
-              print("NotGood")
+			print("NotGood")
 
 		positionN([1,c[0],2,c[1],3,c[2]])
 		ae=c[:3]
@@ -411,8 +410,8 @@ def continiousMotion(x, y, z, iterations):
 			if absoluteError < 10:
 				print(absoluteError,"3")
 				break
-            else:
-                print("NotGood")
+		else:
+			print("NotGood")
 
 
 def continiousTripod(x, y, z, iterations):
@@ -484,10 +483,6 @@ def continiousTripod(x, y, z, iterations):
 			if absoluteError < 10:
 				print(absoluteError,"3")
 				break
-
-standUp()
-time.sleep(1)
-continiousTripod(0,45,20,20)
 
 
 def rippleMirror(x, y, z, alpha, beta, gama, leg_pair):

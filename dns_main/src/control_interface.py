@@ -7,23 +7,23 @@ from demo import *
 from locomotion import tripodGait, rippleGait, waveGait, singleLeg, rippleMirror
 
 # Mapping is shifted for RPI. If used on laptop : use commented values.
-PS3_BUTTON_SELECT           =  8 #0
-PS3_BUTTON_STICK_LEFT       = 11 #1
-PS3_BUTTON_STICK_RIGHT      = 12 #2
-PS3_BUTTON_START            = 9 #3
-PS3_BUTTON_CROSS_UP         = 13 #4
-PS3_BUTTON_CROSS_RIGHT      = 15 #5
-PS3_BUTTON_CROSS_DOWN       = 14 #6
-PS3_BUTTON_CROSS_LEFT       = 16 #7
-PS3_BUTTON_LEFT_BUMPER      = 6 #8 
-PS3_BUTTON_RIGHT_BUMPER     = 7 #9
-PS3_BUTTON_LEFT_TRIGGER     = 4 #10 
-PS3_BUTTON_RIGHT_TRIGGER    = 5 #11
-PS3_BUTTON_ACTION_TRIANGLE  = 2 #12
-PS3_BUTTON_ACTION_CIRCLE    = 1 #13
-PS3_BUTTON_ACTION_CROSS     = 0 #14
-PS3_BUTTON_ACTION_SQUARE    = 3 #15
-PS3_BUTTON_PAIRING          = 11 #16
+PS3_BUTTON_SELECT           =  0 #8
+PS3_BUTTON_STICK_LEFT       = 1 #11
+PS3_BUTTON_STICK_RIGHT      = 2 #12
+PS3_BUTTON_START            = 3 #9
+PS3_BUTTON_CROSS_UP         = 4 #13
+PS3_BUTTON_CROSS_RIGHT      = 5 #15
+PS3_BUTTON_CROSS_DOWN       = 6 #14
+PS3_BUTTON_CROSS_LEFT       = 7 #16
+PS3_BUTTON_LEFT_BUMPER      = 8 #6 
+PS3_BUTTON_RIGHT_BUMPER     = 9 #7
+PS3_BUTTON_LEFT_TRIGGER     = 10 #4 
+PS3_BUTTON_RIGHT_TRIGGER    = 11 #5
+PS3_BUTTON_ACTION_TRIANGLE  = 12 #2
+PS3_BUTTON_ACTION_CIRCLE    = 13 #1
+PS3_BUTTON_ACTION_CROSS     = 14 #0
+PS3_BUTTON_ACTION_SQUARE    = 15 #3
+PS3_BUTTON_PAIRING          = 16 #11
 
 PS3_AXIS_STICK_LEFT_LEFTWARDS   = 0 
 PS3_AXIS_STICK_LEFT_UPWARDS     = 1
@@ -64,11 +64,18 @@ class JoystickPS3:
                 print("Torque on")
                 torque(1)
                 self.pub.publish(self.CreateEmptyMsgJoy())
+		time.sleep(0.1)
+		a=readFSR()
+		print(a)
             else:
                 print("Torque off")
                 torque(0)
                 self.pub.publish(self.CreateEmptyMsgJoy())
+		time.sleep(0.1)
+		a=readFSR()
+		print(a)
             self.toggle_torque = not(self.toggle_torque)
+
 
         elif b[PS3_BUTTON_START]:
             print("Dynamixel Reboot")
