@@ -11,10 +11,10 @@ class LegConsts(object):
         self.ang_off   = ang_off            # Angular offset from body origin to first servo (mm)
         self.side      = side               # Left or Right-sided leg (servo angles inverted)
         self.f_ang_off = 20.00 * pi / 180   # Angular offset of Femur
-        self.t_ang_off = -37.78 * pi / 180  # Angular offset of Tibia
+        self.t_ang_off = -32.264 * pi / 180  # Angular offset of Tibia
         self.c_len     = 66.50              # Link length of Coxa  (mm)
         self.f_len     = 92.17              # Link length of Femur (mm)
-        self.t_len     = 294.00             # Link length of Tibia (mm)
+        self.t_len     = 194.00             # Link length of Tibia (mm)
         self.leg_nr    = leg_nr             # Leg Number
 
 
