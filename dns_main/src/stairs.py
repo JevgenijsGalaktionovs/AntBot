@@ -8,7 +8,11 @@ from locomotion     import *
 
 riser = 100 #mm
 depth = 254 #mm
-tripodGait(5, y, riser+3, 10)
-gamma,beta = get_orietation()
-parallelGait()
+for i in range(10):
+    tripodGait(5, y, riser+3,1)
+    time.sleep(0.1)
+    gamma,beta = get_orietation()
+    time.sleep(0.1)
+    parallelGait(0, beta, gamma, 0, 0, 0)
+    time.sleep(0.1)
 
