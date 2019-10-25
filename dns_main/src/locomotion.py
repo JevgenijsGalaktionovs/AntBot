@@ -486,14 +486,40 @@ def continiousTripod(x, y, z, iterations):
 
 
 def rippleMirror(x, y, z, alpha, beta, gama, leg_pair):
-    if leg_pair == 1:  # Front legs
-        legs = leg[1] + leg[2]
-    elif leg_pair == 2:  # Middle legs
-        legs = leg[3] + leg[4]
-    elif leg_pair == 3:  # Rear legs
-        legs = leg[5] + leg[6]
+    if 0 <leg_pair <4:
+        leg_pair = leg_pair-1
+        legs = leg[2*leg_pair+1] + leg[2*leg_pair+2]
+    #if leg_pair == 1:  # Front legs
+    #    legs = leg[1] + leg[2]
+    #elif leg_pair == 2:  # Middle legs
+    #    legs = leg[3] + leg[4]
+    #elif leg_pair == 3:  # Rear legs
+    #    legs = leg[5] + leg[6]
     else:
         raise ValueError('leg_pair value must be 1,2 or 3. Your value:', leg_pair)
 
     do_motion([x, y, z], legs, orientation=[alpha, beta, gama])
     do_motion([-x, y, z], legs, orientation=[alpha, beta, gama])
+
+def auto_calcTrajectory(x,y,z,leg_case):
+    #all_positions = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18]
+    ee_xyz, servoPos = K.doFkine(all_positions)
+    if K.calc_ikine( x, y, z, ee_xyz, leg, auto=1) != -1:
+          x = x + 5
+    else:
+       newPoint = K.doIkine(all_positions, x, y, z, body_orient=None, leg = leg_case, auto=None)
+ 
+def tripodGait_stairs(x, y, z):
+    delay = 0.2
+
+    TG1_m1 = [-x, -y,  0]  # Tripod Group 1 : Motion 1
+    TG2_m1 = [x,  y,  z]   # Tripod Group 2 : Motion 1
+    TG2_m2 = [0,  0, -z]   # Tripod Group 2 : Motion 2 #waiting for hugo to give me the dynamic putting down
+
+    #checking if the trajectory is fisibale
+    auto_calcTrajectory(x,y,z,leg_case)
+
+    # Motion 1
+    auto_calcTrajectory(x,y,z,leg_case=[1])
+    do_motion(TG2_m1, [1])
+    
