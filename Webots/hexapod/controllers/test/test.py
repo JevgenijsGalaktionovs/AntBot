@@ -250,22 +250,23 @@ def standUp():
     front_legs  = [1, 2, 3,  4, 5, 6]
     rear_legs   = [13, 14, 15,  16, 17, 18]
     middle_legs = [7, 8, 9,  10, 11, 12]
-
-    standup_pos = [2048, 2218, 1024,   2048, 1878, 3048,
-                   2048, 2218, 1024,   2048, 1878, 3048,
-                   2048, 2218, 1024,   2048, 1878, 3048]
-    front_standup  = list_combine(front_legs, standup_pos)
-    rear_standup   = list_combine(rear_legs, standup_pos)
-    middle_standup = list_combine(middle_legs, standup_pos)
-    new_front_standup = front_standup[1::2] # Servo IDs are removed for the sake of the simulation
-    C.positionN(new_front_standup)
-    time.sleep(1)
-    new_rear_standup = rear_standup[1::2] # Servo IDs are removed for the sake of the simulation
-    C.positionN(new_rear_standup)
-    time.sleep(1)
-    new_middle_standup = middle_standup[1::2] # Servo IDs are removed for the sake of the simulation
-    C.positionN(new_middle_standup)
-    time.sleep(1)
+                                                         # OLD in steps
+    standup_pos = [0.00076717,  0.26160759, -1.57041273, # 2048, 2218, 1024,   2048, 1878, 3048,
+                   0.00076717, -0.26007323,  1.53512256, # 2048, 2218, 1024,   2048, 1878, 3048,
+                   0.00076717,  0.26160759, -1.57041273, # 2048, 2218, 1024,   2048, 1878, 3048
+                   0.00076717, -0.26007323,  1.53512256, 
+                   0.00076717,  0.26160759, -1.57041273, 
+                   0.00076717, -0.26007323,  1.53512256]
+    #front_standup  = list_combine(front_legs, standup_pos)
+    #rear_standup   = list_combine(rear_legs, standup_pos)
+    #middle_standup = list_combine(middle_legs, standup_pos)
+    positions = standup_pos
+    C.positionN(positions) # was front_standup in non-simulation
+    #time.sleep(1)
+    #C.positionN(rear_standup)
+    #time.sleep(1)
+    #C.positionN(_middle_standup)
+    #time.sleep(1)
 
 
 def parallelGait(alpha, beta, gamma, dist_x, dist_y, dist_z):
@@ -278,7 +279,7 @@ def parallelGait(alpha, beta, gamma, dist_x, dist_y, dist_z):
     #velocityAll(scaler)
     #accelerationAll(scaler)
     positionAll(next_pos)
-    time.sleep(0.35)
+    #time.sleep(0.35)
 
 
 def translationZ(distance):
@@ -291,28 +292,32 @@ def yawRotation(degrees):
     alpha_rad   = degrees * pi / 180
 
     do_motion([0, 0, 20], TG_2)
-    time.sleep(delay)
+    #time.sleep(delay)
 
     current_pos = C.readPos()
     next_pos    = K.doIkineRotationEuler(current_pos, alpha_rad, 0, 0, 0, 0, 0)
-    pos_list    = list_combine(TG_1, next_pos)
-    new_pos_list = pos_list[1::2] # Servo IDs are removed for the sake of the simulation
-    C.positionN(new_pos_list)
-    time.sleep(delay)
+    #pos_list    = list_combine(TG_1, next_pos)
+    positions = next_pos
+    C.positionN(positions)
+    #time.sleep(delay)
 
     do_motion([0, 0, -20], TG_2)
-    time.sleep(delay)
+    #time.sleep(delay)
 
     do_motion([0, 0, 20], TG_1)
-    time.sleep(delay)
+    #time.sleep(delay)
+    
+    positions = C.readPos()
+    positions[0]  = 0.00076717
+    positions[9]  = 0.00076717
+    positions[12] = 0.00076717
+    C.positionN(positions) # Converted to radians, old was [1, 2048, 10, 2048, 13, 2048] steps
+    #time.sleep(delay)
 
-    C.positionN([1, 2048, 10, 2048, 13, 2048])
-    time.sleep(delay)
-
-    final_pos = list_combine(TG_1, current_pos)
-    new_final_pos = final_pos[1::2] # Servo IDs are removed for the sake of the simulation
-    C.positionN(new_final_pos)
-    time.sleep(delay)
+    #final_pos = list_combine(TG_1, current_pos)
+    positions = final_pos
+    C.positionN(positions)
+    #time.sleep(delay)
 
 
 def rippleGait(x, y, z, iterations):
@@ -327,24 +332,24 @@ def rippleGait(x, y, z, iterations):
 
         do_motion(move1, l1 + l4)
         do_motion(move2, l2 + l3 + l5 + l6)
-        time.sleep(delay)
+        #time.sleep(delay)
         do_motion(move3, l1 + l4)
-        time.sleep(delay)
+        #time.sleep(delay)
 
         do_motion(move1, l3 + l6)
         do_motion(move2, l1 + l2 + l4 + l5)
-        time.sleep(delay)
+        #time.sleep(delay)
         do_motion(move3, l3 + l6)
-        time.sleep(delay)
+        #time.sleep(delay)
 
         do_motion(move1, l2 + l5)
         do_motion(move2, l1 + l3 + l4 + l6)
-        time.sleep(delay)
+        #time.sleep(delay)
         do_motion(move3, l2 + l5)
-        time.sleep(delay)
+        #time.sleep(delay)
 
-        positionAll(init_pos)
-        time.sleep(delay)
+        C.positionN(init_pos) # was positionAll(init_pos) for non-simulation
+        #time.sleep(delay)
 
 
 def waveGait(x, y, z, iterations):
@@ -358,35 +363,35 @@ def waveGait(x, y, z, iterations):
 
         do_motion(one_leg_motion_up, l1)
         do_motion(five_leg_motion, l2 + l3 + l4 + l5 + l6)
-        time.sleep(delay)
+        #time.sleep(delay)
 
         do_motion(one_leg_motion_down, l1)
         do_motion(one_leg_motion_up, l3)
         do_motion(five_leg_motion, l2 + l4 + l5 + l6)
-        time.sleep(delay)
+        #time.sleep(delay)
 
         do_motion(one_leg_motion_down, l3)
         do_motion(one_leg_motion_up, l5)
         do_motion(five_leg_motion, l1 + l2 + l4 + l6)
-        time.sleep(delay)
+        #time.sleep(delay)
 
         do_motion(one_leg_motion_down, l5)
         do_motion(one_leg_motion_up, l2)
         do_motion(five_leg_motion, l1 + l3 + l4 + l6)
-        time.sleep(delay)
+        #time.sleep(delay)
 
         do_motion(one_leg_motion_down, l2)
         do_motion(one_leg_motion_up, l4)
         do_motion(five_leg_motion, l1 + l3 + l5 + l6)
-        time.sleep(delay)
+        #time.sleep(delay)
 
         do_motion(one_leg_motion_down, l4)
         do_motion(one_leg_motion_up, l6)
         do_motion(five_leg_motion, l1 + l2 + l3 + l5)
-        time.sleep(delay)
+        #time.sleep(delay)
 
-        positionAll(init_pos)
-        time.sleep(delay)
+        C.positionN(init_pos) #was positionAll(init_pos) for non-simulation
+        #time.sleep(delay)
 
 
 def tripodGait(x, y, z, iterations):
@@ -407,10 +412,10 @@ def tripodGait_start(x, y, z):
     # Motion 1
     do_motion(TG2_m1, TG_2)
     do_motion(TG1_m1, TG_1)
-    time.sleep(delay)
+    #time.sleep(delay)
     # Motion 2
     do_motion(TG2_m2, TG_2)
-    time.sleep(delay)
+    #time.sleep(delay)
     start_pos = C.readPos()
     return start_pos
 
@@ -423,8 +428,13 @@ def tripodGait_full(x, y, z, iterations, start_pos=None):
     #             2048, 2218, 1024,   2048, 1878, 3048]
     if start_pos:
         init_pos = start_pos
-    else:
-        init_pos = [2002, 2218, 957, 2012, 1918, 2971, 2127, 2200, 1027, 2123, 1887, 3048, 2011, 2188, 1097, 2003, 1872, 3120]
+    else:                                                  # old values in steps
+        init_pos = [-0.06981317,  0.26160759, -1.67321454, # 2002, 2218, 957,
+                    -0.05446961, -0.19869902,  1.41697719, # 2012, 1918, 2971,
+                     0.12198125,  0.23398919, -1.56580967, # 2127, 2200, 1027,
+                     0.11584383, -0.24626403,  1.53512256, # 2123, 1887, 3048,
+                    -0.05600397,  0.21557693, -1.45840479, # 2011, 2188, 1097,
+                    -0.06827881, -0.26927937,  1.64559615] # 2003, 1872, 3120]
     for i in range(iterations):
 
         TG1_m1 = [2 * x,  2 * y,  z]   # Tripod Group 1 : Motion 1
@@ -437,28 +447,28 @@ def tripodGait_full(x, y, z, iterations, start_pos=None):
 
         # Motion 1
         do_motion(TG1_m1, TG_1)
-        time.sleep(0.05)
+        #time.sleep(0.05)
         do_motion(TG2_m1, TG_2)
-        time.sleep(delay)
+        #time.sleep(delay)
 
         # Motion 2
         do_motion(TG1_m2, TG_1)
-        time.sleep(delay)
+        #time.sleep(delay)
 
         # Motion 3
         do_motion(TG2_m3, TG_2)
-        time.sleep(0.05)
+        #time.sleep(0.05)
         do_motion(TG1_m3, TG_1)
-        time.sleep(delay)
+        #time.sleep(delay)
 
         # Motion 4
         do_motion(TG2_m4, TG_2)
-        time.sleep(delay)
+        #time.sleep(delay)
 
         # Motion 5
         positions = K.step_to_rad(init_pos)
-        C.positionN()
-        time.sleep(delay)
+        C.positionN(positions)
+        #time.sleep(delay)
 
 
 def tripodGait_finish(x, y, z):
@@ -473,27 +483,27 @@ def tripodGait_finish(x, y, z):
     TG2_m6 = [0,  0, -z]   # Tripod Group 2 : Motion 6
     # Motion 1
     do_motion(TG1_m1, TG_1)
-    time.sleep(delay)
+    #time.sleep(delay)
 
     # Motion 2
     do_motion(TG1_m2, TG_1)
-    time.sleep(delay)
+    #time.sleep(delay)
 
     # Motion 3
     do_motion(TG1_m3, TG_1)
-    time.sleep(delay)
+    #time.sleep(delay)
 
     # Motion 4
     do_motion(TG2_m4, TG_2)
-    time.sleep(delay)
+    #time.sleep(delay)
 
     # Motion 5
     do_motion(TG2_m5, TG_2)
-    time.sleep(delay)
+    #time.sleep(delay)
 
     # Motion 6
     do_motion(TG2_m6, TG_2)
-    time.sleep(delay)
+    #time.sleep(delay)
 
 
 #def stepDown(leg_case):
@@ -550,12 +560,11 @@ def do_motion(xyz_list, ID_list, orientation=None):
     #velocityN(vel_acc_value)  # Setting same vel/acc = Trapezoid trajectory
     #accelerationN(vel_acc_value)
 
-    motion = list_combine(ID_list, next_pos)
-    print(motion)
-    new_motion = motion[1::2] # Servo IDs are removed for the sake of the simulation
-    positions = K.step_to_rad(new_motion)
-    #print(motion_rad)
-    C.positionN()
+    #motion = list_combine(ID_list, next_pos)
+    #print(motion) # just for debugging
+    positions = K.step_to_rad(next_pos)
+    #print(positions) # just for debugging
+    C.positionN(positions)
 
 
 def singleLeg(x, y, z, alpha, beta, gama, leg_case):
@@ -617,11 +626,16 @@ class Controller():
             positional_sensor.enable(POSITION_SENSOR_SAMPLE_PERIOD)
             self.position_sensors.append(positional_sensor)
 
-    def positionN(self):
+    def positionN(self, positions):
+        #if ID_list:
+        #    while self.robot.step(self.timeStep != 1:
+        #        for i in ID_list
+        #        
+        #else:
         while self.robot.step(self.timeStep) != 1:
             for motor, position in zip(self.motors, positions):
                 motor.setPosition(position)
-                #if readPos() == 
+            C.reachedPos(positions)
             break
 
     def readPos(self):
@@ -631,13 +645,14 @@ class Controller():
             for i in range(len(self.jointNames)):
                 value = self.position_sensors[i].getValue()
                 all_positions.append(value)
-            #print(all_positions)
-            #if all_positions == positions:
-            #    all_positions = []
-            #    return
-            #all_positions = []
-            return all_positions# not sure about that one
+            #print(all_positions)   # just for debugging
+            return all_positions
 
+    def reachedPos(self, positions):
+        all_positions = []
+        while all_positions != positions:
+            #self.robot.step(1)
+            all_positions = C.readPos()
 
     def walk(self):
         while self.robot.step(self.timeStep) != -1:
@@ -648,12 +663,12 @@ if __name__ == "__main__":
     C = Controller()
     K = Kinematics()
     #positions = [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5]
-    #C.positionN()
-    C.readPos()
-    #time.sleep(10)
-    #positions = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-    #C.positionN()
+    #C.positionN(positions)
     #C.readPos()
+    #positions = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    #C.positionN(positions)
+    #C.readPos()
+    
     
     #controller.walk()
     
