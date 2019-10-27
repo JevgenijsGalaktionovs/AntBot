@@ -2,8 +2,8 @@
 WorldInfo {
 }
 Viewpoint {
-  orientation -0.15628588458127873 -0.8990561264533564 -0.40898998003292664 2.2768197114698894
-  position -1.1512682083891908 1.4741020628249808 -0.7244820365547866
+  orientation 0.06890744377866946 -0.9769196917039324 -0.2021872403317844 3.4055762015875106
+  position 0.5112098163989598 0.547734795781714 -1.491809187237704
 }
 TexturedBackground {
 }
@@ -53,6 +53,10 @@ Robot {
         }
       ]
       boundingObject USE HEXAGON
+      physics DEF PHYSICS Physics {
+        density -1
+        mass 1
+      }
     }
     DEF LEG-1-COXA HingeJoint {
       jointParameters HingeJointParameters {
@@ -179,15 +183,50 @@ Robot {
                                                           radius 0.007
                                                         }
                                                       }
+                                                      Transform {
+                                                        rotation 1 0 0 0
+                                                        children [
+                                                          Solid {
+                                                            translation 0 0.09683 0
+                                                            rotation 0 0 1 0.9162996938995747
+                                                            children [
+                                                              DEF FEET Shape {
+                                                                appearance PBRAppearance {
+                                                                  baseColor 1 1 0
+                                                                  roughness 1
+                                                                  metalness 0
+                                                                }
+                                                                geometry Cylinder {
+                                                                  height 0.005
+                                                                  radius 0.02
+                                                                }
+                                                              }
+                                                            ]
+                                                            name "LEG-1-FEET-TOUCHSENSOR-SOLID"
+                                                            boundingObject USE FEET
+                                                            physics USE PHYSICS
+                                                          }
+                                                          TouchSensor {
+                                                            translation 0 0.09683 0
+                                                            rotation 0 0 1 0.9163003061004252
+                                                            name "f1_touch_sensor"
+                                                            boundingObject USE FEET
+                                                            physics USE PHYSICS
+                                                            rotationStep 0.261799
+                                                          }
+                                                        ]
+                                                      }
                                                     ]
                                                     name "LEG-1-END-EFFECTOR"
                                                     boundingObject USE END-EFFECTOR
+                                                    physics USE PHYSICS
                                                   }
                                                 ]
                                               }
                                             ]
                                             name "LEG-1-TIBIA-SERVO"
                                             boundingObject USE SERVO-CYLINDER
+                                            physics USE PHYSICS
                                           }
                                         }
                                       ]
@@ -195,12 +234,14 @@ Robot {
                                   ]
                                   name "LEG-1-FEMUR-2-CYLINDER-SHAPE"
                                   boundingObject USE FEMUR-2-CYLINDER-SHAPE
+                                  physics USE PHYSICS
                                 }
                               ]
                             }
                           ]
                           name "LEG-1-COXA-SERVO"
                           boundingObject USE SERVO-CYLINDER
+                          physics USE PHYSICS
                         }
                       }
                     ]
@@ -208,12 +249,14 @@ Robot {
                 ]
                 name "LEG-1-FEMUR-1-CYLINDER-SHAPE"
                 boundingObject USE FEMUR-1-CYLINDER-SHAPE
+                physics USE PHYSICS
               }
             ]
           }
         ]
         name "LEG-1-COXA-SERVO-SOLID"
         boundingObject USE SERVO-CYLINDER
+        physics USE PHYSICS
       }
     }
     DEF LEG-2-COXA HingeJoint {
@@ -302,15 +345,40 @@ Robot {
                                                     rotation 1 0 0 1.5707996938995747
                                                     children [
                                                       USE END-EFFECTOR
+                                                      Transform {
+                                                        rotation 1 0 0 0
+                                                        children [
+                                                          Solid {
+                                                            translation 0 0.09683 0
+                                                            rotation 0 0 1 0.9162996938995747
+                                                            children [
+                                                              USE FEET
+                                                            ]
+                                                            name "LEG-2-FEET-TOUCHSENSOR-SOLID"
+                                                            boundingObject USE FEET
+                                                            physics USE PHYSICS
+                                                          }
+                                                          TouchSensor {
+                                                            translation 0 0.09683 0
+                                                            rotation 0 0 1 0.9163003061004252
+                                                            name "f2_touch_sensor"
+                                                            boundingObject USE FEET
+                                                            physics USE PHYSICS
+                                                            rotationStep 0.261799
+                                                          }
+                                                        ]
+                                                      }
                                                     ]
                                                     name "LEG-2-END-EFFECTOR"
                                                     boundingObject USE END-EFFECTOR
+                                                    physics USE PHYSICS
                                                   }
                                                 ]
                                               }
                                             ]
                                             name "LEG-2-TIBIA-SERVO"
                                             boundingObject USE SERVO-CYLINDER
+                                            physics USE PHYSICS
                                           }
                                         }
                                       ]
@@ -318,12 +386,14 @@ Robot {
                                   ]
                                   name "LEG-2-FEMUR-2-CYLINDER-SHAPE"
                                   boundingObject USE FEMUR-2-CYLINDER-SHAPE
+                                  physics USE PHYSICS
                                 }
                               ]
                             }
                           ]
                           name "LEG-2-COXA-SERVO"
                           boundingObject USE SERVO-CYLINDER
+                          physics USE PHYSICS
                         }
                       }
                     ]
@@ -331,12 +401,14 @@ Robot {
                 ]
                 name "LEG-2-FEMUR-1-CYLINDER-SHAPE"
                 boundingObject USE FEMUR-1-CYLINDER-SHAPE
+                physics USE PHYSICS
               }
             ]
           }
         ]
         name "LEG-2-COXA-SERVO-SOLID"
         boundingObject USE SERVO-CYLINDER
+        physics USE PHYSICS
       }
     }
     DEF LEG-3-COXA HingeJoint {
@@ -424,15 +496,40 @@ Robot {
                                                     rotation 1 0 0 1.5707996938995747
                                                     children [
                                                       USE END-EFFECTOR
+                                                      Transform {
+                                                        rotation 1 0 0 0
+                                                        children [
+                                                          Solid {
+                                                            translation 0 0.09683 0
+                                                            rotation 0 0 1 0.9162996938995747
+                                                            children [
+                                                              USE FEET
+                                                            ]
+                                                            name "LEG-3-FEET-TOUCHSENSOR-SOLID"
+                                                            boundingObject USE FEET
+                                                            physics USE PHYSICS
+                                                          }
+                                                          TouchSensor {
+                                                            translation 0 0.09683 0
+                                                            rotation 0 0 1 0.9163003061004252
+                                                            name "f3_touch_sensor"
+                                                            boundingObject USE FEET
+                                                            physics USE PHYSICS
+                                                            rotationStep 0.261799
+                                                          }
+                                                        ]
+                                                      }
                                                     ]
                                                     name "LEG-3-END-EFFECTOR"
                                                     boundingObject USE END-EFFECTOR
+                                                    physics USE PHYSICS
                                                   }
                                                 ]
                                               }
                                             ]
                                             name "LEG-3-TIBIA-SERVO"
                                             boundingObject USE SERVO-CYLINDER
+                                            physics USE PHYSICS
                                           }
                                         }
                                       ]
@@ -440,12 +537,14 @@ Robot {
                                   ]
                                   name "LEG-3-FEMUR-2-CYLINDER-SHAPE"
                                   boundingObject USE FEMUR-2-CYLINDER-SHAPE
+                                  physics USE PHYSICS
                                 }
                               ]
                             }
                           ]
                           name "LEG-3-COXA-SERVO"
                           boundingObject USE SERVO-CYLINDER
+                          physics USE PHYSICS
                         }
                       }
                     ]
@@ -453,12 +552,14 @@ Robot {
                 ]
                 name "LEG-3-FEMUR-1-CYLINDER-SHAPE"
                 boundingObject USE FEMUR-1-CYLINDER-SHAPE
+                physics USE PHYSICS
               }
             ]
           }
         ]
         name "LEG-3-COXA-SERVO-SOLID"
         boundingObject USE SERVO-CYLINDER
+        physics USE PHYSICS
       }
     }
     DEF LEG-4-COXA HingeJoint {
@@ -547,15 +648,40 @@ Robot {
                                                     rotation 1 0 0 1.5707996938995747
                                                     children [
                                                       USE END-EFFECTOR
+                                                      Transform {
+                                                        rotation 1 0 0 0
+                                                        children [
+                                                          Solid {
+                                                            translation 0 0.09683 0
+                                                            rotation 0 0 1 0.9162996938995747
+                                                            children [
+                                                              USE FEET
+                                                            ]
+                                                            name "LEG-4-FEET-TOUCHSENSOR-SOLID"
+                                                            boundingObject USE FEET
+                                                            physics USE PHYSICS
+                                                          }
+                                                          TouchSensor {
+                                                            translation 0 0.09683 0
+                                                            rotation 0 0 1 0.9163003061004252
+                                                            name "f4_touch_sensor"
+                                                            boundingObject USE FEET
+                                                            physics USE PHYSICS
+                                                            rotationStep 0.261799
+                                                          }
+                                                        ]
+                                                      }
                                                     ]
                                                     name "LEG-4-END-EFFECTOR"
                                                     boundingObject USE END-EFFECTOR
+                                                    physics USE PHYSICS
                                                   }
                                                 ]
                                               }
                                             ]
                                             name "LEG-4-TIBIA-SERVO"
                                             boundingObject USE SERVO-CYLINDER
+                                            physics USE PHYSICS
                                           }
                                         }
                                       ]
@@ -563,12 +689,14 @@ Robot {
                                   ]
                                   name "LEG-4-FEMUR-2-CYLINDER-SHAPE"
                                   boundingObject USE FEMUR-2-CYLINDER-SHAPE
+                                  physics USE PHYSICS
                                 }
                               ]
                             }
                           ]
                           name "LEG-4-COXA-SERVO"
                           boundingObject USE SERVO-CYLINDER
+                          physics USE PHYSICS
                         }
                       }
                     ]
@@ -576,12 +704,14 @@ Robot {
                 ]
                 name "LEG-4-FEMUR-1-CYLINDER-SHAPE"
                 boundingObject USE FEMUR-1-CYLINDER-SHAPE
+                physics USE PHYSICS
               }
             ]
           }
         ]
         name "LEG-4-COXA-SERVO-SOLID"
         boundingObject USE SERVO-CYLINDER
+        physics USE PHYSICS
       }
     }
     DEF LEG-5-COXA HingeJoint {
@@ -670,15 +800,40 @@ Robot {
                                                     rotation 1 0 0 1.5707996938995747
                                                     children [
                                                       USE END-EFFECTOR
+                                                      Transform {
+                                                        rotation 1 0 0 0
+                                                        children [
+                                                          Solid {
+                                                            translation 0 0.09683 0
+                                                            rotation 0 0 1 0.9162996938995747
+                                                            children [
+                                                              USE FEET
+                                                            ]
+                                                            name "LEG-5-FEET-TOUCHSENSOR-SOLID"
+                                                            boundingObject USE FEET
+                                                            physics USE PHYSICS
+                                                          }
+                                                          TouchSensor {
+                                                            translation 0 0.09683 0
+                                                            rotation 0 0 1 0.9163003061004252
+                                                            name "f5_touch_sensor"
+                                                            boundingObject USE FEET
+                                                            physics USE PHYSICS
+                                                            rotationStep 0.261799
+                                                          }
+                                                        ]
+                                                      }
                                                     ]
                                                     name "LEG-5-END-EFFECTOR"
                                                     boundingObject USE END-EFFECTOR
+                                                    physics USE PHYSICS
                                                   }
                                                 ]
                                               }
                                             ]
                                             name "LEG-5-TIBIA-SERVO"
                                             boundingObject USE SERVO-CYLINDER
+                                            physics USE PHYSICS
                                           }
                                         }
                                       ]
@@ -686,12 +841,14 @@ Robot {
                                   ]
                                   name "LEG-5-FEMUR-2-CYLINDER-SHAPE"
                                   boundingObject USE FEMUR-2-CYLINDER-SHAPE
+                                  physics USE PHYSICS
                                 }
                               ]
                             }
                           ]
                           name "LEG-5-COXA-SERVO"
                           boundingObject USE SERVO-CYLINDER
+                          physics USE PHYSICS
                         }
                       }
                     ]
@@ -699,12 +856,14 @@ Robot {
                 ]
                 name "LEG-5-FEMUR-1-CYLINDER-SHAPE"
                 boundingObject USE FEMUR-1-CYLINDER-SHAPE
+                physics USE PHYSICS
               }
             ]
           }
         ]
         name "LEG-5-COXA-SERVO-SOLID"
         boundingObject USE SERVO-CYLINDER
+        physics USE PHYSICS
       }
     }
     DEF LEG-6-COXA HingeJoint {
@@ -793,15 +952,40 @@ Robot {
                                                     rotation 1 0 0 1.5707996938995747
                                                     children [
                                                       USE END-EFFECTOR
+                                                      Transform {
+                                                        rotation 1 0 0 0
+                                                        children [
+                                                          Solid {
+                                                            translation 0 0.09683 0
+                                                            rotation 0 0 1 0.9162996938995747
+                                                            children [
+                                                              USE FEET
+                                                            ]
+                                                            name "LEG-6-FEET-TOUCHSENSOR-SOLID"
+                                                            boundingObject USE FEET
+                                                            physics USE PHYSICS
+                                                          }
+                                                          TouchSensor {
+                                                            translation 0 0.09683 0
+                                                            rotation 0 0 1 0.9163003061004252
+                                                            name "f6_touch_sensor"
+                                                            boundingObject USE FEET
+                                                            physics USE PHYSICS
+                                                            rotationStep 0.261799
+                                                          }
+                                                        ]
+                                                      }
                                                     ]
                                                     name "LEG-6-END-EFFECTOR"
                                                     boundingObject USE END-EFFECTOR
+                                                    physics USE PHYSICS
                                                   }
                                                 ]
                                               }
                                             ]
                                             name "LEG-6-TIBIA-SERVO"
                                             boundingObject USE SERVO-CYLINDER
+                                            physics USE PHYSICS
                                           }
                                         }
                                       ]
@@ -809,12 +993,14 @@ Robot {
                                   ]
                                   name "LEG-6-FEMUR-2-CYLINDER-SHAPE"
                                   boundingObject USE FEMUR-2-CYLINDER-SHAPE
+                                  physics USE PHYSICS
                                 }
                               ]
                             }
                           ]
                           name "LEG-6-COXA-SERVO"
                           boundingObject USE SERVO-CYLINDER
+                          physics USE PHYSICS
                         }
                       }
                     ]
@@ -822,16 +1008,19 @@ Robot {
                 ]
                 name "LEG-6-FEMUR-1-CYLINDER-SHAPE"
                 boundingObject USE FEMUR-1-CYLINDER-SHAPE
+                physics USE PHYSICS
               }
             ]
           }
         ]
         name "LEG-6-COXA-SERVO-SOLID"
         boundingObject USE SERVO-CYLINDER
+        physics USE PHYSICS
       }
     }
   ]
   boundingObject USE HEXAGON
+  physics USE PHYSICS
   rotationStep 0.261799
   controller "test"
   supervisor TRUE

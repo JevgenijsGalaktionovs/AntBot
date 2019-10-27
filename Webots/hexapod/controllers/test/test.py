@@ -5,9 +5,12 @@ from controller import Robot, Node, Motor, PositionSensor
 #from locomotion import *
 #from kinematics import Kinematics
 
-POSITION_SENSOR_SAMPLE_PERIOD = 100
+SENSOR_SAMPLE_PERIOD = 100
 all_positions = []
+all_touches = []
 positions = []
+
+
 
 ALL  = [1, 2, 3,   4, 5, 6,   7, 8, 9,   10, 11, 12,   13, 14, 15,   16, 17, 18]
 TG_1 = [1, 2, 3,  10, 11, 12,  13, 14, 15]  # Leg 1,4,5 servo IDs "Tripod Group 1"
@@ -600,6 +603,10 @@ class Controller():
         'c5',  'f5',  't5',  # LEG 5
         'c6',  'f6',  't6']  # LEG 6
 
+    touchNames = [
+        'f1',  'f2',  'f3',
+        'f4',  'f5',  'f6']
+
     def __init__(self):
         # Initialize the Webots Supervisor.
         self.robot = Robot()
@@ -609,9 +616,11 @@ class Controller():
         # Define list for motors and position sensors
         self.motors = []
         self.position_sensors = []
+        self.touch_sensors = []
         # Initialise the motors and position sensors (could be moved into __init__ into a single for-loop)
         self.init_motors()
         self.init_positional_sensors()
+        self.init_touching_sensors()
 
     def init_motors(self):
         for name in Controller.jointNames:
@@ -623,8 +632,21 @@ class Controller():
     def init_positional_sensors(self):
         for name in Controller.jointNames:
             positional_sensor = self.robot.getPositionSensor(name + '_position_sensor')
-            positional_sensor.enable(POSITION_SENSOR_SAMPLE_PERIOD)
+            positional_sensor.enable(SENSOR_SAMPLE_PERIOD)
             self.position_sensors.append(positional_sensor)
+
+    def init_touching_sensors(self):
+        for name in Controller.jointNames[1::3]:
+            touching_sensor = self.robot.getTouchSensor(name + '_touch_sensor')
+            touching_sensor.enable(SENSOR_SAMPLE_PERIOD)
+            self.touch_sensors.append(touching_sensor)
+
+    # Test initialiser before I got the other version working.
+    #def init_touching_sensors(self):
+    #    for name in Controller.touchNames:
+    #        touching_sensor = self.robot.getTouchSensor(name + '_touch_sensor')
+    #        touching_sensor.enable(SENSOR_SAMPLE_PERIOD)
+    #        self.touch_sensors.append(touching_sensor)
 
     def positionN(self, positions):
         #if ID_list:
@@ -640,19 +662,30 @@ class Controller():
 
     def readPos(self):
         all_positions = []
-        value = []
+        valuePos = []
         while self.robot.step(self.timeStep) != 1:
             for i in range(len(self.jointNames)):
-                value = self.position_sensors[i].getValue()
-                all_positions.append(value)
-            #print(all_positions)   # just for debugging
+                valuePos = self.position_sensors[i].getValue()
+                all_positions.append(valuePos)
+            print(all_positions)   # just for debugging
             return all_positions
+
+    def readTouch(self):
+        all_touches = []
+        valueTouch = []
+        while self.robot.step(self.timeStep) != 1:
+            for i in range(len(self.jointNames[1::3])):
+                valueTouch = self.touch_sensors[i].getValue()
+                all_touches.append(valueTouch)
+            #print(all_touches)   # just for debugging
+            return all_touches
 
     def reachedPos(self, positions):
         all_positions = []
         while all_positions != positions:
             #self.robot.step(1)
-            all_positions = C.readPos()
+            #all_positions = C.readPos() #old version without rounding to nearest 2nd decimal
+            all_positions = [round(x,2) for x in C.readPos()]
 
     def walk(self):
         while self.robot.step(self.timeStep) != -1:
@@ -669,9 +702,17 @@ if __name__ == "__main__":
     #C.positionN(positions)
     #C.readPos()
     
+    # Function for measuring contact
+    #C.readTouch()
+
+    #abc = [0.4999905814610988, 0.5000138174505013, 0.49998335314400505, 0.500001888601346, 0.5000140919870165, 0.4999826169382546, 0.49999756792535904, 0.5000131760657446, 0.4999851335418789, 0.49999756857600147, 0.5000131719000442, 0.49998513738745703, 0.5000018928598792, 0.5000140883297673, 0.499982619928642, 0.4999905822676734, 0.5000138217731948, 0.4999833484841275]
+    #newabc = list(map(round, abc))
+    #newabc = [round(x, 2) for x in abc]
+    #print(newabc)
+    
+    
     
     #controller.walk()
-    
     tripodGait(0, 20, 10, 1)
         
     print(C)
