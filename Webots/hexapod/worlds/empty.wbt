@@ -2,8 +2,8 @@
 WorldInfo {
 }
 Viewpoint {
-  orientation 0.06890744377866946 -0.9769196917039324 -0.2021872403317844 3.4055762015875106
-  position 0.5112098163989598 0.547734795781714 -1.491809187237704
+  orientation 0.05321193026985155 -0.9728967828482006 -0.2250340871969789 3.2471308827232175
+  position 0.16972039008048345 0.5975740382946555 -1.457113501240716
 }
 TexturedBackground {
 }
@@ -69,7 +69,7 @@ Robot {
         }
         RotationalMotor {
           name "c1_motor"
-          maxVelocity 1
+          maxVelocity 2
           maxTorque 100
         }
       ]
@@ -119,7 +119,7 @@ Robot {
                           }
                           RotationalMotor {
                             name "f1_motor"
-                            maxVelocity 1
+                            maxVelocity 2
                             maxTorque 100
                           }
                         ]
@@ -157,7 +157,7 @@ Robot {
                                             }
                                             RotationalMotor {
                                               name "t1_motor"
-                                              maxVelocity 1
+                                              maxVelocity 2
                                               maxTorque 100
                                             }
                                           ]
@@ -270,7 +270,7 @@ Robot {
         }
         RotationalMotor {
           name "c2_motor"
-          maxVelocity 1
+          maxVelocity 2
           maxTorque 100
         }
       ]
@@ -301,7 +301,7 @@ Robot {
                           }
                           RotationalMotor {
                             name "f2_motor"
-                            maxVelocity 1
+                            maxVelocity 2
                             maxTorque 100
                           }
                         ]
@@ -329,7 +329,7 @@ Robot {
                                             }
                                             RotationalMotor {
                                               name "t2_motor"
-                                              maxVelocity 1
+                                              maxVelocity 2
                                               maxTorque 100
                                             }
                                           ]
@@ -422,7 +422,7 @@ Robot {
         }
         RotationalMotor {
           name "c3_motor"
-          maxVelocity 1
+          maxVelocity 2
           maxTorque 100
         }
       ]
@@ -452,7 +452,7 @@ Robot {
                           }
                           RotationalMotor {
                             name "f3_motor"
-                            maxVelocity 1
+                            maxVelocity 2
                             maxTorque 100
                           }
                         ]
@@ -480,7 +480,7 @@ Robot {
                                             }
                                             RotationalMotor {
                                               name "t3_motor"
-                                              maxVelocity 1
+                                              maxVelocity 2
                                               maxTorque 100
                                             }
                                           ]
@@ -573,7 +573,7 @@ Robot {
         }
         RotationalMotor {
           name "c4_motor"
-          maxVelocity 1
+          maxVelocity 2
           maxTorque 100
         }
       ]
@@ -604,7 +604,7 @@ Robot {
                           }
                           RotationalMotor {
                             name "f4_motor"
-                            maxVelocity 1
+                            maxVelocity 2
                             maxTorque 100
                           }
                         ]
@@ -632,7 +632,7 @@ Robot {
                                             }
                                             RotationalMotor {
                                               name "t4_motor"
-                                              maxVelocity 1
+                                              maxVelocity 2
                                               maxTorque 100
                                             }
                                           ]
@@ -725,7 +725,7 @@ Robot {
         }
         RotationalMotor {
           name "c5_motor"
-          maxVelocity 1
+          maxVelocity 2
           maxTorque 100
         }
       ]
@@ -756,7 +756,7 @@ Robot {
                           }
                           RotationalMotor {
                             name "f5_motor"
-                            maxVelocity 1
+                            maxVelocity 2
                             maxTorque 100
                           }
                         ]
@@ -784,7 +784,7 @@ Robot {
                                             }
                                             RotationalMotor {
                                               name "t5_motor"
-                                              maxVelocity 1
+                                              maxVelocity 2
                                               maxTorque 100
                                             }
                                           ]
@@ -877,7 +877,7 @@ Robot {
         }
         RotationalMotor {
           name "c6_motor"
-          maxVelocity 1
+          maxVelocity 2
           maxTorque 100
         }
       ]
@@ -908,7 +908,7 @@ Robot {
                           }
                           RotationalMotor {
                             name "f6_motor"
-                            maxVelocity 1
+                            maxVelocity 2
                             maxTorque 100
                           }
                         ]
@@ -936,7 +936,7 @@ Robot {
                                             }
                                             RotationalMotor {
                                               name "t6_motor"
-                                              maxVelocity 1
+                                              maxVelocity 2
                                               maxTorque 100
                                             }
                                           ]

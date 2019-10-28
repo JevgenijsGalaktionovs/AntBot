@@ -250,16 +250,16 @@ class Kinematics(object):
 ###########################################################################################################################
 
 def standUp():
-    front_legs  = [1, 2, 3,  4, 5, 6]
-    rear_legs   = [13, 14, 15,  16, 17, 18]
-    middle_legs = [7, 8, 9,  10, 11, 12]
+    #front_legs  = [1, 2, 3,  4, 5, 6]
+    #rear_legs   = [13, 14, 15,  16, 17, 18]
+    #middle_legs = [7, 8, 9,  10, 11, 12]
                                                          # OLD in steps
-    standup_pos = [0.00076717,  0.26160759, -1.57041273, # 2048, 2218, 1024,   2048, 1878, 3048,
-                   0.00076717, -0.26007323,  1.53512256, # 2048, 2218, 1024,   2048, 1878, 3048,
-                   0.00076717,  0.26160759, -1.57041273, # 2048, 2218, 1024,   2048, 1878, 3048
-                   0.00076717, -0.26007323,  1.53512256, 
-                   0.00076717,  0.26160759, -1.57041273, 
-                   0.00076717, -0.26007323,  1.53512256]
+    standup_pos = [0.00, -0.26, 1.07, # 2048, 2218, 1024,   
+                   0.00, -0.26, 1.07, # 2048, 1878, 3048,   
+                   0.00, -0.26, 1.07, # 2048, 2218, 1024,    
+                   0.00, -0.26, 1.07, # 2048, 1878, 3048,
+                   0.00, -0.26, 1.07, # 2048, 2218, 1024,
+                   0.00, -0.26, 1.07] # 2048, 1878, 3048
     #front_standup  = list_combine(front_legs, standup_pos)
     #rear_standup   = list_combine(rear_legs, standup_pos)
     #middle_standup = list_combine(middle_legs, standup_pos)
@@ -667,7 +667,7 @@ class Controller():
             for i in range(len(self.jointNames)):
                 valuePos = self.position_sensors[i].getValue()
                 all_positions.append(valuePos)
-            print(all_positions)   # just for debugging
+            #print(all_positions)   # just for debugging
             return all_positions
 
     def readTouch(self):
@@ -685,34 +685,28 @@ class Controller():
         while all_positions != positions:
             #self.robot.step(1)
             #all_positions = C.readPos() #old version without rounding to nearest 2nd decimal
-            all_positions = [round(x,2) for x in C.readPos()]
+            all_positions = [round(x, 2) for x in C.readPos()]
+            positions = [round(y, 2) for y in positions]
+            #print(all_positions)   # just for debugging
+            #print(positions)       # just for debugging
 
     def walk(self):
-        while self.robot.step(self.timeStep) != -1:
-            tripodGait(0, 20, 10, 1)
+        standUp()
+        tripodGait(0, 20, 10, 1)
 
 
 if __name__ == "__main__":
     C = Controller()
     K = Kinematics()
+    
     #positions = [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5]
     #C.positionN(positions)
-    #C.readPos()
     #positions = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     #C.positionN(positions)
-    #C.readPos()
     
     # Function for measuring contact
     #C.readTouch()
-
-    #abc = [0.4999905814610988, 0.5000138174505013, 0.49998335314400505, 0.500001888601346, 0.5000140919870165, 0.4999826169382546, 0.49999756792535904, 0.5000131760657446, 0.4999851335418789, 0.49999756857600147, 0.5000131719000442, 0.49998513738745703, 0.5000018928598792, 0.5000140883297673, 0.499982619928642, 0.4999905822676734, 0.5000138217731948, 0.4999833484841275]
-    #newabc = list(map(round, abc))
-    #newabc = [round(x, 2) for x in abc]
-    #print(newabc)
     
+    C.walk()
     
-    
-    #controller.walk()
-    tripodGait(0, 20, 10, 1)
-        
     print(C)
