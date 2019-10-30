@@ -61,6 +61,7 @@ class Kinematics(object):
 
         if isinstance(leg, int):
             leg = [leg]
+            print(leg)
         elif isinstance(leg, tuple):
             leg = list(leg)
         elif isinstance(body_orient, tuple):
@@ -180,15 +181,17 @@ class Kinematics(object):
         try:
             t3_term = (-pow(s, 2) + pow(leg.f_len, 2) + pow(leg.t_len, 2)) / (2 * leg.f_len * leg.t_len)
             t3       = pi - acos(t3_term)
-            return 1
+            
         except ValueError:
             print "Cannot compute acos(", t3_term, ") for ", leg.leg_nr
             if auto is None:
+                print("something went wrong")
                 if t3_term < 0:
                     t3 = pi - acos(-0.99)
                 else:
                     t3 = pi - acos(0.99)
             else:
+                print("im here dont worry")
                 return -1
 
 
