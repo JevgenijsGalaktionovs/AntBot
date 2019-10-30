@@ -328,8 +328,8 @@ def do_motion(xyz_list, ID_list, orientation=None):
 
     scaler = calc_scaler(next_pos)
     vel_acc_value = list_combine(ID_list, scaler)
-    velocityN(vel_acc_value)  # Setting same vel/acc = Trapezoid trajectory
-    accelerationN(vel_acc_value)
+    #velocityN(vel_acc_value)  # Setting same vel/acc = Trapezoid trajectory
+    #accelerationN(vel_acc_value)
 
     motion = list_combine(ID_list, next_pos)
     positionN(motion)
@@ -365,8 +365,7 @@ def continiousMotion(x, y, z, iterations):
 	one_leg_calculation_up  = [x, y, z]
 	one_leg_calculation_down  = [x, y, 0]
 	one_push_leg_calculation = [0, 0 , 0]
-	
-    a=calculate_motion(one_leg_calculation_up, l1)
+	a=calculate_motion(one_leg_calculation_up, l1)
 	b=calculate_motion(one_leg_calculation_down, l1)
 	c=calculate_motion(one_push_leg_calculation, l1)
 	
@@ -384,7 +383,7 @@ def continiousMotion(x, y, z, iterations):
 				print(absoluteError, "1")
 				break
 		else:	
-                print("NotGood")
+                	print("NotGood")
 
 		positionN([1,b[0],2,b[1],3,b[2]])
 		ae=b[:3]
@@ -398,7 +397,7 @@ def continiousMotion(x, y, z, iterations):
 				print(absoluteError,"2")
 				break
 		else:
-              print("NotGood")
+			print("NotGood")
 
 		positionN([1,c[0],2,c[1],3,c[2]])
 		ae=c[:3]
@@ -411,8 +410,8 @@ def continiousMotion(x, y, z, iterations):
 			if absoluteError < 10:
 				print(absoluteError,"3")
 				break
-            else:
-                print("NotGood")
+		else:
+			print("NotGood")
 
 
 def continiousTripod(x, y, z, iterations):
@@ -485,10 +484,6 @@ def continiousTripod(x, y, z, iterations):
 				print(absoluteError,"3")
 				break
 
-standUp()
-time.sleep(1)
-continiousTripod(0,45,20,20)
-
 
 def rippleMirror(x, y, z, alpha, beta, gama, leg_pair):
     if leg_pair == 1:  # Front legs
@@ -502,3 +497,282 @@ def rippleMirror(x, y, z, alpha, beta, gama, leg_pair):
 
     do_motion([x, y, z], legs, orientation=[alpha, beta, gama])
     do_motion([-x, y, z], legs, orientation=[alpha, beta, gama])
+
+def continiousTripodTactile(x, y, z, iterations):
+    one_leg_calculation_up  = [x, y, z]
+    one_leg_calculation_down  = [x, y, 0]
+    one_push_leg_calculation = [0, 0 , 0]
+    push_leg_calculation     = [-x,-y,0]
+    #######Group 1
+    a1=calculate_motion(one_leg_calculation_up, l1)
+    b1=calculate_motion(one_leg_calculation_down, l1)
+    c1=calculate_motion(one_push_leg_calculation, l1)
+    
+    a4=calculate_motion(one_leg_calculation_up, l4)
+    b4=calculate_motion(one_leg_calculation_down, l4)
+    c4=calculate_motion(one_push_leg_calculation, l4)
+
+    a5=calculate_motion(one_leg_calculation_up, l5)
+    b5=calculate_motion(one_leg_calculation_down, l5)
+    c5=calculate_motion(one_push_leg_calculation, l5)
+    #####Group 2
+    a2=calculate_motion(one_leg_calculation_up, l2)
+    b2=calculate_motion(one_leg_calculation_down, l2)
+    c2=calculate_motion(one_push_leg_calculation, l2)
+
+    a3=calculate_motion(one_leg_calculation_up, l3)
+    b3=calculate_motion(one_leg_calculation_down, l3)
+    c3=calculate_motion(one_push_leg_calculation, l3)
+        
+    a6=calculate_motion(one_leg_calculation_up, l6)
+    b6=calculate_motion(one_leg_calculation_down, l6)
+    c6=calculate_motion(one_push_leg_calculation, l6)
+
+    leg1_1=a1[:3]
+    leg2_1=c2[3:6]
+    leg3_1=c3[6:9]
+    leg4_1=a4[9:12]
+    leg5_1=a5[12:15]
+    leg6_1=c6[15:18]
+    motion1 = leg1_1+leg2_1+leg3_1+leg4_1+leg5_1+leg6_1
+    print(motion1)
+
+    leg1_2_1=b1[:3]
+    leg2_2_1=c2[3:6]
+    leg3_2_1=c3[6:9]
+    leg4_2_1=b4[9:12]
+    leg5_2_1=b5[12:15]
+    leg6_2_1=c6[15:18]
+    motion2_1 = leg1_2_1+leg2_2_1+leg3_2_1+leg4_2_1+leg5_2_1+leg6_2_1
+    print(motion2_1)
+
+    leg1_2_2=b1[:3]
+    leg2_2_2=a2[3:6]
+    leg3_2_2=a3[6:9]
+    leg4_2_2=b4[9:12]
+    leg5_2_2=b5[12:15]
+    leg6_2_2=a6[15:18]
+    motion2_2 = leg1_2_2+leg2_2_2+leg3_2_2+leg4_2_2+leg5_2_2+leg6_2_2
+    print(motion2_2)
+
+    leg1_3=c1[:3]
+    leg2_3=b2[3:6]
+    leg3_3=b3[6:9]
+    leg4_3=c4[9:12]
+    leg5_3=c5[12:15]
+    leg6_3=b6[15:18]
+    motion3 = leg1_3+leg2_3+leg3_3+leg4_3+leg5_3+leg6_3
+    print(motion3)
+    itter=15
+
+    for i in range(iterations):
+        ##########################1-st Group upp, 2nd push
+        a1=calculate_motion(one_leg_calculation_up, l1)
+        a4=calculate_motion(one_leg_calculation_up, l4)
+        a5=calculate_motion(one_leg_calculation_up, l5)
+        c2=calculate_motion(push_leg_calculation, l2)
+        c3=calculate_motion(push_leg_calculation, l3)
+        c6=calculate_motion(push_leg_calculation, l6)
+        leg1_1=a1[:3]
+        leg2_1=c2[3:6]
+        leg3_1=c3[6:9]
+        leg4_1=a4[9:12]
+        leg5_1=a5[12:15]
+        leg6_1=c6[15:18]
+        motion1 = leg1_1+leg2_1+leg3_1+leg4_1+leg5_1+leg6_1
+        positionAll(motion1)
+        ae=motion1[:18]
+        for x in range (itter): 
+            current_pos = readPos()
+            pos = current_pos[:18]
+            possition_error_leg1=pos[0]-ae[0],pos[1]-ae[1],pos[2]-ae[2]
+            possition_error_leg4=pos[9]-ae[9],pos[10]-ae[10],pos[11]-ae[11]
+            possition_error_leg5=pos[12]-ae[12],pos[13]-ae[13],pos[14]-ae[14]
+            absoluteError_leg1= sum([abs(x) for x in possition_error_leg1])/3
+            absoluteError_leg4= sum([abs(x) for x in possition_error_leg4])/3
+            absoluteError_leg5= sum([abs(x) for x in possition_error_leg5])/3
+            absoluteError_swing = absoluteError_leg1+absoluteError_leg4+absoluteError_leg5
+
+            possition_error_leg2=pos[3]-ae[3],pos[4]-ae[4],pos[5]-ae[5]
+            possition_error_leg3=pos[6]-ae[6],pos[7]-ae[7],pos[8]-ae[8]
+            possition_error_leg6=pos[15]-ae[15],pos[16]-ae[16],pos[17]-ae[17]
+            absoluteError_leg2= sum([abs(x) for x in possition_error_leg1])/3
+            absoluteError_leg3= sum([abs(x) for x in possition_error_leg3])/3
+            absoluteError_leg6= sum([abs(x) for x in possition_error_leg4])/3
+            absoluteError_stance = absoluteError_leg2+absoluteError_leg3+absoluteError_leg6
+            absoluteError= absoluteError_stance+absoluteError_swing
+            print(absoluteError)
+            if absoluteError < 20:
+                print(absoluteError, "1")
+                break
+##########################1-st Group down
+        
+        c2=calculate_motion(one_push_leg_calculation, l2)
+        c3=calculate_motion(one_push_leg_calculation, l3)
+        c6=calculate_motion(one_push_leg_calculation, l6)
+        leg2_2_1=c2[3:6]
+        leg3_2_1=c3[6:9]
+        leg6_2_1=c6[15:18]
+        motion2_1 = leg1_2_1+leg2_2_1+leg3_2_1+leg4_2_1+leg5_2_1+leg6_2_1
+        positionAll(motion2_1)
+        ae=motion2_1[:18]
+        for x in range (itter): 
+            current_pos = readPos()
+            pos = current_pos[:18]
+            possition_error_leg1=pos[0]-ae[0],pos[1]-ae[1],pos[2]-ae[2]
+            possition_error_leg4=pos[9]-ae[9],pos[10]-ae[10],pos[11]-ae[11]
+            possition_error_leg5=pos[12]-ae[12],pos[13]-ae[13],pos[14]-ae[14]
+            absoluteError_leg1= sum([abs(x) for x in possition_error_leg1])/3
+            absoluteError_leg4= sum([abs(x) for x in possition_error_leg4])/3
+            absoluteError_leg5= sum([abs(x) for x in possition_error_leg5])/3
+            absoluteError_swing = absoluteError_leg1+absoluteError_leg4+absoluteError_leg5
+
+            possition_error_leg2=pos[3]-ae[3],pos[4]-ae[4],pos[5]-ae[5]
+            possition_error_leg3=pos[6]-ae[6],pos[7]-ae[7],pos[8]-ae[8]
+            possition_error_leg6=pos[15]-ae[15],pos[16]-ae[16],pos[17]-ae[17]
+            absoluteError_leg2= sum([abs(x) for x in possition_error_leg1])/3
+            absoluteError_leg3= sum([abs(x) for x in possition_error_leg3])/3
+            absoluteError_leg6= sum([abs(x) for x in possition_error_leg4])/3
+            absoluteError_stance = absoluteError_leg2+absoluteError_leg3+absoluteError_leg6
+            absoluteError= absoluteError_stance+absoluteError_swing
+            print(absoluteError)
+            fsr = readFSR()
+            fsr_leg1=fsr[0]
+            fsr_leg4=fsr[3]
+            fsr_leg5=fsr[4]
+            if absoluteError < 20:
+                print(absoluteError, "1")
+                break
+            if fsr_leg1 > 100:
+                leg=1
+                j=int(leg-1)
+                current_pos_leg1 = readPos()
+                pos_1 = current_pos_leg1[:18]
+                positionN([3*j+1,pos_1[3*j],3*j+2,pos_1[3*j+1],3*j+3,pos_1[3*j+2]])
+            if fsr_leg4 > 100:
+                leg=4
+                j=int(leg-1)
+                current_pos_leg4 = readPos()
+                pos_4 = current_pos_leg4[:18]
+                positionN([3*j+1,pos_4[3*j],3*j+2,pos_4[3*j+1],3*j+3,pos_4[3*j+2]])
+            if fsr_leg5 > 100:
+                leg=5
+                j=int(leg-1)
+                current_pos_leg5 = readPos()
+                pos_5 = current_pos_leg5[:18]
+                positionN([3*j+1,pos_5[3*j],3*j+2,pos_5[3*j+1],3*j+3,pos_5[3*j+2]])
+            elif fsr_leg1 > 100 and fsr_leg4 > 100 and fsr_leg5 > 100:
+                break  
+
+        a2=calculate_motion(one_leg_calculation_up, l2)
+        a3=calculate_motion(one_leg_calculation_up, l3)
+        a6=calculate_motion(one_leg_calculation_up, l6)
+        c1=calculate_motion(one_push_leg_calculation, l1)
+        c4=calculate_motion(one_push_leg_calculation, l4)
+        c5=calculate_motion(one_push_leg_calculation, l5)
+        leg1_2_2=c1[:3] 
+        leg2_2_2=a2[3:6]
+        leg3_2_2=a3[6:9]
+        leg4_2_2=c4[9:12]
+        leg5_2_2=c5[12:15]
+        leg6_2_2=a6[15:18]
+        motion2_2 = leg1_2_2+leg2_2_2+leg3_2_2+leg4_2_2+leg5_2_2+leg6_2_2
+        print(motion2_2)
+        positionAll(motion2_2)
+        ae=motion2_2[:18]
+        for x in range (itter): 
+            current_pos = readPos()
+            pos = current_pos[:18]
+            possition_error_leg1=pos[0]-ae[0],pos[1]-ae[1],pos[2]-ae[2]
+            possition_error_leg4=pos[9]-ae[9],pos[10]-ae[10],pos[11]-ae[11]
+            possition_error_leg5=pos[12]-ae[12],pos[13]-ae[13],pos[14]-ae[14]
+            absoluteError_leg1= sum([abs(x) for x in possition_error_leg1])/3
+            absoluteError_leg4= sum([abs(x) for x in possition_error_leg4])/3
+            absoluteError_leg5= sum([abs(x) for x in possition_error_leg5])/3
+            absoluteError_swing = absoluteError_leg1+absoluteError_leg4+absoluteError_leg5
+
+            possition_error_leg2=pos[3]-ae[3],pos[4]-ae[4],pos[5]-ae[5]
+            possition_error_leg3=pos[6]-ae[6],pos[7]-ae[7],pos[8]-ae[8]
+            possition_error_leg6=pos[15]-ae[15],pos[16]-ae[16],pos[17]-ae[17]
+            absoluteError_leg2= sum([abs(x) for x in possition_error_leg1])/3
+            absoluteError_leg3= sum([abs(x) for x in possition_error_leg3])/3
+            absoluteError_leg6= sum([abs(x) for x in possition_error_leg4])/3
+            absoluteError_stance = absoluteError_leg2+absoluteError_leg3+absoluteError_leg6
+            absoluteError= absoluteError_stance+absoluteError_swing
+            print(absoluteError)
+            if absoluteError < 20:
+                print(absoluteError, "1")
+                break
+        c1=calculate_motion(push_leg_calculation, l1)
+        c4=calculate_motion(push_leg_calculation, l4)
+        c5=calculate_motion(push_leg_calculation, l5)
+        leg1_3=c1[:3]
+        leg4_3=c4[9:12]
+        leg5_3=c5[12:15]
+        motion3 = leg1_3+leg2_3+leg3_3+leg4_3+leg5_3+leg6_3
+        positionAll(motion3)
+        ae=motion3[:18]
+        for x in range (itter): 
+            current_pos = readPos()
+            pos = current_pos[:18]
+            possition_error_leg1=pos[0]-ae[0],pos[1]-ae[1],pos[2]-ae[2]
+            possition_error_leg4=pos[9]-ae[9],pos[10]-ae[10],pos[11]-ae[11]
+            possition_error_leg5=pos[12]-ae[12],pos[13]-ae[13],pos[14]-ae[14]
+            absoluteError_leg1= sum([abs(x) for x in possition_error_leg1])/3
+            absoluteError_leg4= sum([abs(x) for x in possition_error_leg4])/3
+            absoluteError_leg5= sum([abs(x) for x in possition_error_leg5])/3
+            absoluteError_swing = absoluteError_leg1+absoluteError_leg4+absoluteError_leg5
+
+            possition_error_leg2=pos[3]-ae[3],pos[4]-ae[4],pos[5]-ae[5]
+            possition_error_leg3=pos[6]-ae[6],pos[7]-ae[7],pos[8]-ae[8]
+            possition_error_leg6=pos[15]-ae[15],pos[16]-ae[16],pos[17]-ae[17]
+            absoluteError_leg2= sum([abs(x) for x in possition_error_leg1])/3
+            absoluteError_leg3= sum([abs(x) for x in possition_error_leg3])/3
+            absoluteError_leg6= sum([abs(x) for x in possition_error_leg4])/3
+            absoluteError_stance = absoluteError_leg2+absoluteError_leg3+absoluteError_leg6
+            absoluteError= absoluteError_stance+absoluteError_swing
+            print(absoluteError)
+            fsr = readFSR()
+            fsr_leg2=fsr[1]
+            fsr_leg3=fsr[2]
+            fsr_leg6=fsr[5]
+            if absoluteError < 20:
+                print(absoluteError, "1")
+                break
+            if fsr_leg2 > 100:
+                leg=2
+                j=int(leg-1)
+                current_pos_leg2 = readPos()
+                pos_2 = current_pos_leg2[:18]
+                positionN([3*j+1,pos_2[3*j],3*j+2,pos_2[3*j+1],3*j+3,pos_2[3*j+2]])
+            if fsr_leg3 > 100:
+                leg=3
+                j=int(leg-1)
+                current_pos_leg3 = readPos()
+                pos_3 = current_pos_leg3[:18]
+                positionN([3*j+1,pos_3[3*j],3*j+2,pos_3[3*j+1],3*j+3,pos_3[3*j+2]])
+            if fsr_leg6 > 100:
+                leg=6
+                j=int(leg-1)
+                current_pos_leg6 = readPos()
+                pos_6 = current_pos_leg6[:18]
+                positionN([3*j+1,pos_6[3*j],3*j+2,pos_6[3*j+1],3*j+3,pos_6[3*j+2]])
+            elif fsr_leg2 > 100 and fsr_leg3 > 100 and fsr_leg6 > 100:
+                break  
+torque(0)
+pwm_list = [800]*18
+pwmAll(pwm_list)
+scaler_acc = [20] * 18
+scaler_vel = [50] * 18
+velocityAll(scaler_vel)
+accelerationAll(scaler_acc)
+torque(1)
+standUp()
+velocityAll(scaler_vel)
+accelerationAll(scaler_acc)
+time.sleep(1)
+translationZ(-50)
+time.sleep(1)
+velocityAll(scaler_vel)
+accelerationAll(scaler_acc)
+continiousTripodTactile(0, 40, 0, 20)
