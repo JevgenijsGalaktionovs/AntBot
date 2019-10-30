@@ -338,9 +338,10 @@ def do_motion(xyz_list, ID_list, orientation=None):
 
 
 def singleLeg(x, y, z, alpha, beta, gama, leg_case):
-    list = auto_calcTrajectory(5,0,120, 1)
+    my_list = auto_calcTrajectory(x,y,z, leg_case)
     ID_list = leg[leg_case]
-    do_motion([x, y, z], ID_list, orientation=[alpha, beta, gama])
+    print(my_list[0])
+    do_motion(my_list, ID_list, orientation=[alpha, beta, gama])
 
 
 
@@ -508,14 +509,14 @@ def auto_calcTrajectory(x,y,z,leg_case):
     all_positions = readPos()
     ee_xyz, servoPos = K.doFkine(all_positions)
     while K.calc_ikine( x, y, z, ee_xyz,K.leg_list[leg_case-1], auto = 1) == -1:
-             x = x + 5
+             x = x + 1
              print(x,y,z)
              time.sleep(0.2)
     else:
-       newPoint = K.doIkine(all_positions, x, y, z, leg = leg_case, auto = None)
-       print("im here too, something is scarry")
-       print(newPoint)
-    return newPoint
+        newPoint = K.doIkine(all_positions, x, y, z, leg = leg_case, auto = None)
+        print("im here too, something is scarry")
+        print(newPoint)
+    return [x,y,z]
  
 def tripodGait_stairs(x, y, z):
     delay = 0.2

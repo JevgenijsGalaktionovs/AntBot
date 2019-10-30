@@ -181,7 +181,6 @@ class Kinematics(object):
         try:
             t3_term = (-pow(s, 2) + pow(leg.f_len, 2) + pow(leg.t_len, 2)) / (2 * leg.f_len * leg.t_len)
             t3       = pi - acos(t3_term)
-            
         except ValueError:
             print "Cannot compute acos(", t3_term, ") for ", leg.leg_nr
             if auto is None:
@@ -192,7 +191,7 @@ class Kinematics(object):
                     t3 = pi - acos(0.99)
             else:
                 print("im here dont worry")
-                return -1
+            return -1
 
 
         if leg.side == "right":  # ODD LEGS
@@ -201,7 +200,12 @@ class Kinematics(object):
         elif leg.side == "left":  # EVEN LEGS
             theta3 = t3 + leg.t_ang_off
             theta2 = -(atan2(Z, final_x) + atan2(leg.t_len * sin(t3), leg.f_len + leg.t_len * cos(t3)) - leg.f_ang_off)
-        return [theta1, theta2, theta3]
+
+        if theta2 > 1.9877574030405747:
+            if theta3 < -2.3575370511554175:
+                return -1
+        else:
+            return [theta1, theta2, theta3]
 
     def calc_rot_displacement(self, alpha_rad, beta_rad, gama_rad, ee_xyz):
         pre_x = ee_xyz[0]

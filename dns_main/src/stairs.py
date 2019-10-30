@@ -9,24 +9,16 @@ from locomotion     import *
 
 riser = 100 #mm
 depth = 254 #mm
-#torque(0)
-#time.sleep(0.1)
-#torque(1)
-#standUp()
-#time.sleep(1)
+torque(0)
+#a = K.step_to_rad(readPos())
+#print(a)
+time.sleep(0.1)
+torque(1)
+standUp()
+time.sleep(2)
 
 #calculate_motion([0, 50,130], l1)
-singleLeg(0, 50, 130, 0, 0, 0, 1)
+singleLeg(0, 0, 120, 0, 0, 0, 1)
 
 
-
-#rippleMirror(0, 25, 103, 0, 0, 0, 1)
-#time.sleep(1)
-#rippleMirror(0, 25, -3, 0, 0, 0, 1)
-#time.sleep(1)
-#gamma,beta = get_orietation()
-#time.sleep(1)
-#print(gamma,beta)
-#parallelGait(0, beta, gamma, 0, 0, 0)
-#time.sleep(1)
 
