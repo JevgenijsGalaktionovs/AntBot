@@ -2,7 +2,7 @@
 import time
 from math import pi
 
-#from service_router import *
+from service_router import *
 from kinematics     import Kinematics
 
 
@@ -319,12 +319,13 @@ def do_motion(xyz_list, ID_list, orientation=None):
        Example result: Position of servo ID7, ID8 and ID9 (Leg 3) will be
                        changed to reach end-tip x= +0, y= +30 and z= +20"""
     current_pos = readPos()
+    leg_case = ID_
     if orientation:
         next_pos = K.doIkine(current_pos, xyz_list[0], xyz_list[1],
                              xyz_list[2], body_orient=orientation)
     else:
         next_pos = K.doIkine(current_pos, xyz_list[0], xyz_list[1],
-                             xyz_list[2])
+                             xyz_list[2],leg = leg)
 
     scaler = calc_scaler(next_pos)
     vel_acc_value = list_combine(ID_list, scaler)
@@ -340,6 +341,7 @@ def do_motion(xyz_list, ID_list, orientation=None):
 def singleLeg(x, y, z, alpha, beta, gama, leg_case):
     my_list = auto_calcTrajectory(x,y,z, leg_case)
     ID_list = leg[leg_case]
+    print("ID_list=",ID_list)
     do_motion(my_list, ID_list, orientation=[alpha, beta, gama])
 
 
@@ -502,8 +504,9 @@ def rippleMirror(x, y, z, alpha, beta, gama, leg_pair):
     do_motion([-x, y, z], legs, orientation=[alpha, beta, gama])
 
 def auto_calcTrajectory(x,y,z,leg_case):
-
-    all_positions = [2012, 2218, 957, 2012, 1918, 2971, 2127, 2200, 1027, 2123, 1887, 3048, 2011, 2188, 1097, 2003, 1872, 3120]
+    x = x
+    compute = True
+    #all_positions = [2002, 2218, 957, 2012, 1918, 2971, 2127, 2200, 1027, 2123, 1887, 3048, 2011, 2188, 1097, 2003, 1872, 3120]
     all_positions = readPos()
     ee_xyz, servoPos = K.doFkine(all_positions)
     while K.calc_ikine( x, y, z, ee_xyz,K.leg_list[leg_case-1], auto = 1) == -1:

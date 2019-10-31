@@ -27,4 +27,9 @@ class Math_Calc(object):
         sum = [a[0] + b[0], a[1] + b1[1], a[2] + b[2]]
         return sum
 
+    def unit(self,c):
+        length_c = self.length(c)
+        unit_c = [c[0]/length_c, c[1]/length_c, c[2]/length_c]
+        return unit_c
+
 
