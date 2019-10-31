@@ -18,7 +18,7 @@ standUp()
 time.sleep(2)
 
 #calculate_motion([0, 50,130], l1)
-singleLeg(0, 0, 120, 0, 0, 0, 1)
+singleLeg(0, 50, 120, 0, 0, 0, 1)
 
 
 

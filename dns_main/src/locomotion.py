@@ -340,7 +340,6 @@ def do_motion(xyz_list, ID_list, orientation=None):
 def singleLeg(x, y, z, alpha, beta, gama, leg_case):
     my_list = auto_calcTrajectory(x,y,z, leg_case)
     ID_list = leg[leg_case]
-    print(my_list[0])
     do_motion(my_list, ID_list, orientation=[alpha, beta, gama])
 
 
@@ -513,9 +512,10 @@ def auto_calcTrajectory(x,y,z,leg_case):
              print(x,y,z)
              time.sleep(0.2)
     else:
-        newPoint = K.doIkine(all_positions, x, y, z, leg = leg_case, auto = None)
+        newPoint = K.doIkine(all_positions, x, y, z,body_orient=None, leg =leg_case, auto = None)
         print("im here too, something is scarry")
         print(newPoint)
+        print(x,y,z)
     return [x,y,z]
  
 def tripodGait_stairs(x, y, z):

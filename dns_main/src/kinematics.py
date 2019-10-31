@@ -48,6 +48,8 @@ class Kinematics(object):
         return ee_xyz, servoPos
 
     def doIkine(self, all_positions, x, y, z, body_orient=None, leg=None, auto=None):
+        print("1.leg is:",leg )
+        leg = leg
         ''' Function:   computes inverse kinematics
             Parameters: all_positions: list with 18 values of servo positions in steps from ID1 to ID18;
                         x,y,z: desired change in x,y,z coordinates (same for all legs)
@@ -61,7 +63,6 @@ class Kinematics(object):
 
         if isinstance(leg, int):
             leg = [leg]
-            print(leg)
         elif isinstance(leg, tuple):
             leg = list(leg)
         elif isinstance(body_orient, tuple):
@@ -78,14 +79,17 @@ class Kinematics(object):
 
         if leg:
             # Optional parameter. Compute inverse for a specific leg/s.
-
+            print("2.leg is:",leg )
             for i in range(len(leg)):
+                print("3.leg is:",leg )
+                print("i :",i , leg[i] )
                 j = leg[i] - 1
-                thetas.extend(self.calc_ikine(x, y, z, ee_xyz[3 * j:3 * j + 3], self.leg_list[j], auto=auto))
+                print(j)
+                thetas.extend(self.calc_ikine(x, y, z, ee_xyz[3 * j:3 * j + 3], self.leg_list[j]))
         else:
             # Compute inverse for all legs if not leg specified.
             for i in xrange(0, 16, 3):
-                thetas.extend(self.calc_ikine(x, y, z, ee_xyz[i:i + 3],   self.leg_list[j], auto=auto))
+                thetas.extend(self.calc_ikine(x, y, z, ee_xyz[i:i + 3],   self.leg_list[j]))
                 j += 1
 
         result = [int(each_theta) for each_theta in self.rad_to_step(thetas)]
@@ -201,11 +205,12 @@ class Kinematics(object):
             theta3 = t3 + leg.t_ang_off
             theta2 = -(atan2(Z, final_x) + atan2(leg.t_len * sin(t3), leg.f_len + leg.t_len * cos(t3)) - leg.f_ang_off)
 
-        if theta2 > 1.9877574030405747:
-            if theta3 < -2.3575370511554175:
-                return -1
-        else:
-            return [theta1, theta2, theta3]
+        #if theta2 > 1.9877574030405747 or theta2 < -1.9877574030405747 :
+        #    if theta3 < -2.3575370511554175 or theta3 > 2.3575370511554175 :
+        #        return -1
+        
+        #else:
+        return [theta1, theta2, theta3]
 
     def calc_rot_displacement(self, alpha_rad, beta_rad, gama_rad, ee_xyz):
         pre_x = ee_xyz[0]
