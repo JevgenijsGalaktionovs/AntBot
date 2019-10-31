@@ -9,12 +9,12 @@ from locomotion     import *
 
 riser = 100 #mm
 depth = 254 #mm
-torque(0)
+#torque(0)
 #a = K.step_to_rad(readPos())
 #print(a)
 time.sleep(0.1)
-torque(1)
-standUp()
+#torque(1)
+#standUp()
 time.sleep(2)
 
 #calculate_motion([0, 50,130], l1)

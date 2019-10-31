@@ -2,7 +2,7 @@
 import time
 from math import pi
 
-from service_router import *
+#from service_router import *
 from kinematics     import Kinematics
 
 
@@ -502,9 +502,8 @@ def rippleMirror(x, y, z, alpha, beta, gama, leg_pair):
     do_motion([-x, y, z], legs, orientation=[alpha, beta, gama])
 
 def auto_calcTrajectory(x,y,z,leg_case):
-    x = x
-    compute = True
-    #all_positions = [2002, 2218, 957, 2012, 1918, 2971, 2127, 2200, 1027, 2123, 1887, 3048, 2011, 2188, 1097, 2003, 1872, 3120]
+
+    all_positions = [2012, 2218, 957, 2012, 1918, 2971, 2127, 2200, 1027, 2123, 1887, 3048, 2011, 2188, 1097, 2003, 1872, 3120]
     all_positions = readPos()
     ee_xyz, servoPos = K.doFkine(all_positions)
     while K.calc_ikine( x, y, z, ee_xyz,K.leg_list[leg_case-1], auto = 1) == -1:
