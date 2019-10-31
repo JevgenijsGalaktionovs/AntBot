@@ -663,7 +663,7 @@ def continiousTripodTactile(x, y, z, iterations):
                 positionN([3*j+1,pos_5[3*j],3*j+2,pos_5[3*j+1],3*j+3,pos_5[3*j+2]])
             elif fsr_leg1 > 100 and fsr_leg4 > 100 and fsr_leg5 > 100:
                 break  
-
+	checkContact()	
         a2=calculate_motion(one_leg_calculation_up, l2)
         a3=calculate_motion(one_leg_calculation_up, l3)
         a6=calculate_motion(one_leg_calculation_up, l6)
@@ -758,7 +758,32 @@ def continiousTripodTactile(x, y, z, iterations):
                 pos_6 = current_pos_leg6[:18]
                 positionN([3*j+1,pos_6[3*j],3*j+2,pos_6[3*j+1],3*j+3,pos_6[3*j+2]])
             elif fsr_leg2 > 100 and fsr_leg3 > 100 and fsr_leg6 > 100:
-                break  
+                break 
+	checkContact()	
+def checkContact():
+	for x in range (20):
+		fsr = readFSR()
+		leg_trigger=[True]*6
+		print fsr
+		for x in range (6): 
+			if fsr[x] < 100:
+				print ("leg_",x+1 ,"is not activated")
+				leg_trigger[x]=False
+		print leg_trigger 
+		for x in range (6):
+			stepping_down_calculation = [0,0,-5]
+	    		downCalc=calculate_motion(stepping_down_calculation,l1)
+			if leg_trigger[x] == False:
+				j = x
+		        	positionN([3*j+1,downCalc[3*j],3*j+2,downCalc[3*j+1],3*j+3,downCalc[3*j+2]])
+		if False in leg_trigger:
+			print "All legs are not in contact"
+		else:	
+			break
+
+#standUp()
+#time.sleep(1)
+#checkContact()	
 torque(0)
 pwm_list = [800]*18
 pwmAll(pwm_list)
@@ -775,4 +800,4 @@ translationZ(-50)
 time.sleep(1)
 velocityAll(scaler_vel)
 accelerationAll(scaler_acc)
-continiousTripodTactile(0, 40, 0, 20)
+continiousTripodTactile(0, 40, 50, 20)
