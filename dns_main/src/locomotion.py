@@ -319,7 +319,7 @@ def do_motion(xyz_list, ID_list, orientation=None):
        Example result: Position of servo ID7, ID8 and ID9 (Leg 3) will be
                        changed to reach end-tip x= +0, y= +30 and z= +20"""
     current_pos = readPos()
-    leg_case = ID_
+    #leg_case = ID_
     if orientation:
         next_pos = K.doIkine(current_pos, xyz_list[0], xyz_list[1],
                              xyz_list[2], body_orient=orientation)
