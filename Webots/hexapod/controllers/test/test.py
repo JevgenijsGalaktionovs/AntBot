@@ -178,14 +178,14 @@ class Kinematics(object):
 
     def calc_fkine(self, servoPos, leg):
         theta1 = servoPos[0] - leg.ang_off
-        if leg.side == "right":
-            theta2 = servoPos[1] + leg.f_ang_off
-            theta3 = servoPos[2] + leg.t_ang_off
-            ee_z   = leg.f_len * sin(theta2) + leg.t_len * sin(theta3 + theta2) + leg.z_off
-        elif leg.side == "left":
-            theta2 = servoPos[1] - leg.f_ang_off
-            theta3 = servoPos[2] - leg.t_ang_off
-            ee_z   = -(leg.f_len * sin(theta2) + leg.t_len * sin(theta3 + theta2) - leg.z_off)
+        #if leg.side == "right":
+        theta2 = servoPos[1] + leg.f_ang_off
+        theta3 = servoPos[2] + leg.t_ang_off
+        ee_z   = leg.f_len * sin(theta2) + leg.t_len * sin(theta3 + theta2) + leg.z_off
+        #elif leg.side == "left":
+        #    theta2 = servoPos[1] - leg.f_ang_off
+        #    theta3 = servoPos[2] - leg.t_ang_off
+        #    ee_z   = -(leg.f_len * sin(theta2) + leg.t_len * sin(theta3 + theta2) - leg.z_off)
         ee_x   = leg.x_off + cos(theta1) * (leg.c_len + leg.f_len * cos(theta2) + leg.t_len * cos(theta3 + theta2))
         ee_y   = leg.y_off + sin(theta1) * (leg.c_len + leg.f_len * cos(theta2) + leg.t_len * cos(theta3 + theta2))
         return [ee_x, ee_y, ee_z]
@@ -215,12 +215,12 @@ class Kinematics(object):
                 t3 = pi - acos(-0.99)
             else:
                 t3 = pi - acos(0.99)
-        if leg.side == "right":  # ODD LEGS
-            theta3 = -t3 - leg.t_ang_off
-            theta2 = -(-atan2(Z, final_x) - atan2(leg.t_len * sin(t3), leg.f_len + leg.t_len * cos(t3)) + leg.f_ang_off)
-        elif leg.side == "left":  # EVEN LEGS
-            theta3 = t3 + leg.t_ang_off
-            theta2 = -(atan2(Z, final_x) + atan2(leg.t_len * sin(t3), leg.f_len + leg.t_len * cos(t3)) - leg.f_ang_off)
+        #if leg.side == "right":  # ODD LEGS
+        theta3 = -t3 - leg.t_ang_off
+        theta2 = -(-atan2(Z, final_x) - atan2(leg.t_len * sin(t3), leg.f_len + leg.t_len * cos(t3)) + leg.f_ang_off)
+        #elif leg.side == "left":  # EVEN LEGS
+        #theta3 = t3 + leg.t_ang_off
+        #theta2 = -(atan2(Z, final_x) + atan2(leg.t_len * sin(t3), leg.f_len + leg.t_len * cos(t3)) - leg.f_ang_off)
         return [theta1, theta2, theta3]
 
     def calc_rot_displacement(self, alpha_rad, beta_rad, gama_rad, ee_xyz):
@@ -253,16 +253,22 @@ def standUp():
     #front_legs  = [1, 2, 3,  4, 5, 6]
     #rear_legs   = [13, 14, 15,  16, 17, 18]
     #middle_legs = [7, 8, 9,  10, 11, 12]
-                                                         # OLD in steps
-    standup_pos = [0.00, -0.26, 1.07, # 2048, 2218, 1024,   
-                   0.00, -0.26, 1.07, # 2048, 1878, 3048,   
-                   0.00, -0.26, 1.07, # 2048, 2218, 1024,    
-                   0.00, -0.26, 1.07, # 2048, 1878, 3048,
-                   0.00, -0.26, 1.07, # 2048, 2218, 1024,
-                   0.00, -0.26, 1.07] # 2048, 1878, 3048
+    #standup_pos = [2048, -2218, 1024,   
+    #               2048, -1878, 3048,
+    #               2048, -2218, 1024,   
+    #               2048, -1878, 3048,
+    #               2048, -2218, 1024,   
+    #               2048, -1878, 3048]  
+    standup_pos = [0.00, -0.26, 1.07,    
+                   0.00, -0.26, 1.07,   
+                   0.00, -0.26, 1.07,    
+                   0.00, -0.26, 1.07,
+                   0.00, -0.26, 1.07,
+                   0.00, -0.26, 1.07]
     #front_standup  = list_combine(front_legs, standup_pos)
     #rear_standup   = list_combine(rear_legs, standup_pos)
     #middle_standup = list_combine(middle_legs, standup_pos)
+    #positions = K.step_to_rad(standup_pos)
     positions = standup_pos
     C.positionN(positions) # was front_standup in non-simulation
     #time.sleep(1)
@@ -281,7 +287,9 @@ def parallelGait(alpha, beta, gamma, dist_x, dist_y, dist_z):
     #scaler = [50] * 18
     #velocityAll(scaler)
     #accelerationAll(scaler)
-    positionAll(next_pos)
+    next_pos = K.step_to_rad(next_pos)
+    print(next_pos)
+    C.positionN(next_pos)
     #time.sleep(0.35)
 
 
@@ -311,14 +319,14 @@ def yawRotation(degrees):
     #time.sleep(delay)
     
     positions = C.readPos()
-    positions[0]  = 0.00076717
-    positions[9]  = 0.00076717
-    positions[12] = 0.00076717
+    positions[0]  = K.step_to_rad(2048)
+    positions[9]  = K.step_to_rad(2048)
+    positions[12] = K.step_to_rad(2048)
     C.positionN(positions) # Converted to radians, old was [1, 2048, 10, 2048, 13, 2048] steps
     #time.sleep(delay)
 
     #final_pos = list_combine(TG_1, current_pos)
-    positions = final_pos
+    positions = current_pos
     C.positionN(positions)
     #time.sleep(delay)
 
@@ -432,12 +440,13 @@ def tripodGait_full(x, y, z, iterations, start_pos=None):
     if start_pos:
         init_pos = start_pos
     else:                                                  # old values in steps
-        init_pos = [-0.06981317,  0.26160759, -1.67321454, # 2002, 2218, 957,
-                    -0.05446961, -0.19869902,  1.41697719, # 2012, 1918, 2971,
-                     0.12198125,  0.23398919, -1.56580967, # 2127, 2200, 1027,
-                     0.11584383, -0.24626403,  1.53512256, # 2123, 1887, 3048,
-                    -0.05600397,  0.21557693, -1.45840479, # 2011, 2188, 1097,
-                    -0.06827881, -0.26927937,  1.64559615] # 2003, 1872, 3120]
+        init_pos = [2002, 2218, 957, 2012, 1918, 2971, 2127, 2200, 1027, 2123, 1887, 3048, 2011, 2188, 1097, 2003, 1872, 3120]
+        #init_pos = [-0.06981317,  0.26160759, -1.67321454, # 2002, 2218, 957,
+        #            -0.05446961, -0.19869902,  1.41697719, # 2012, 1918, 2971,
+        #             0.12198125,  0.23398919, -1.56580967, # 2127, 2200, 1027,
+        #             0.11584383, -0.24626403,  1.53512256, # 2123, 1887, 3048,
+        #            -0.05600397,  0.21557693, -1.45840479, # 2011, 2188, 1097,
+        #            -0.06827881, -0.26927937,  1.64559615] # 2003, 1872, 3120]
     for i in range(iterations):
 
         TG1_m1 = [2 * x,  2 * y,  z]   # Tripod Group 1 : Motion 1
@@ -469,8 +478,8 @@ def tripodGait_full(x, y, z, iterations, start_pos=None):
         #time.sleep(delay)
 
         # Motion 5
-        positions = K.step_to_rad(init_pos)
-        C.positionN(positions)
+        #positions = K.step_to_rad(init_pos)
+        C.positionN(init_pos)
         #time.sleep(delay)
 
 
@@ -565,6 +574,8 @@ def do_motion(xyz_list, ID_list, orientation=None):
 
     #motion = list_combine(ID_list, next_pos)
     #print(motion) # just for debugging
+    
+    
     positions = K.step_to_rad(next_pos)
     #print(positions) # just for debugging
     C.positionN(positions)
@@ -692,7 +703,11 @@ class Controller():
 
     def walk(self):
         standUp()
-        tripodGait(0, 20, 10, 1)
+        #tripodGait(0, 20, 10, 1)
+        #waveGait(0, 20, 10, 1)
+        #translationZ(50)
+        #parallelGait(50, 0, 0, 0, 0, 0)
+        
 
 
 if __name__ == "__main__":
@@ -706,7 +721,9 @@ if __name__ == "__main__":
     
     # Function for measuring contact
     #C.readTouch()
-    
+    id = [1, 2, 3]
+    new = [x - 1 for x in id] 
+    print(new)
     C.walk()
     
     print(C)
