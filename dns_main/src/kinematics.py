@@ -208,7 +208,7 @@ class Kinematics(object):
         #if theta2 > 1.9877574030405747 or theta2 < -1.9877574030405747 :
         #    if theta3 < -2.3575370511554175 or theta3 > 2.3575370511554175 :
         #        return -1
-        
+        #
         #else:
         return [theta1, theta2, theta3]
 
