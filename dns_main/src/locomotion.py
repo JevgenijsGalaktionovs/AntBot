@@ -4,6 +4,7 @@ from math import pi
 
 from service_router import *
 from kinematics     import Kinematics
+from parallel_forward import get_orietation
 
 
 ######################################################
@@ -760,6 +761,9 @@ def continiousTripodTactile(x, y, z, iterations):
             elif fsr_leg2 > 100 and fsr_leg3 > 100 and fsr_leg6 > 100:
                 break 
 	checkContact()	
+	orientation=get_orietation()
+	parallelGait(0, -orientation[1], -orientation[0], 0, 0, 0)
+	time.sleep(2)
 def checkContact():
 	for x in range (20):
 		fsr = readFSR()
