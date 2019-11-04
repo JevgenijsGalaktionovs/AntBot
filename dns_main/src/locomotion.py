@@ -514,11 +514,11 @@ def auto_calcTrajectory(x,y,z,leg_case):
              print(x,y,z)
              time.sleep(0.2)
     else:
-        newPoint = K.doIkine(all_positions, x, y, z,body_orient=None, leg =leg_case, auto = None)
-        print("im here too, something is scarry")
-        print(newPoint)
-        print(x,y,z)
-    return [x,y,z]
+        #newPoint = K.doIkine(all_positions, x, y, z,body_orient=None, leg =leg_case, auto = None)
+        #print("im here too, something is scarry")
+        #print(newPoint)
+        #print(x,y,z)
+        return [x,y,z]
  
 def tripodGait_stairs(x, y, z):
     delay = 0.2
