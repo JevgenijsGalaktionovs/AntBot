@@ -18,7 +18,8 @@ standUp()
 time.sleep(2)
 #parallelGait(0, 10, -10, 0, 0, 0)
 #time.sleep(2)
-singleLeg(0, 50, 120, 0, 0, 0, 1)
+#singleLeg(0, 50, 120, 0, 0, 0, 1)
+auto_calcTrajectory(0,0,120,1)
 #get_orietation()
 
 

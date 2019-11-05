@@ -85,7 +85,11 @@ class Kinematics(object):
                 print("i :",i , leg[i] )
                 j = leg[i] - 1
                 print(j)
-                thetas.extend(self.calc_ikine(x, y, z, ee_xyz[3 * j:3 * j + 3], self.leg_list[j]))
+                print(ee_xyz)
+                print(self.leg_list[0])
+                print(x,y,z)
+                thetas.extend(self.calc_ikine(x, y, z, ee_xyz[0:3], self.leg_list[0]))
+
         else:
             # Compute inverse for all legs if not leg specified.
             for i in xrange(0, 16, 3):
@@ -195,7 +199,7 @@ class Kinematics(object):
                     t3 = pi - acos(0.99)
             else:
                 print("im here dont worry")
-            return -1
+                return -1
 
 
         if leg.side == "right":  # ODD LEGS
@@ -205,11 +209,11 @@ class Kinematics(object):
             theta3 = t3 + leg.t_ang_off
             theta2 = -(atan2(Z, final_x) + atan2(leg.t_len * sin(t3), leg.f_len + leg.t_len * cos(t3)) - leg.f_ang_off)
 
-        #if theta2 > 1.9877574030405747 or theta2 < -1.9877574030405747 :
-        #    if theta3 < -2.3575370511554175 or theta3 > 2.3575370511554175 :
-        #        return -1
+        if theta2 > 0.9 or theta2 < -0.9 :
+            if theta3 < -2.3 or theta3 > 2.3 :
+
+                return -1
         
-        #else:
         return [theta1, theta2, theta3]
 
     def calc_rot_displacement(self, alpha_rad, beta_rad, gama_rad, ee_xyz):

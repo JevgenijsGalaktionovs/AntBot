@@ -312,7 +312,7 @@ def calc_scaler(thetas):
     return [i * 1 for i in thetas]
 
 
-def do_motion(xyz_list, ID_list, orientation=None):
+def do_motion(xyz_list, ID_list, orientation=None,leg = None):
     """Parameters: xyz_list: list of 3 integers with x,y,z changes to accomplish
                    ID_list:  list of servo IDs
                    orientaiton: list of 3 rotation integers in degrees. alpha,beta,gama
@@ -323,7 +323,7 @@ def do_motion(xyz_list, ID_list, orientation=None):
     #leg_case = ID_
     if orientation:
         next_pos = K.doIkine(current_pos, xyz_list[0], xyz_list[1],
-                             xyz_list[2], body_orient=orientation)
+                             xyz_list[2], body_orient=orientation, leg= leg)
     else:
         next_pos = K.doIkine(current_pos, xyz_list[0], xyz_list[1],
                              xyz_list[2],leg = leg)
@@ -340,10 +340,10 @@ def do_motion(xyz_list, ID_list, orientation=None):
 
 
 def singleLeg(x, y, z, alpha, beta, gama, leg_case):
-    my_list = auto_calcTrajectory(x,y,z, leg_case)
+    #my_list = auto_calcTrajectory(x,y,z, leg_case)
     ID_list = leg[leg_case]
     print("ID_list=",ID_list)
-    do_motion(my_list, ID_list, orientation=[alpha, beta, gama])
+    do_motion( [x,y,z] , ID_list, orientation=[alpha, beta, gama],leg = leg_case)
 
 
 
@@ -505,8 +505,6 @@ def rippleMirror(x, y, z, alpha, beta, gama, leg_pair):
     do_motion([-x, y, z], legs, orientation=[alpha, beta, gama])
 
 def auto_calcTrajectory(x,y,z,leg_case):
-    x = x
-    compute = True
     #all_positions = [2002, 2218, 957, 2012, 1918, 2971, 2127, 2200, 1027, 2123, 1887, 3048, 2011, 2188, 1097, 2003, 1872, 3120]
     all_positions = readPos()
     ee_xyz, servoPos = K.doFkine(all_positions)
@@ -514,12 +512,15 @@ def auto_calcTrajectory(x,y,z,leg_case):
              x = x + 1
              print(x,y,z)
              time.sleep(0.2)
+             
     else:
-        newPoint = K.doIkine(all_positions, x, y, z,body_orient=None, leg =leg_case, auto = None)
-        print("im here too, something is scarry")
-        print(newPoint)
-        print(x,y,z)
-    return [x,y,z]
+        #newPoint = K.doIkine(all_positions, x, y, z,body_orient=None, leg =leg_case, auto = None)
+        #print("im here too, something is scarry")
+        #print(newPoint)
+        print("hellooooo")
+        singleLeg(x, y, z, 0, 0, 0, leg_case)
+
+        return [x,y,z]
  
 def tripodGait_stairs(x, y, z):
     delay = 0.2
