@@ -8,6 +8,7 @@ from controller import Robot, Node, Motor, PositionSensor
 SENSOR_SAMPLE_PERIOD = 100
 all_positions = []
 all_touches = []
+id_list = []
 positions = []
 
 
@@ -250,31 +251,30 @@ class Kinematics(object):
 ###########################################################################################################################
 
 def standUp():
-    #front_legs  = [1, 2, 3,  4, 5, 6]
-    #rear_legs   = [13, 14, 15,  16, 17, 18]
-    #middle_legs = [7, 8, 9,  10, 11, 12]
+    front_legs  = [1, 2, 3,  4, 5, 6]
+    middle_legs = [7, 8, 9,  10, 11, 12]
+    rear_legs   = [13, 14, 15,  16, 17, 18]
     #standup_pos = [2048, -2218, 1024,   
     #               2048, -1878, 3048,
     #               2048, -2218, 1024,   
     #               2048, -1878, 3048,
     #               2048, -2218, 1024,   
     #               2048, -1878, 3048]  
-    standup_pos = [0.00, -0.26, 1.07,    
-                   0.00, -0.26, 1.07,   
-                   0.00, -0.26, 1.07,    
-                   0.00, -0.26, 1.07,
-                   0.00, -0.26, 1.07,
-                   0.00, -0.26, 1.07]
+    front_standup  = [0.00, -0.26, 1.07,    
+                      0.00, -0.26, 1.07]
+    middle_standup = [0.00, -0.26, 1.07,    
+                      0.00, -0.26, 1.07]
+    rear_standup   = [0.00, -0.26, 1.07,
+                      0.00, -0.26, 1.07]
     #front_standup  = list_combine(front_legs, standup_pos)
     #rear_standup   = list_combine(rear_legs, standup_pos)
     #middle_standup = list_combine(middle_legs, standup_pos)
     #positions = K.step_to_rad(standup_pos)
-    positions = standup_pos
-    C.positionN(positions) # was front_standup in non-simulation
+    C.positionN(front_legs, front_standup) 
     #time.sleep(1)
-    #C.positionN(rear_standup)
+    C.positionN(rear_legs, rear_standup)
     #time.sleep(1)
-    #C.positionN(_middle_standup)
+    C.positionN(middle_legs, middle_standup)
     #time.sleep(1)
 
 
@@ -289,7 +289,7 @@ def parallelGait(alpha, beta, gamma, dist_x, dist_y, dist_z):
     #accelerationAll(scaler)
     next_pos = K.step_to_rad(next_pos)
     print(next_pos)
-    C.positionN(next_pos)
+    C.positionAll(next_pos)
     #time.sleep(0.35)
 
 
@@ -308,8 +308,7 @@ def yawRotation(degrees):
     current_pos = C.readPos()
     next_pos    = K.doIkineRotationEuler(current_pos, alpha_rad, 0, 0, 0, 0, 0)
     #pos_list    = list_combine(TG_1, next_pos)
-    positions = next_pos
-    C.positionN(positions)
+    C.positionN(TG_1, next_pos)
     #time.sleep(delay)
 
     do_motion([0, 0, -20], TG_2)
@@ -318,16 +317,14 @@ def yawRotation(degrees):
     do_motion([0, 0, 20], TG_1)
     #time.sleep(delay)
     
-    positions = C.readPos()
-    positions[0]  = K.step_to_rad(2048)
-    positions[9]  = K.step_to_rad(2048)
-    positions[12] = K.step_to_rad(2048)
-    C.positionN(positions) # Converted to radians, old was [1, 2048, 10, 2048, 13, 2048] steps
+    id_list = [1, 10, 13]
+    positions = [K.step_to_rad(2048), K.step_to_rad(2048), K.step_to_rad(2048)]
+    C.positionN(id_list, positions)
     #time.sleep(delay)
 
     #final_pos = list_combine(TG_1, current_pos)
     positions = current_pos
-    C.positionN(positions)
+    C.positionN(TG_1, positions)
     #time.sleep(delay)
 
 
@@ -359,7 +356,7 @@ def rippleGait(x, y, z, iterations):
         do_motion(move3, l2 + l5)
         #time.sleep(delay)
 
-        C.positionN(init_pos) # was positionAll(init_pos) for non-simulation
+        C.positionAll(init_pos) 
         #time.sleep(delay)
 
 
@@ -401,7 +398,7 @@ def waveGait(x, y, z, iterations):
         do_motion(five_leg_motion, l1 + l2 + l3 + l5)
         #time.sleep(delay)
 
-        C.positionN(init_pos) #was positionAll(init_pos) for non-simulation
+        C.positionAll(init_pos)
         #time.sleep(delay)
 
 
@@ -479,7 +476,7 @@ def tripodGait_full(x, y, z, iterations, start_pos=None):
 
         # Motion 5
         #positions = K.step_to_rad(init_pos)
-        C.positionN(init_pos)
+        C.positionAll(init_pos)
         #time.sleep(delay)
 
 
@@ -578,7 +575,7 @@ def do_motion(xyz_list, ID_list, orientation=None):
     
     positions = K.step_to_rad(next_pos)
     #print(positions) # just for debugging
-    C.positionN(positions)
+    C.positionN(id_list, positions)
 
 
 def singleLeg(x, y, z, alpha, beta, gama, leg_case):
@@ -652,23 +649,27 @@ class Controller():
             touching_sensor.enable(SENSOR_SAMPLE_PERIOD)
             self.touch_sensors.append(touching_sensor)
 
-    # Test initialiser before I got the other version working.
+    # Test initialiser before I got the above version working.
     #def init_touching_sensors(self):
     #    for name in Controller.touchNames:
     #        touching_sensor = self.robot.getTouchSensor(name + '_touch_sensor')
     #        touching_sensor.enable(SENSOR_SAMPLE_PERIOD)
     #        self.touch_sensors.append(touching_sensor)
 
-    def positionN(self, positions):
-        #if ID_list:
-        #    while self.robot.step(self.timeStep != 1:
-        #        for i in ID_list
-        #        
-        #else:
+    def positionAll(self, positions):
         while self.robot.step(self.timeStep) != 1:
             for motor, position in zip(self.motors, positions):
                 motor.setPosition(position)
-            C.reachedPos(positions)
+            C.reachedAllPos(positions)
+            break
+
+    def positionN(self, id_list, positions):
+        id_list = [x - 1 for x in id_list]
+        while self.robot.step(self.timeStep) != 1:
+            for i in range(len(id_list)):
+                j = id_list[i]
+                self.motors[j].setPosition(positions[i])
+            C.reachedNPos(id_list, positions)
             break
 
     def readPos(self):
@@ -691,22 +692,36 @@ class Controller():
             #print(all_touches)   # just for debugging
             return all_touches
 
-    def reachedPos(self, positions):
+    def reachedAllPos(self, positions):
         all_positions = []
         while all_positions != positions:
-            #self.robot.step(1)
-            #all_positions = C.readPos() #old version without rounding to nearest 2nd decimal
             all_positions = [round(x, 2) for x in C.readPos()]
             positions = [round(y, 2) for y in positions]
             #print(all_positions)   # just for debugging
             #print(positions)       # just for debugging
+
+    def reachedNPos(self, id_list, positions):
+        #print('start id list:', id_list)
+        #print('start pos list:', positions)
+        temp_positions = []
+        all_positions = [0] * len(id_list)
+        while all_positions != positions:
+            temp_positions = [round(x, 2) for x in C.readPos()]
+            positions = [round(y, 2) for y in positions]
+            for i in range(len(id_list)):
+                j = id_list[i]
+                all_positions[i] = temp_positions[j]
+            #all_positions = [0.0 if i == -0.0 else i for i in all_positions] # for fixing -0 value, but not needed
+            #print('all_positions:', all_positions)   # just for debugging
+            #print('    positions:', positions)       # just for debugging
+            return
 
     def walk(self):
         standUp()
         #tripodGait(0, 20, 10, 1)
         #waveGait(0, 20, 10, 1)
         #translationZ(50)
-        #parallelGait(50, 0, 0, 0, 0, 0)
+        parallelGait(50, 0, 0, 0, 0, 0)
         
 
 
@@ -714,16 +729,19 @@ if __name__ == "__main__":
     C = Controller()
     K = Kinematics()
     
-    #positions = [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5]
-    #C.positionN(positions)
-    #positions = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-    #C.positionN(positions)
+    #id_list = [4, 5, 6, 10, 11, 12]
+    #positions = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
+    #C.positionN(id_list, positions)
+    #positions = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
+    #C.positionAll(positions)
     
     # Function for measuring contact
     #C.readTouch()
-    id = [1, 2, 3]
-    new = [x - 1 for x in id] 
-    print(new)
+    
+
+    
+
+    
     C.walk()
     
     print(C)
