@@ -508,14 +508,15 @@ def auto_calcTrajectory(x,y,z,leg_case):
     all_positions = readPos()
     ee_xyz, servoPos = K.doFkine(all_positions)
     while K.calc_ikine( x, y, z, ee_xyz,K.leg_list[leg_case-1], auto = 1) == -1:
-             x = x + 40
+             x = x + 1
              print(x,y,z)
              time.sleep(0.2)
+             
     else:
         #newPoint = K.doIkine(all_positions, x, y, z,body_orient=None, leg =leg_case, auto = None)
         #print("im here too, something is scarry")
         #print(newPoint)
-        #print(x,y,z)
+        print("hellooooo")
         singleLeg(x, y, z, 0, 0, 0, leg_case)
 
         return [x,y,z]
