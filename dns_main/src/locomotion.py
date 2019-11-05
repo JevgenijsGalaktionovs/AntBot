@@ -319,12 +319,13 @@ def do_motion(xyz_list, ID_list, orientation=None):
        Example result: Position of servo ID7, ID8 and ID9 (Leg 3) will be
                        changed to reach end-tip x= +0, y= +30 and z= +20"""
     current_pos = readPos()
+    #leg_case = ID_
     if orientation:
         next_pos = K.doIkine(current_pos, xyz_list[0], xyz_list[1],
                              xyz_list[2], body_orient=orientation)
     else:
         next_pos = K.doIkine(current_pos, xyz_list[0], xyz_list[1],
-                             xyz_list[2])
+                             xyz_list[2],leg = leg)
 
     scaler = calc_scaler(next_pos)
     vel_acc_value = list_combine(ID_list, scaler)
@@ -338,8 +339,10 @@ def do_motion(xyz_list, ID_list, orientation=None):
 
 
 def singleLeg(x, y, z, alpha, beta, gama, leg_case):
+    my_list = auto_calcTrajectory(x,y,z, leg_case)
     ID_list = leg[leg_case]
-    do_motion([x, y, z], ID_list, orientation=[alpha, beta, gama])
+    print("ID_list=",ID_list)
+    do_motion(my_list, ID_list, orientation=[alpha, beta, gama])
 
 
 
@@ -349,11 +352,11 @@ def calculate_motion(xyz_list, ID_list, orientation=None):
        Example call  : do_motion([0, 30, 20], [7, 8, 9])
        Example result: Position of servo ID7, ID8 and ID9 (Leg 3) will be
                        changed to reach end-tip x= +0, y= +30 and z= +20 position."""
-    current_pos = readPos()
+    current_pos =[2000]*18
     if orientation:
         next_pos    = K.doIkine(current_pos, xyz_list[0], xyz_list[1], xyz_list[2], body_orient=orientation)
     else:
-        next_pos    = K.doIkine(current_pos, xyz_list[0], xyz_list[1], xyz_list[2])
+        next_pos    = K.doIkine(current_pos, xyz_list[0], xyz_list[1], xyz_list[2],leg = ID_list)
 
     scaler = calc_scaler(next_pos)
     vel_acc_value = list_combine(ID_list, scaler)
@@ -486,17 +489,50 @@ def continiousTripod(x, y, z, iterations):
 
 
 def rippleMirror(x, y, z, alpha, beta, gama, leg_pair):
-    if leg_pair == 1:  # Front legs
-        legs = leg[1] + leg[2]
-    elif leg_pair == 2:  # Middle legs
-        legs = leg[3] + leg[4]
-    elif leg_pair == 3:  # Rear legs
-        legs = leg[5] + leg[6]
+    if leg_pair < 4 and leg_pair > 0:
+        legs = leg[2*(leg_pair-1)+1] + leg[2*(leg_pair-1)+2]
+    #if leg_pair == 1:  # Front legs
+    #    legs = leg[1] + leg[2]
+    #elif leg_pair == 2:  # Middle legs
+    #    legs = leg[3] + leg[4]
+    #elif leg_pair == 3:  # Rear legs
+    #    legs = leg[5] + leg[6]
     else:
         raise ValueError('leg_pair value must be 1,2 or 3. Your value:', leg_pair)
 
     do_motion([x, y, z], legs, orientation=[alpha, beta, gama])
     do_motion([-x, y, z], legs, orientation=[alpha, beta, gama])
+
+def auto_calcTrajectory(x,y,z,leg_case):
+    x = x
+    compute = True
+    #all_positions = [2002, 2218, 957, 2012, 1918, 2971, 2127, 2200, 1027, 2123, 1887, 3048, 2011, 2188, 1097, 2003, 1872, 3120]
+    all_positions = readPos()
+    ee_xyz, servoPos = K.doFkine(all_positions)
+    while K.calc_ikine( x, y, z, ee_xyz,K.leg_list[leg_case-1], auto = 1) == -1:
+             x = x + 1
+             print(x,y,z)
+             time.sleep(0.2)
+    else:
+        newPoint = K.doIkine(all_positions, x, y, z,body_orient=None, leg =leg_case, auto = None)
+        print("im here too, something is scarry")
+        print(newPoint)
+        print(x,y,z)
+    return [x,y,z]
+ 
+def tripodGait_stairs(x, y, z):
+    delay = 0.2
+
+    TG1_m1 = [-x, -y,  0]  # Tripod Group 1 : Motion 1
+    TG2_m1 = [x,  y,  z]   # Tripod Group 2 : Motion 1
+    TG2_m2 = [0,  0, -z]   # Tripod Group 2 : Motion 2 #waiting for hugo to give me the dynamic putting down
+
+    #checking if the trajectory is fisibale
+
+    #auto_calcTrajectory(x,y,z,leg_case=[1])
+    #do_motion(TG2_m1, [1])
+    
+  
 
 def continiousTripodTactile(x, y, z, iterations):
     one_leg_calculation_up  = [x, y, z]

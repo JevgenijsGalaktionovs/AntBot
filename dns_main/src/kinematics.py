@@ -11,22 +11,22 @@ class LegConsts(object):
         self.ang_off   = ang_off            # Angular offset from body origin to first servo (mm)
         self.side      = side               # Left or Right-sided leg (servo angles inverted)
         self.f_ang_off = 20.00 * pi / 180   # Angular offset of Femur
-        self.t_ang_off = -37.78 * pi / 180  # Angular offset of Tibia
+        self.t_ang_off = -32.264 * pi / 180  # Angular offset of Tibia
         self.c_len     = 66.50              # Link length of Coxa  (mm)
         self.f_len     = 92.17              # Link length of Femur (mm)
-        self.t_len     = 294.00             # Link length of Tibia (mm)
+        self.t_len     = 194.00             # Link length of Tibia (mm)
         self.leg_nr    = leg_nr             # Leg Number
 
 
 class Kinematics(object):
     ''' Class object to compute various types of kinematics data for AntBot '''
     # Origin to coxa: x_off    y_off    z_off    ang_off  side     name
-    leg1 = LegConsts(71.6,     120.96, -17,    - pi / 3, "right", "Leg 1")
-    leg2 = LegConsts(-71.6,    120.96, -17, -2 * pi / 3, "left",  "Leg 2")
-    leg3 = LegConsts(141.33,   0,      -17,      0,      "right", "Leg 3")
-    leg4 = LegConsts(-141.33,  0,      -17,      pi,     "left",  "Leg 4")
-    leg5 = LegConsts(71.6,    -120.96, -17,      pi / 3, "right", "Leg 5")
-    leg6 = LegConsts(-71.6,   -120.96, -17,  2 * pi / 3, "left",  "Leg 6")
+    leg1 = LegConsts(71.6,     120.96, -14.9,    - pi / 3, "right", "Leg 1")
+    leg2 = LegConsts(-71.6,    120.96, -14.9, -2 * pi / 3, "left",  "Leg 2")
+    leg3 = LegConsts(141.33,   0,      -14.9,      0,      "right", "Leg 3")
+    leg4 = LegConsts(-141.33,  0,      -14.9,      pi,     "left",  "Leg 4")
+    leg5 = LegConsts(71.6,    -120.96, -14.9,      pi / 3, "right", "Leg 5")
+    leg6 = LegConsts(-71.6,   -120.96, -14.9,  2 * pi / 3, "left",  "Leg 6")
     leg_list = [leg1, leg2, leg3, leg4, leg5, leg6]
 
     ################
@@ -47,7 +47,9 @@ class Kinematics(object):
             j += 1
         return ee_xyz, servoPos
 
-    def doIkine(self, all_positions, x, y, z, body_orient=None, leg=None):
+    def doIkine(self, all_positions, x, y, z, body_orient=None, leg=None, auto=None):
+        print("1.leg is:",leg )
+        leg = leg
         ''' Function:   computes inverse kinematics
             Parameters: all_positions: list with 18 values of servo positions in steps from ID1 to ID18;
                         x,y,z: desired change in x,y,z coordinates (same for all legs)
@@ -77,9 +79,12 @@ class Kinematics(object):
 
         if leg:
             # Optional parameter. Compute inverse for a specific leg/s.
-
+            print("2.leg is:",leg )
             for i in range(len(leg)):
+                print("3.leg is:",leg )
+                print("i :",i , leg[i] )
                 j = leg[i] - 1
+                print(j)
                 thetas.extend(self.calc_ikine(x, y, z, ee_xyz[3 * j:3 * j + 3], self.leg_list[j]))
         else:
             # Compute inverse for all legs if not leg specified.
@@ -161,7 +166,7 @@ class Kinematics(object):
         ee_y   = leg.y_off + sin(theta1) * (leg.c_len + leg.f_len * cos(theta2) + leg.t_len * cos(theta3 + theta2))
         return [ee_x, ee_y, ee_z]
 
-    def calc_ikine(self, x, y, z, ee_xyz, leg):
+    def calc_ikine(self, x, y, z, ee_xyz, leg, auto=None):
         init_X   = ee_xyz[0]
         init_Y   = ee_xyz[1]
         init_Z   = ee_xyz[2]
@@ -182,16 +187,29 @@ class Kinematics(object):
             t3       = pi - acos(t3_term)
         except ValueError:
             print "Cannot compute acos(", t3_term, ") for ", leg.leg_nr
-            if t3_term < 0:
-                t3 = pi - acos(-0.99)
+            if auto is None:
+                print("something went wrong")
+                if t3_term < 0:
+                    t3 = pi - acos(-0.99)
+                else:
+                    t3 = pi - acos(0.99)
             else:
-                t3 = pi - acos(0.99)
+                print("im here dont worry")
+            return -1
+
+
         if leg.side == "right":  # ODD LEGS
             theta3 = -t3 - leg.t_ang_off
             theta2 = -(-atan2(Z, final_x) - atan2(leg.t_len * sin(t3), leg.f_len + leg.t_len * cos(t3)) + leg.f_ang_off)
         elif leg.side == "left":  # EVEN LEGS
             theta3 = t3 + leg.t_ang_off
             theta2 = -(atan2(Z, final_x) + atan2(leg.t_len * sin(t3), leg.f_len + leg.t_len * cos(t3)) - leg.f_ang_off)
+
+        #if theta2 > 1.9877574030405747 or theta2 < -1.9877574030405747 :
+        #    if theta3 < -2.3575370511554175 or theta3 > 2.3575370511554175 :
+        #        return -1
+        
+        #else:
         return [theta1, theta2, theta3]
 
     def calc_rot_displacement(self, alpha_rad, beta_rad, gama_rad, ee_xyz):

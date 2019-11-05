@@ -5,7 +5,7 @@ Definitely-Not-A-Spider, a hexapod robot created to save lives.
 ## Getting Started
 
 The project is a continuously on-going project of the Group 766, Master's Degree in Aalborg University.
-Unfortunately, it is not possible to download and run the program on your computer as it requires to have a specific set of sensors and hardaware.
+Unfortunately, it is not possible to download and run the program on your computer as it requires to have a specific set of sensors and hardware.
 
 ### Prerequisites
 
