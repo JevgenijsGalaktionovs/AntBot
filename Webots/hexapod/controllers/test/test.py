@@ -323,8 +323,7 @@ def yawRotation(degrees):
     #time.sleep(delay)
 
     #final_pos = list_combine(TG_1, current_pos)
-    positions = current_pos
-    C.positionN(TG_1, positions)
+    C.positionAll(current_pos)
     #time.sleep(delay)
 
 
@@ -438,6 +437,7 @@ def tripodGait_full(x, y, z, iterations, start_pos=None):
         init_pos = start_pos
     else:                                                  # old values in steps
         init_pos = [2002, 2218, 957, 2012, 1918, 2971, 2127, 2200, 1027, 2123, 1887, 3048, 2011, 2188, 1097, 2003, 1872, 3120]
+        init_pos = K.step_to_rad(init_pos)
         #init_pos = [-0.06981317,  0.26160759, -1.67321454, # 2002, 2218, 957,
         #            -0.05446961, -0.19869902,  1.41697719, # 2012, 1918, 2971,
         #             0.12198125,  0.23398919, -1.56580967, # 2127, 2200, 1027,
@@ -575,7 +575,7 @@ def do_motion(xyz_list, ID_list, orientation=None):
     
     positions = K.step_to_rad(next_pos)
     #print(positions) # just for debugging
-    C.positionN(id_list, positions)
+    C.positionN(ID_list, positions)
 
 
 def singleLeg(x, y, z, alpha, beta, gama, leg_case):
@@ -718,10 +718,10 @@ class Controller():
 
     def walk(self):
         standUp()
-        #tripodGait(0, 20, 10, 1)
+        tripodGait(0, 20, 10, 10)
         #waveGait(0, 20, 10, 1)
         #translationZ(50)
-        parallelGait(50, 0, 0, 0, 0, 0)
+        #parallelGait(50, 0, 0, 0, 0, 0)
         
 
 
