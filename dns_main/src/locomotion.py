@@ -514,9 +514,15 @@ def auto_calcTrajectory(x,y,z,leg_case):
     all_positions = readPos()
     ee_xyz, servoPos = K.doFkine(all_positions)
     while K.calc_ikine( x, y, z, ee_xyz,K.leg_list[leg_case-1], auto = 1) == -1:
-             x = x - 1
-             print(x,y,z)
-             time.sleep(0.2)
+        if leg_case % 2 == 1:
+            x = x + 1
+            print(x,y,z)
+            time.sleep(0.2)
+        else:
+            x = x - 1
+            print(x,y,z)
+            time.sleep(0.2)
+
     return [x,y,z]
 
 def singleLeg_stairs(x, y, z, alpha, beta, gama, leg_case):
