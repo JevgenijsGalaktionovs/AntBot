@@ -81,6 +81,7 @@ class Kinematics(object):
             # Optional parameter. Compute inverse for a specific leg/s.
             print("2.leg is:",leg )
             for i in range(len(leg)):
+                print(leg)     
                 print("3.leg is:",leg )
                 print("i :",i , leg[i] )
                 j = leg[i] - 1
@@ -88,7 +89,7 @@ class Kinematics(object):
                 print(ee_xyz)
                 print(self.leg_list[0])
                 print(x,y,z)
-                thetas.extend(self.calc_ikine(x, y, z, ee_xyz[0:3], self.leg_list[0]))
+                thetas.extend(self.calc_ikine(x, y, z, ee_xyz[j * 3 :j * 3 + 3], self.leg_list[j]))
 
         else:
             # Compute inverse for all legs if not leg specified.
@@ -208,10 +209,10 @@ class Kinematics(object):
         elif leg.side == "left":  # EVEN LEGS
             theta3 = t3 + leg.t_ang_off
             theta2 = -(atan2(Z, final_x) + atan2(leg.t_len * sin(t3), leg.f_len + leg.t_len * cos(t3)) - leg.f_ang_off)
-
-        if theta2 > 0.9 or theta2 < -0.9 :
-            if theta3 < -2.3 or theta3 > 2.3 :
-
+        print("theta2 =",theta2)
+        print("theta3 =",theta3)
+        if auto is not None:
+            if (theta2 > 1.9 or theta2 < -1.9) or (theta3 < -2.3 or theta3 > 2.3):
                 return -1
         
         return [theta1, theta2, theta3]
