@@ -260,12 +260,12 @@ def standUp():
     #               2048, -1878, 3048,
     #               2048, -2218, 1024,   
     #               2048, -1878, 3048]  
-    front_standup  = [0.00, -0.26, 1.07,    
-                      0.00, -0.26, 1.07]
-    middle_standup = [0.00, -0.26, 1.07,    
-                      0.00, -0.26, 1.07]
-    rear_standup   = [0.00, -0.26, 1.07,
-                      0.00, -0.26, 1.07]
+    front_standup  = [0.00, 0.26, 1.07,    
+                      0.00, 0.26, 1.07]
+    middle_standup = [0.00, 0.26, 1.07,    
+                      0.00, 0.26, 1.07]
+    rear_standup   = [0.00, 0.26, 1.07,
+                      0.00, 0.26, 1.07]
     #front_standup  = list_combine(front_legs, standup_pos)
     #rear_standup   = list_combine(rear_legs, standup_pos)
     #middle_standup = list_combine(middle_legs, standup_pos)
@@ -329,7 +329,7 @@ def yawRotation(degrees):
 
 def rippleGait(x, y, z, iterations):
     init_pos = C.readPos()
-    delay = 0.3
+    #delay = 0.3
 
     move1 = [x, y, z]
     move2 = [-x / 2, -y / 2, 0]
@@ -409,7 +409,7 @@ def tripodGait(x, y, z, iterations):
 
 
 def tripodGait_start(x, y, z):
-    delay = 0.2
+    #delay = 0.2
 
     TG1_m1 = [-x, -y,  0]  # Tripod Group 1 : Motion 1
 
@@ -428,8 +428,8 @@ def tripodGait_start(x, y, z):
 
 
 def tripodGait_full(x, y, z, iterations, start_pos=None):
-    delay = 0.2
-
+    #delay = 0.2
+    print('gait full starts')
     # init_pos = [2048, 2218, 1024,   2048, 1878, 3048,
     #             2048, 2218, 1024,   2048, 1878, 3048,
     #             2048, 2218, 1024,   2048, 1878, 3048]
@@ -718,12 +718,27 @@ class Controller():
 
     def walk(self):
         standUp()
-        tripodGait(0, 20, 10, 10)
+        #tripodGait(0, 20, 10, 10)
         #waveGait(0, 20, 10, 1)
+        #rippleGait(0, 40, 10, 5)
+        singleLeg(0, 40, 10, 0, 0, 0, 1)
+        singleLeg(0, 40, 10, 0, 0, 0, 4)
+        
+        singleLeg(-0/2, -40/2, 0, 0, 0, 0, 2)
+        singleLeg(-0/2, -40/2, 0, 0, 0, 0, 5)
+        singleLeg(-0/2, -40/2, 0, 0, 0, 0, 3)
+        singleLeg(-0/2, -40/2, 0, 0, 0, 0, 6)
+        
+        print('0')
+        singleLeg(0, 0, -10, 0, 0, 0, 1)
+        print('1')
+        singleLeg(0, 0, 40, 0, 0, 0, 4)
         #translationZ(50)
         #parallelGait(50, 0, 0, 0, 0, 0)
         
-
+    #move1 = [x, y, z]
+    #move2 = [-x / 2, -y / 2, 0]
+    #move3 = [0, 0, -z]
 
 if __name__ == "__main__":
     C = Controller()
