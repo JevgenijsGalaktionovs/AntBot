@@ -299,11 +299,15 @@ def list_combine(id_list, value_list):
                     value_list: list of 18 values.
         Return:     list of format: [ID_1, Value_1, ... , ID_n, Value_n]
     '''
+    print("id_list",id_list)
+    #print(value_list)
     sr_count = 0
     output = [0] * 2 * len(id_list)  # output size must be:  # of servos * 2 (ID + VALUE)
     for x in range(len(id_list)):
+        #print(x)
         output[x + sr_count] = id_list[x]
-        output[x + sr_count + 1] = value_list[id_list[x] - 1]
+        #print("output",output)
+        output[x + sr_count + 1] = value_list[x]#id_list[x] - 1]
         sr_count += 1
     return output
 
@@ -320,18 +324,18 @@ def do_motion(xyz_list, ID_list, orientation=None,leg = None):
        Example result: Position of servo ID7, ID8 and ID9 (Leg 3) will be
                        changed to reach end-tip x= +0, y= +30 and z= +20"""
     current_pos = readPos()
-    #leg_case = ID_
     if orientation:
         next_pos = K.doIkine(current_pos, xyz_list[0], xyz_list[1],
                              xyz_list[2], body_orient=orientation, leg= leg)
+        #print("next pos", next_pos)
     else:
         next_pos = K.doIkine(current_pos, xyz_list[0], xyz_list[1],
                              xyz_list[2],leg = leg)
 
     scaler = calc_scaler(next_pos)
     vel_acc_value = list_combine(ID_list, scaler)
-    #velocityN(vel_acc_value)  # Setting same vel/acc = Trapezoid trajectory
-    #accelerationN(vel_acc_value)
+    velocityN(vel_acc_value)  # Setting same vel/acc = Trapezoid trajectory
+    accelerationN(vel_acc_value)
 
     motion = list_combine(ID_list, next_pos)
     positionN(motion)
@@ -340,10 +344,12 @@ def do_motion(xyz_list, ID_list, orientation=None,leg = None):
 
 
 def singleLeg(x, y, z, alpha, beta, gama, leg_case):
-    #my_list = auto_calcTrajectory(x,y,z, leg_case)
+    my_list = auto_calcTrajectory(x,y,z, leg_case)
+    print("my_list",my_list)
+    orient= [alpha,beta,gama]
     ID_list = leg[leg_case]
     print("ID_list=",ID_list)
-    do_motion( [x,y,z] , ID_list, orientation=[alpha, beta, gama],leg = leg_case)
+    do_motion(my_list , ID_list, orientation = orient,leg = leg_case)
 
 
 
@@ -353,14 +359,14 @@ def calculate_motion(xyz_list, ID_list, orientation=None):
        Example call  : do_motion([0, 30, 20], [7, 8, 9])
        Example result: Position of servo ID7, ID8 and ID9 (Leg 3) will be
                        changed to reach end-tip x= +0, y= +30 and z= +20 position."""
-    current_pos =[2000]*18
+    current_pos = readPos()
     if orientation:
         next_pos    = K.doIkine(current_pos, xyz_list[0], xyz_list[1], xyz_list[2], body_orient=orientation)
     else:
         next_pos    = K.doIkine(current_pos, xyz_list[0], xyz_list[1], xyz_list[2],leg = ID_list)
 
-    scaler = calc_scaler(next_pos)
-    vel_acc_value = list_combine(ID_list, scaler)
+    #scaler = calc_scaler(next_pos)
+    #vel_acc_value = list_combine(ID_list, scaler)
     motion = list_combine(ID_list, next_pos)
     return next_pos
 
@@ -499,29 +505,33 @@ def rippleMirror(x, y, z, alpha, beta, gama, leg_pair):
     #elif leg_pair == 3:  # Rear legs
     #    legs = leg[5] + leg[6]
     else:
-        raise ValueError('leg_pair value must be 1,2 or 3. Your value:', leg_pair)
+        raise ValuSeError('leg_pair value must be 1,2 or 3. Your value:', leg_pair)
 
     do_motion([x, y, z], legs, orientation=[alpha, beta, gama])
     do_motion([-x, y, z], legs, orientation=[alpha, beta, gama])
 
 def auto_calcTrajectory(x,y,z,leg_case):
-    #all_positions = [2002, 2218, 957, 2012, 1918, 2971, 2127, 2200, 1027, 2123, 1887, 3048, 2011, 2188, 1097, 2003, 1872, 3120]
     all_positions = readPos()
     ee_xyz, servoPos = K.doFkine(all_positions)
     while K.calc_ikine( x, y, z, ee_xyz,K.leg_list[leg_case-1], auto = 1) == -1:
-             x = x + 1
+             x = x - 1
              print(x,y,z)
              time.sleep(0.2)
-             
-    else:
-        #newPoint = K.doIkine(all_positions, x, y, z,body_orient=None, leg =leg_case, auto = None)
-        #print("im here too, something is scarry")
-        #print(newPoint)
-        print("hellooooo")
-        singleLeg(x, y, z, 0, 0, 0, leg_case)
+    return [x,y,z]
 
-        return [x,y,z]
- 
+def singleLeg_stairs(x, y, z, alpha, beta, gama, leg_case):
+    my_list= auto_calcTrajectory(x,y,z, leg_case)
+    print("my_list",my_list)
+    orient= [alpha,beta,gama]
+    ID_list = [3*(leg_case-1)+1,3*(leg_case-1)+2,3*(leg_case-1)+3]
+    print("ID_list=",ID_list)
+    all_positions = readPos()
+    next_pos = K.doIkine(all_positions, my_list[0], my_list[1], my_list[2], body_orient=orient, leg=leg_case, auto=None)
+    print("nexpos",next_pos)
+    ae = [ID_list[0],next_pos[0],ID_list[1],next_pos[1],ID_list[2],next_pos[2]]
+    print("ae",ae)
+    positionN(ae)
+
 def tripodGait_stairs(x, y, z):
     delay = 0.2
 
@@ -825,20 +835,20 @@ def checkContact():
 #standUp()
 #time.sleep(1)
 #checkContact()	
-torque(0)
-pwm_list = [800]*18
-pwmAll(pwm_list)
-scaler_acc = [20] * 18
-scaler_vel = [50] * 18
-velocityAll(scaler_vel)
-accelerationAll(scaler_acc)
-torque(1)
-standUp()
-velocityAll(scaler_vel)
-accelerationAll(scaler_acc)
-time.sleep(1)
+#torque(0)
+#pwm_list = [800]*18
+#pwmAll(pwm_list)
+#scaler_acc = [20] * 18
+#scaler_vel = [50] * 18
+#velocityAll(scaler_vel)
+#accelerationAll(scaler_acc)
+#torque(1)
+#standUp()
+#velocityAll(scaler_vel)
+#accelerationAll(scaler_acc)
+#time.sleep(1)
 #translationZ(-50)
-time.sleep(1)
-velocityAll(scaler_vel)
-accelerationAll(scaler_acc)
-continiousTripodTactile(0, 40, 50, 20)
+#time.sleep(1)
+#velocityAll(scaler_vel)
+#accelerationAll(scaler_acc)
+#continiousTripodTactile(0, 10, 10, 20)
