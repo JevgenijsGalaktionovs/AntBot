@@ -344,13 +344,10 @@ def do_motion(xyz_list, ID_list, orientation=None,leg = None):
 
 
 def singleLeg(x, y, z, alpha, beta, gama, leg_case):
-    my_list = auto_calcTrajectory(x,y,z, leg_case)
-    print("my_list",my_list)
     orient= [alpha,beta,gama]
     ID_list = leg[leg_case]
     print("ID_list=",ID_list)
-    do_motion(my_list , ID_list, orientation = orient,leg = leg_case)
-
+    do_motion([x,y,z], ID_list, orientation = orient,leg = leg_case)
 
 
 def calculate_motion(xyz_list, ID_list, orientation=None):
@@ -513,12 +510,14 @@ def rippleMirror(x, y, z, alpha, beta, gama, leg_pair):
 def auto_calcTrajectory(x,y,z,leg_case):
     all_positions = readPos()
     ee_xyz, servoPos = K.doFkine(all_positions)
+    ee_xyz = [ee_xyz[3*(leg_case-1)],ee_xyz[3*(leg_case-1)+1],ee_xyz[3*(leg_case-1)+2]]
+    print("xyz",ee_xyz)
     while K.calc_ikine( x, y, z, ee_xyz,K.leg_list[leg_case-1], auto = 1) == -1:
         if leg_case % 2 == 1:
             x = x + 1
             print(x,y,z)
             time.sleep(0.2)
-        else:
+        elif leg_case % 2 == 0:
             x = x - 1
             print(x,y,z)
             time.sleep(0.2)
@@ -527,29 +526,69 @@ def auto_calcTrajectory(x,y,z,leg_case):
 
 def singleLeg_stairs(x, y, z, alpha, beta, gama, leg_case):
     my_list= auto_calcTrajectory(x,y,z, leg_case)
-    print("my_list",my_list)
     orient= [alpha,beta,gama]
     ID_list = [3*(leg_case-1)+1,3*(leg_case-1)+2,3*(leg_case-1)+3]
-    print("ID_list=",ID_list)
     all_positions = readPos()
     next_pos = K.doIkine(all_positions, my_list[0], my_list[1], my_list[2], body_orient=orient, leg=leg_case, auto=None)
-    print("nexpos",next_pos)
     ae = [ID_list[0],next_pos[0],ID_list[1],next_pos[1],ID_list[2],next_pos[2]]
-    print("ae",ae)
-    positionN(ae)
+    #positionN(ae)
+    return ae, my_list
 
-def tripodGait_stairs(x, y, z):
-    delay = 0.2
-
-    TG1_m1 = [-x, -y,  0]  # Tripod Group 1 : Motion 1
-    TG2_m1 = [x,  y,  z]   # Tripod Group 2 : Motion 1
-    TG2_m2 = [0,  0, -z]   # Tripod Group 2 : Motion 2 #waiting for hugo to give me the dynamic putting down
-
-    #checking if the trajectory is fisibale
-
-    #auto_calcTrajectory(x,y,z,leg_case=[1])
-    #do_motion(TG2_m1, [1])
+def singleLeg_walk(x, y, z, alpha, beta, gama, leg_case):
+    my_list= [x,y,z]
+    orient= [alpha,beta,gama]
+    ID_list = [3*(leg_case-1)+1,3*(leg_case-1)+2,3*(leg_case-1)+3]
+    all_positions = readPos()
+    next_pos = K.doIkine(all_positions, my_list[0], my_list[1], my_list[2], body_orient=orient, leg=leg_case, auto=None)
+    ae = [ID_list[0],next_pos[0],ID_list[1],next_pos[1],ID_list[2],next_pos[2]]
+    #positionN(ae)
+    return ae
     
+
+def tripodGait_stairs(lift, alpha, beta, gama, depth, riser):
+    delay = 2
+    gone_forward = 0
+    step = depth/4
+    print("step",step)
+    ae = []
+    front_legs = True
+    middle_legs = False
+    rare_legs = False
+    while gone_forward < step:     #depth-step:
+        if front_legs is True:
+            ae_stored1, xyz_stored = singleLeg_stairs( 0, 0, riser + lift,alpha,beta,gama,1)
+            ae.extend(ae_stored1)
+            print("ae",ae)
+        elif front_legs is not True:
+            print("im not here")
+            ae.extend(singleLeg_walk( 0, 0, lift,alpha,beta,gama,1))
+        if middle_legs is True:
+            ae_stored4, xyz_stored = singleLeg_stairs( 0, 0, riser + lift,alpha,beta,gama,4)
+            ae.extend(ae_stored4)
+            pint("leg4 lift up")
+        elif middle_legs is not True:
+            print("ae",ae)
+            ae.extend(singleLeg_walk( 0, 0, lift,alpha,beta,gama,4))
+        if rare_legs is True: 
+            ae_stored5, xyz_stored = singleLeg_stairs( 0, 0, riser + lift,alpha,beta,gama,5)
+            ae.extend(ae_stored5)
+            pint("leg5 lift up")
+        elif rare_legs is not True:
+            ae.extend(singleLeg_walk( 0, 0, lift,alpha,beta,gama,5))
+            print("ae",ae)
+        ae.extend(singleLeg_walk( 0, -step, 0,alpha,beta,gama,2))
+        ae.extend(singleLeg_walk( 0, -step, 0,alpha,beta,gama,3))
+        ae.extend(singleLeg_walk( 0, -step, 0,alpha,beta,gama,6))
+        positionN(ae)
+        time.sleep(delay/2)
+
+    ##########put down
+        gone_forward = gone_forward + step
+        print(gone_forward)
+        front_legs = False
+        
+
+
   
 
 def continiousTripodTactile(x, y, z, iterations):
@@ -817,26 +856,26 @@ def continiousTripodTactile(x, y, z, iterations):
 	orientation=get_orietation()
 	parallelGait(0, -orientation[1], -orientation[0], 0, 0, 0)
 	time.sleep(2)
-def checkContact():
-	for x in range (20):
-		fsr = readFSR()
-		leg_trigger=[True]*6
-		print fsr
-		for x in range (6): 
-			if fsr[x] < 100:
-				print ("leg_",x+1 ,"is not activated")
-				leg_trigger[x]=False
-		print leg_trigger 
-		for x in range (6):
-			stepping_down_calculation = [0,0,-5]
-	    		downCalc=calculate_motion(stepping_down_calculation,l1)
-			if leg_trigger[x] == False:
-				j = x
-		        	positionN([3*j+1,downCalc[3*j],3*j+2,downCalc[3*j+1],3*j+3,downCalc[3*j+2]])
-		if False in leg_trigger:
-			print "All legs are not in contact"
-		else:	
-			break
+#def checkContact():
+	#for x in range (20):
+	#	fsr = readFSR()
+	#	leg_trigger=[True]*6
+	#	print fsr
+	#	for x in range (6): 
+	#		if fsr[x] < 100:
+	#			print ("leg_",x+1 ,"is not activated")
+	#			leg_trigger[x]=False
+	#	print leg_trigger 
+	#	for x in range (6):
+	#		stepping_down_calculation = [0,0,-5]
+	#    	downCalc=calculate_motion(stepping_down_calculation,l1)
+	#		if leg_trigger[x] == False:
+    #                j = x
+    #                positionN([3*j+1,downCalc[3*j],3*j+2,downCalc[3*j+1],3*j+3,downCalc[3*j+2]])
+	#	if False in leg_trigger:
+	#		print "All legs are not in contact"
+	#	else:	
+	#		break
 
 #standUp()
 #time.sleep(1)

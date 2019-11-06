@@ -18,10 +18,12 @@ standUp()
 time.sleep(2)
 #parallelGait(0, 10, -10, 0, 0, 0)
 #time.sleep(2)
-#singleLeg(0, 50, 120, 0, 0, 0, 1)
-auto_calcTrajectory(0,0,120,1)
+#singleLeg(0, 50, 50, 0, 0, 0, 4)
+#auto_calcTrajectory(0,0,150,1)
 #singleLeg_stairs(0, 0, 120, 0, 0, 0, 2)
 #get_orietation()
-
+tripodGait_stairs(20, 0, 0, 0, 180, 100)
+#time.sleep(2)
+#checkContact()
 
 
