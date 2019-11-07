@@ -360,11 +360,11 @@ def calculate_motion(xyz_list, ID_list, orientation=None):
     if orientation:
         next_pos    = K.doIkine(current_pos, xyz_list[0], xyz_list[1], xyz_list[2], body_orient=orientation)
     else:
-        next_pos    = K.doIkine(current_pos, xyz_list[0], xyz_list[1], xyz_list[2],leg = ID_list)
+        next_pos    = K.doIkine(current_pos, xyz_list[0], xyz_list[1], xyz_list[2])
 
     #scaler = calc_scaler(next_pos)
     #vel_acc_value = list_combine(ID_list, scaler)
-    motion = list_combine(ID_list, next_pos)
+    #motion = list_combine(ID_list, next_pos)
     return next_pos
 
 
@@ -856,35 +856,39 @@ def continiousTripodTactile(x, y, z, iterations):
 	orientation=get_orietation()
 	parallelGait(0, -orientation[1], -orientation[0], 0, 0, 0)
 	time.sleep(2)
-#def checkContact():
-	#for x in range (20):
-	#	fsr = readFSR()
-	#	leg_trigger=[True]*6
-	#	print fsr
-	#	for x in range (6): 
-	#		if fsr[x] < 100:
-	#			print ("leg_",x+1 ,"is not activated")
-	#			leg_trigger[x]=False
-	#	print leg_trigger 
-	#	for x in range (6):
-	#		stepping_down_calculation = [0,0,-5]
-	#    	downCalc=calculate_motion(stepping_down_calculation,l1)
-	#		if leg_trigger[x] == False:
-    #                j = x
-    #                positionN([3*j+1,downCalc[3*j],3*j+2,downCalc[3*j+1],3*j+3,downCalc[3*j+2]])
-	#	if False in leg_trigger:
-	#		print "All legs are not in contact"
-	#	else:	
-	#		break
+def checkContact():
+	for x in range (20):
+		fsr = readFSR()
+		leg_trigger=[True]*6
+		print fsr
+		for x in range (6): 
+			if fsr[x] < 100:
+				print ("leg_",x+1 ,"is not activated")
+				leg_trigger[x]=False
+		print leg_trigger 
+		for x in range (6):
+			stepping_down_calculation = [0,0,-5]
+	    		downCalc=calculate_motion(stepping_down_calculation,l1)
+			if leg_trigger[x] == False:
+				j = x
+		        	positionN([3*j+1,downCalc[3*j],3*j+2,downCalc[3*j+1],3*j+3,downCalc[3*j+2]])
+		if False in leg_trigger:
+			print "All legs are not in contact"
+		else:	
+			break
+torque(0)
+pwm_list = [800]*18
+pwmAll(pwm_list)
+scaler_acc = [20] * 18
+scaler_vel = [50] * 18
+velocityAll(scaler_vel)
+accelerationAll(scaler_acc)
+torque(1)
+standUp()
+time.sleep(1)
+continiousTripodTactile(0, 30, 20, 20)
+checkContact()	
 
-#standUp()
-#time.sleep(1)
-#checkContact()	
-#torque(0)
-#pwm_list = [800]*18
-#pwmAll(pwm_list)
-#scaler_acc = [20] * 18
-#scaler_vel = [50] * 18
 #velocityAll(scaler_vel)
 #accelerationAll(scaler_acc)
 #torque(1)
