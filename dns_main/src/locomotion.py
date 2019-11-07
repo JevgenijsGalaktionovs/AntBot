@@ -363,7 +363,7 @@ def calculate_motion(xyz_list, ID_list, orientation=None):
     if orientation:
         next_pos    = K.doIkine(current_pos, xyz_list[0], xyz_list[1], xyz_list[2], body_orient=orientation)
     else:
-        next_pos    = K.doIkine(current_pos, xyz_list[0], xyz_list[1], xyz_list[2],leg = ID_list)
+        next_pos    = K.doIkine(current_pos, xyz_list[0], xyz_list[1], xyz_list[2])
 
     #scaler = calc_scaler(next_pos)
     #vel_acc_value = list_combine(ID_list, scaler)
@@ -838,9 +838,9 @@ def checkContact():
 		else:	
 			break
 
-#standUp()
-#time.sleep(1)
-#checkContact()	
+standUp()
+time.sleep(1)
+checkContact()	
 #torque(0)
 #pwm_list = [800]*18
 #pwmAll(pwm_list)
