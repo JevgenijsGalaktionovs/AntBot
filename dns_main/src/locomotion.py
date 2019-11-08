@@ -2,7 +2,7 @@
 import time
 from math import pi
 
-from service_router import *
+#from service_router import *
 from kinematics     import Kinematics
 from parallel_forward import get_orietation
 
@@ -659,6 +659,11 @@ def tripodGait_stairs(lift, alpha, beta, gama, depth, riser):
         parallelGait(0,-beta,-gama,0,0,0)
         time.sleep(delay/2)
 
+    ##########put down
+        gone_forward = gone_forward + step
+        print(gone_forward)
+        front_legs = False
+K.make_poliganCornes([1,2,3,4,5])
   
 
 def continiousTripodTactile(x, y, z, iterations):

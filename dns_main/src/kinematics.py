@@ -1,6 +1,6 @@
 # !/usr/bin/env python2
 from math import pi, cos, sin, atan2, acos, sqrt, pow, radians
-
+#from service_router import *
 
 class LegConsts(object):
     ''' Class object to store characteristics of each leg '''
@@ -81,14 +81,7 @@ class Kinematics(object):
             # Optional parameter. Compute inverse for a specific leg/s.
             #print("2.leg is:",leg )
             for i in range(len(leg)):
-                #print(leg)     
-                #print("3.leg is:",leg )
-                #print("i :",i , leg[i] )
                 j = leg[i] - 1
-                #print(j)
-                #print(ee_xyz)
-                #print(self.leg_list[0])
-                #print(x,y,z)
                 thetas.extend(self.calc_ikine(x, y, z, ee_xyz[j * 3 :j * 3 + 3], self.leg_list[j]))
 
         else:
@@ -240,3 +233,17 @@ class Kinematics(object):
 
     def step_to_rad(self, pos_steps):
         return [(((x / 2047.5) - 1) * pi) for x in pos_steps]
+
+    def make_poliganCornes(self,leg_list):
+
+        all_positions = readPos()
+        xyz_polygan = []
+        ee_xyz, servoPos = self.doFkine(all_positions)
+        newEe_xyz = [ee_xyz[0],ee_xyz[1],ee_xyz[2],ee_xyz[3],ee_xyz[4],ee_xyz[5],ee_xyz[9],ee_xyz[10],ee_xyz[11],ee_xyz[15],ee_xyz[16],ee_xyz[17],ee_xyz[12],ee_xyz[13],ee_xyz[14],ee_xyz[6],ee_xyz[7],ee_xyz[8]]
+        print(newEe_xyz)
+        if leg_list is int:
+            leg_list = [leg_list]
+        for i in range(len(leg_list)):
+            j = leg_list[i]-1 
+            xyz_polygan.extend((newEe_xyz[j * 3 :j * 3 + 3])
+        return xyz_polygan

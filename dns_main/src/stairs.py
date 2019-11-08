@@ -1,7 +1,7 @@
 #!/usr/bin/env python2
 from math import pi
 import time
-from service_router import *
+#from service_router import *
 from kinematics     import Kinematics
 from locomotion     import *
 from parallel_forward import *
