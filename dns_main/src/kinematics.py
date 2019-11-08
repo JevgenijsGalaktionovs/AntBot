@@ -22,11 +22,11 @@ class Kinematics(object):
     ''' Class object to compute various types of kinematics data for AntBot '''
     # Origin to coxa: x_off    y_off    z_off    ang_off  side     name
     leg1 = LegConsts(71.6,     120.96, -14.9,    - pi / 3, "right", "Leg 1")
-    leg2 = LegConsts(-71.6,    120.96, -14.9, -2 * pi / 3, "left",  "Leg 2")
+    leg2 = LegConsts(-71.6,    120.96, -14.9, -2 * pi / 3, "right",  "Leg 2")
     leg3 = LegConsts(141.33,   0,      -14.9,      0,      "right", "Leg 3")
-    leg4 = LegConsts(-141.33,  0,      -14.9,      pi,     "left",  "Leg 4")
+    leg4 = LegConsts(-141.33,  0,      -14.9,      pi,     "right",  "Leg 4")
     leg5 = LegConsts(71.6,    -120.96, -14.9,      pi / 3, "right", "Leg 5")
-    leg6 = LegConsts(-71.6,   -120.96, -14.9,  2 * pi / 3, "left",  "Leg 6")
+    leg6 = LegConsts(-71.6,   -120.96, -14.9,  2 * pi / 3, "right",  "Leg 6")
     leg_list = [leg1, leg2, leg3, leg4, leg5, leg6]
 
     ################
@@ -48,7 +48,7 @@ class Kinematics(object):
         return ee_xyz, servoPos
 
     def doIkine(self, all_positions, x, y, z, body_orient=None, leg=None, auto=None):
-        print("1.leg is:",leg )
+        #print("1.leg is:",leg )
         leg = leg
         ''' Function:   computes inverse kinematics
             Parameters: all_positions: list with 18 values of servo positions in steps from ID1 to ID18;
@@ -79,16 +79,16 @@ class Kinematics(object):
 
         if leg:
             # Optional parameter. Compute inverse for a specific leg/s.
-            print("2.leg is:",leg )
+            #print("2.leg is:",leg )
             for i in range(len(leg)):
-                print(leg)     
-                print("3.leg is:",leg )
-                print("i :",i , leg[i] )
+                #print(leg)     
+                #print("3.leg is:",leg )
+                #print("i :",i , leg[i] )
                 j = leg[i] - 1
-                print(j)
-                print(ee_xyz)
-                print(self.leg_list[0])
-                print(x,y,z)
+                #print(j)
+                #print(ee_xyz)
+                #print(self.leg_list[0])
+                #print(x,y,z)
                 thetas.extend(self.calc_ikine(x, y, z, ee_xyz[j * 3 :j * 3 + 3], self.leg_list[j]))
 
         else:
@@ -193,13 +193,13 @@ class Kinematics(object):
         except ValueError:
             print "Cannot compute acos(", t3_term, ") for ", leg.leg_nr
             if auto is None:
-                print("something went wrong")
+                #print("something went wrong")
                 if t3_term < 0:
                     t3 = pi - acos(-0.99)
                 else:
                     t3 = pi - acos(0.99)
             else:
-                print("im here dont worry")
+                #print("im here dont worry")
                 return -1
 
 
@@ -209,10 +209,10 @@ class Kinematics(object):
         elif leg.side == "left":  # EVEN LEGS
             theta3 = t3 + leg.t_ang_off
             theta2 = -(atan2(Z, final_x) + atan2(leg.t_len * sin(t3), leg.f_len + leg.t_len * cos(t3)) - leg.f_ang_off)
-        print("theta2 =",theta2)
-        print("theta3 =",theta3)
+        #print("theta2 =",theta2)
+        #print("theta3 =",theta3)
         if auto is not None:
-            if (theta2 > 1.9 or theta2 < -1.9) or (theta3 < -2.3 or theta3 > 2.3):
+            if (theta2 > 1.8 or theta2 < -1.8) or (theta3 < -2.2 or theta3 > 2.2):
                 return -1
         
         return [theta1, theta2, theta3]

@@ -40,9 +40,9 @@ def standUp():
     rear_legs   = [13, 14, 15,  16, 17, 18]
     middle_legs = [7, 8, 9,  10, 11, 12]
 
-    standup_pos = [2048, 2218, 1024,   2048, 1878, 3048,
-                   2048, 2218, 1024,   2048, 1878, 3048,
-                   2048, 2218, 1024,   2048, 1878, 3048]
+    standup_pos = [2048, 2418, 824,   2048, 2418, 824,
+                   2048, 2418, 824,   2048, 2418, 824,
+                   2048, 2418, 824,   2048, 2418, 824]
     front_standup  = list_combine(front_legs, standup_pos)
     rear_standup   = list_combine(rear_legs, standup_pos)
     middle_standup = list_combine(middle_legs, standup_pos)
@@ -510,17 +510,18 @@ def rippleMirror(x, y, z, alpha, beta, gama, leg_pair):
 def auto_calcTrajectory(x,y,z,leg_case):
     all_positions = readPos()
     ee_xyz, servoPos = K.doFkine(all_positions)
+    print("whole", ee_xyz)
     ee_xyz = [ee_xyz[3*(leg_case-1)],ee_xyz[3*(leg_case-1)+1],ee_xyz[3*(leg_case-1)+2]]
     print("xyz",ee_xyz)
     while K.calc_ikine( x, y, z, ee_xyz,K.leg_list[leg_case-1], auto = 1) == -1:
         if leg_case % 2 == 1:
             x = x + 1
-            print(x,y,z)
-            time.sleep(0.2)
+            #print(x,y,z)
+            #time.sleep(0.2)
         elif leg_case % 2 == 0:
             x = x - 1
-            print(x,y,z)
-            time.sleep(0.2)
+            #print(x,y,z)
+            #time.sleep(0.2)
 
     return [x,y,z]
 
@@ -548,29 +549,34 @@ def singleLeg_walk(x, y, z, alpha, beta, gama, leg_case):
 def tripodGait_stairs(lift, alpha, beta, gama, depth, riser):
     delay = 2
     gone_forward = 0
-    step = depth/4
+    step = (depth/4)
     print("step",step)
     ae = []
+    ae1 = []
+    ae2 = []
+    ae3 = []
+    ae4 = []
+    ae5 = []
     front_legs = True
     middle_legs = False
     rare_legs = False
     while gone_forward < step:     #depth-step:
         if front_legs is True:
-            ae_stored1, xyz_stored = singleLeg_stairs( 0, 0, riser + lift,alpha,beta,gama,1)
+            ae_stored1, xyz_stored1 = singleLeg_stairs( 0, 0, riser + lift,alpha,beta,gama,1)
             ae.extend(ae_stored1)
             print("ae",ae)
         elif front_legs is not True:
             print("im not here")
             ae.extend(singleLeg_walk( 0, 0, lift,alpha,beta,gama,1))
         if middle_legs is True:
-            ae_stored4, xyz_stored = singleLeg_stairs( 0, 0, riser + lift,alpha,beta,gama,4)
+            ae_stored4, xyz_stored4 = singleLeg_stairs( 0, 0, riser + lift,alpha,beta,gama,4)
             ae.extend(ae_stored4)
             pint("leg4 lift up")
         elif middle_legs is not True:
             print("ae",ae)
             ae.extend(singleLeg_walk( 0, 0, lift,alpha,beta,gama,4))
         if rare_legs is True: 
-            ae_stored5, xyz_stored = singleLeg_stairs( 0, 0, riser + lift,alpha,beta,gama,5)
+            ae_stored5, xyz_stored5 = singleLeg_stairs( 0, 0, riser + lift,alpha,beta,gama,5)
             ae.extend(ae_stored5)
             pint("leg5 lift up")
         elif rare_legs is not True:
@@ -580,14 +586,75 @@ def tripodGait_stairs(lift, alpha, beta, gama, depth, riser):
         ae.extend(singleLeg_walk( 0, -step, 0,alpha,beta,gama,3))
         ae.extend(singleLeg_walk( 0, -step, 0,alpha,beta,gama,6))
         positionN(ae)
-        time.sleep(delay/2)
-
+        time.sleep(delay)
+    ###########pu forward ae1
+        ae1.extend(singleLeg_walk( -xyz_stored1[0], 2*step, 0, alpha, beta, gama,1))
+        ae1.extend(singleLeg_walk( 0, step, 0, alpha , beta, gama,4))
+        ae1.extend(singleLeg_walk( 0, step, 0, alpha , beta, gama,5))
+        positionN(ae1)
+        time.sleep(delay)
     ##########put down
-        gone_forward = gone_forward + step
-        print(gone_forward)
-        front_legs = False
-        
-
+        checkContact()
+        time.sleep(2*delay)
+    ##########seconed group lift up and push
+        if front_legs is True:
+            ae_stored2, xyz_stored2 = singleLeg_stairs( 0, step, riser + lift,alpha,beta,gama,2)
+            ae2.extend(ae_stored2)
+            print("stored2",xyz_stored2)
+        elif front_legs is not True:
+            ae2.extend(singleLeg_walk( 0, 0, lift,alpha,beta,gama,2))
+        if middle_legs is True:
+            ae_stored3, xyz_stored3 = singleLeg_stairs( 0, 0, riser + lift,alpha,beta,gama,3)
+            ae2.extend(ae_stored3)
+        elif middle_legs is not True:
+            ae2.extend(singleLeg_walk( 0, 0, lift,alpha,beta,gama,3))
+        if rare_legs is True: 
+            ae_stored6, xyz_stored6 = singleLeg_stairs( 0, 0, riser + lift,alpha,beta,gama,6)
+            ae2.extend(ae_stored6)
+        elif rare_legs is not True:
+            ae2.extend(singleLeg_walk( 0, 0, lift,alpha,beta,gama,6))
+        #ae2.extend(singleLeg_walk( 0, -step, 0,alpha,beta,gama,1))
+        #ae2.extend(singleLeg_walk( 0, -step, 0,alpha,beta,gama,4))
+        #ae2.extend(singleLeg_walk( 0, -step, 0,alpha,beta,gama,5))
+        positionN(ae2)
+        time.sleep(delay)
+    ########put forward second ae3
+        ae3.extend(singleLeg_walk( 0, step, 0, alpha, beta, gama,2))
+        ae3.extend(singleLeg_walk( 0, 2*step, 0, alpha , beta, gama,3))
+        ae3.extend(singleLeg_walk( 0, 2*step, 0, alpha , beta, gama,6))
+        positionN(ae3)
+        time.sleep(2*delay)
+    #########put down second group leg 3 and 6
+        ae4.extend(singleLeg_walk( -xyz_stored2[0], step, 0, alpha, beta, gama,2))
+        ae4.extend(singleLeg_walk( 0, 0, -lift, alpha , beta, gama,3))
+        ae4.extend(singleLeg_walk( 0, 0, -lift, alpha , beta, gama,6))
+        positionN(ae4)
+        time.sleep(2*delay)
+    ####### now push with 5 legs
+        ae5.extend(singleLeg_walk( 0, -step/2, 0,alpha,beta,gama,1))
+        ae5.extend(singleLeg_walk( 0, -step/2, 0,alpha,beta,gama,3))
+        ae5.extend(singleLeg_walk( 0, -step/2, 0,alpha,beta,gama,4))
+        ae5.extend(singleLeg_walk( 0, -step/2, 0,alpha,beta,gama,5))
+        ae5.extend(singleLeg_walk( 0, -step/2, 0,alpha,beta,gama,6))
+        positionN(ae5)
+        time.sleep(2*delay)
+    #########################put down leg2
+        ae5.extend(singleLeg_walk( 0, -step/2, 0,alpha,beta,gama,1))
+        ae5.extend(singleLeg_walk( 0, -step/2, 0,alpha,beta,gama,3))
+        ae5.extend(singleLeg_walk( 0, -step/2, 0,alpha,beta,gama,4))
+        ae5.extend(singleLeg_walk( 0, -step/2, 0,alpha,beta,gama,5))
+        ae5.extend(singleLeg_walk( 0, -step/2, 0,alpha,beta,gama,6))
+        positionN(ae5)
+        time.sleep(2*delay)
+    ##########################
+        checkContact()
+        time.sleep(2*delay)
+        gone_forward = 2*step
+        print("gone_forwad", gone_forward)
+        gama,beta = get_orietation()
+        time.sleep(0.1)
+        parallelGait(0,-beta,-gama,0,0,0)
+        time.sleep(delay/2)
 
   
 
@@ -756,7 +823,7 @@ def continiousTripodTactile(x, y, z, iterations):
                 positionN([3*j+1,pos_5[3*j],3*j+2,pos_5[3*j+1],3*j+3,pos_5[3*j+2]])
             elif fsr_leg1 > 100 and fsr_leg4 > 100 and fsr_leg5 > 100:
                 break  
-	checkContact()	
+	#checkContact()	
         a2=calculate_motion(one_leg_calculation_up, l2)
         a3=calculate_motion(one_leg_calculation_up, l3)
         a6=calculate_motion(one_leg_calculation_up, l6)
@@ -852,9 +919,9 @@ def continiousTripodTactile(x, y, z, iterations):
                 positionN([3*j+1,pos_6[3*j],3*j+2,pos_6[3*j+1],3*j+3,pos_6[3*j+2]])
             elif fsr_leg2 > 100 and fsr_leg3 > 100 and fsr_leg6 > 100:
                 break 
-	checkContact()	
-	orientation=get_orietation()
-	parallelGait(0, -orientation[1], -orientation[0], 0, 0, 0)
+	#checkContact()	
+	#orientation=get_orietation()
+	#parallelGait(0, -orientation[1], -orientation[0], 0, 0, 0)
 	time.sleep(2)
 def checkContact():
 	for x in range (20):
@@ -876,18 +943,9 @@ def checkContact():
 			print "All legs are not in contact"
 		else:	
 			break
-torque(0)
-pwm_list = [800]*18
-pwmAll(pwm_list)
-scaler_acc = [20] * 18
-scaler_vel = [50] * 18
-velocityAll(scaler_vel)
-accelerationAll(scaler_acc)
-torque(1)
-standUp()
-time.sleep(1)
-continiousTripodTactile(0, 30, 20, 20)
-checkContact()	
+
+#continiousTripodTactile(0, 30, 20, 20)
+
 
 #velocityAll(scaler_vel)
 #accelerationAll(scaler_acc)
