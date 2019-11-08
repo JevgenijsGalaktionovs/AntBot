@@ -285,7 +285,7 @@ class Kinematics(object):
         print("z",z)
         r = z/cos(beta*pi/180)
         print("r",r)
-        difference = riser + r + 10
+        difference = riser + r - 10
         print("difference", difference)
         translation_z = difference * cos(beta * pi/180)
         translation_y = difference * sin(beta * pi/180)

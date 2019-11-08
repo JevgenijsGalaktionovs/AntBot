@@ -7,7 +7,7 @@ from locomotion     import *
 
 
 
-riser = 180 #mm
+riser = 100 #mm
 depth = 254 #mm
 torque(0)
 pwm_list = [800]*18
@@ -28,7 +28,7 @@ time.sleep(2)
 #auto_calcTrajectory(0,0,150,1)
 #singleLeg_stairs(0, 0, 120, 0, 0, 0, 1)
 #get_orietation()
-tripodGait_stairs(20, 0, 0, 0, 180, 100)
+tripodGait_stairsFirst(20, 0, 0, 0, 180, 100)
 
 #tripodGait(0,25,20,2)
 #time.sleep(2)
@@ -36,10 +36,10 @@ tripodGait_stairs(20, 0, 0, 0, 180, 100)
 a = K.calc_translationStairs(riser)
 print("a",a)
 time.sleep(1)
-parallelGait(0,0,0,0, a[1], a[0])
+parallelGait(0,0,0,0, a[1], -a[0])
 time.sleep(3)
-continiousTripodTactile(0,40,40,2)
-gama,beta = K.get_orientation()
-time.sleep(0.1)
-parallelGait(0,-beta,-gama,0,0,0)
-time.sleep(delay)
+#continiousTripodTactile(0,40,40,2)
+#gama,beta = K.get_orientation()
+#time.sleep(0.1)
+#parallelGait(0,-beta,-gama,0,0,0)
+#time.sleep(delay)
