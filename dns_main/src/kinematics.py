@@ -1,6 +1,8 @@
 # !/usr/bin/env python2
 from math import pi, cos, sin, atan2, acos, sqrt, pow, radians
-#from service_router import *
+from service_router import *
+from math_calc import *
+#from parallel_forward import get_orientation
 
 class LegConsts(object):
     ''' Class object to store characteristics of each leg '''
@@ -19,6 +21,7 @@ class LegConsts(object):
 
 
 class Kinematics(object):
+
     ''' Class object to compute various types of kinematics data for AntBot '''
     # Origin to coxa: x_off    y_off    z_off    ang_off  side     name
     leg1 = LegConsts(71.6,     120.96, -14.9,    - pi / 3, "right", "Leg 1")
@@ -192,20 +195,17 @@ class Kinematics(object):
                 else:
                     t3 = pi - acos(0.99)
             else:
-                #print("im here dont worry")
+                print("im here dont worry")
                 return -1
 
-
-        if leg.side == "right":  # ODD LEGS
-            theta3 = -t3 - leg.t_ang_off
-            theta2 = -(-atan2(Z, final_x) - atan2(leg.t_len * sin(t3), leg.f_len + leg.t_len * cos(t3)) + leg.f_ang_off)
-        elif leg.side == "left":  # EVEN LEGS
-            theta3 = t3 + leg.t_ang_off
-            theta2 = -(atan2(Z, final_x) + atan2(leg.t_len * sin(t3), leg.f_len + leg.t_len * cos(t3)) - leg.f_ang_off)
-        #print("theta2 =",theta2)
-        #print("theta3 =",theta3)
+        theta3 = -t3 - leg.t_ang_off
+        theta2 = -(-atan2(Z, final_x) - atan2(leg.t_len * sin(t3), leg.f_len + leg.t_len * cos(t3)) + leg.f_ang_off)
+        print("theta2 =",theta2)
+        print("theta3 =",theta3)
         if auto is not None:
+            print("auto is not none")
             if (theta2 > 1.8 or theta2 < -1.8) or (theta3 < -2.2 or theta3 > 2.2):
+                print("servo limitation")
                 return -1
         
         return [theta1, theta2, theta3]
@@ -234,10 +234,10 @@ class Kinematics(object):
     def step_to_rad(self, pos_steps):
         return [(((x / 2047.5) - 1) * pi) for x in pos_steps]
 
-    def make_poliganCornes(self,leg_list):
+    def make_poligonCorners(self,leg_list):
 
         all_positions = readPos()
-        xyz_polygan = []
+        xyz_polygon = []
         ee_xyz, servoPos = self.doFkine(all_positions)
         newEe_xyz = [ee_xyz[0],ee_xyz[1],ee_xyz[2],ee_xyz[3],ee_xyz[4],ee_xyz[5],ee_xyz[9],ee_xyz[10],ee_xyz[11],ee_xyz[15],ee_xyz[16],ee_xyz[17],ee_xyz[12],ee_xyz[13],ee_xyz[14],ee_xyz[6],ee_xyz[7],ee_xyz[8]]
         print(newEe_xyz)
@@ -245,5 +245,52 @@ class Kinematics(object):
             leg_list = [leg_list]
         for i in range(len(leg_list)):
             j = leg_list[i]-1 
-            xyz_polygan.extend((newEe_xyz[j * 3 :j * 3 + 3])
-        return xyz_polygan
+            xyz_polygon.extend((newEe_xyz[j * 3 :j * 3 + 3]))
+        return xyz_polygon
+
+    def get_orientation(self):
+        ee_xyz,servopos = self.doFkine(readPos())
+        #standup_pos = [2048, 2218, 1024,   2048, 1878, 3048,
+    #               2048, 2218, 1024,   2048, 1878, 3048,
+    #               2048, 2218, 1024,   2048, 1878, 3048]          
+        y_axis_unit = [0,1,0]
+        p1 =  ee_xyz[0:3]
+        p2 =  ee_xyz[3:6]
+        p3 =  ee_xyz[6:9]
+        p4 =  ee_xyz[9:12]
+        p5 =  ee_xyz[12:15]
+        p6 =  ee_xyz[15:18]
+        length_p1 = length(p1)
+        p51 = subtract(p5,p1)
+        p56 = subtract(p5,p6)
+        p61 = subtract(p6,p1)
+        length_p51 = length(p51)
+        p52 = subtract(p5,p2)
+        length_p56 = length(p56)
+        p43 = subtract(p4,p3)
+        length_p43 = length(p43)
+        normz = crossProduct(p51,p56)
+        unitz = unit(normz)
+      
+        beta = atan2(normz[0],normz[2])*180/pi
+        gamma = -atan2(normz[1],normz[2])*180/pi
+       
+        
+        return gamma, beta
+
+    def calc_translationStairs(self,riser):
+        gamma, beta = self.get_orientation()
+        ee_xyz,servopos = self.doFkine(readPos())
+        z = ee_xyz[17]
+        print("z",z)
+        r = z/cos(beta*pi/180)
+        print("r",r)
+        difference = riser + r + 10
+        print("difference", difference)
+        translation_z = difference * cos(beta * pi/180)
+        translation_y = difference * sin(beta * pi/180)
+        return [translation_z, translation_y]
+
+
+
+
