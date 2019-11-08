@@ -549,8 +549,8 @@ def singleLeg_walk(x, y, z, alpha, beta, gama, leg_case):
     return ae
     
 
-def tripodGait_stairs(lift, alpha, beta, gama, depth, riser):
-    delay = 1
+def tripodGait_stairsFirst(lift, alpha, beta, gama, depth, riser):
+    delay = 2
     gone_forward = 0
     step = (depth/4)
     print("step",step)
@@ -663,6 +663,8 @@ def tripodGait_stairs(lift, alpha, beta, gama, depth, riser):
         gone_forward = gone_forward + step
         print(gone_forward)
         front_legs = False
+
+    def tripodGait_stairsSecond(lift, alpha, beta, gama, depth, riser)
 
   
 
