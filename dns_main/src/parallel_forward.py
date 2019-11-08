@@ -25,15 +25,15 @@ def get_orietation():
     p5 =  ee_xyz[12:15]
     p6 =  ee_xyz[15:18]
     length_p1 = M.length(p1)
-    p45 = M.subtract(p4,p5)
-    p41 = M.subtract(p4,p1)
+    p51 = M.subtract(p5,p1)
+    p56 = M.subtract(p5,p6)
     p61 = M.subtract(p6,p1)
-    length_p61 = M.length(p61)
+    length_p51 = M.length(p51)
     p52 = M.subtract(p5,p2)
-    length_p52 = M.length(p52)
+    length_p56 = M.length(p56)
     p43 = M.subtract(p4,p3)
     length_p43 = M.length(p43)
-    normz = M.crossProduct(p45,p41)
+    normz = M.crossProduct(p51,p56)
     unitz = M.unit(normz)
     print(normz)
     print(unitz)
@@ -41,4 +41,4 @@ def get_orietation():
     gamma = -atan2(normz[1],normz[2])*180/pi
     print("beta is this number",beta)
     print(gamma)
-    return [gamma, beta]
+    return gamma, beta
