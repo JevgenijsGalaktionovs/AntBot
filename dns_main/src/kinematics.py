@@ -236,9 +236,8 @@ class Kinematics(object):
 
     def make_poligonCorners(self,leg_list):
 
-        all_positions = readPos()
         xyz_polygon = []
-        ee_xyz, servoPos = self.doFkine(all_positions)
+        ee_xyz, servoPos = self.doFkine(readPos())
         newEe_xyz = [ee_xyz[0],ee_xyz[1],ee_xyz[2],ee_xyz[3],ee_xyz[4],ee_xyz[5],ee_xyz[9],ee_xyz[10],ee_xyz[11],ee_xyz[15],ee_xyz[16],ee_xyz[17],ee_xyz[12],ee_xyz[13],ee_xyz[14],ee_xyz[6],ee_xyz[7],ee_xyz[8]]
         print(newEe_xyz)
         if leg_list is int:
@@ -247,6 +246,14 @@ class Kinematics(object):
             j = leg_list[i]-1 
             xyz_polygon.extend((newEe_xyz[j * 3 :j * 3 + 3]))
         return xyz_polygon
+
+def make_polygonLines(ee_xyz):
+    line = []
+    for i in range(len(ee_xyz/3)):
+        line.extend = [ee_xyz[3*j+3] - ee_xyz[3*j],ee_xyz[3*j+4] - ee_xyz[3*j+1],ee_xyz[3*j+5] - ee_xyz[3*j+2]]
+    return line
+def make_polygon()
+
 
     def get_orientation(self):
         ee_xyz,servopos = self.doFkine(readPos())
