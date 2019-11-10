@@ -591,7 +591,7 @@ def tripodGait_stairsFirst(lift, alpha, beta, gama, depth, riser):
         ae.extend(singleLeg_walk( 0, -step, 0,alpha,beta,gama,6))
         positionN(ae)
         checking_for_errors(80,50,ae)
-    ###########pu forward ae1
+    ###########put forward ae1
         ae1.extend(singleLeg_walk( -xyz_stored1[0], 2*step, 0, alpha, beta, gama,1))
         ae1.extend(singleLeg_walk( 0, 0, 0, 0 , 0, 0,2))
         ae1.extend(singleLeg_walk( 0, 0, 0, 0 , 0, 0,3))
@@ -669,7 +669,7 @@ def tripodGait_stairsFirst(lift, alpha, beta, gama, depth, riser):
         print("6")
     ##########################
         checkContact()
-        time.sleep(2*delay)
+        #time.sleep(2*delay)
         gone_forward = 2*step
         print("gone_forwad", gone_forward)
         gama,beta = K.get_orientation()
@@ -682,9 +682,61 @@ def tripodGait_stairsFirst(lift, alpha, beta, gama, depth, riser):
         print(gone_forward)
         front_legs = False
 
-#def tripodGait_stairsSecond(lift, alpha, beta, gama, depth, riser):
-
-  
+def tripodGait_stairsSecond(lift, alpha, beta, gama, depth, riser):
+    gama,beta = K.get_orientation()
+    delay = 2
+    gone_forward = 0
+    step = (depth/4)
+    print("step",step)
+    ae = []
+    ae1 = []
+    ae2 = []
+    ae3 = []
+    ae4 = []
+    ae5 = []
+    ae6 = []
+    front_legs = True
+    middle_legs = False
+    rare_legs = False
+    while gone_forward < step:     #depth-step:
+        if front_legs is True:
+            ae_stored1, xyz_stored1 = singleLeg_stairs( 0, 0, riser + lift,alpha,beta,gama,1)
+            ae.extend(ae_stored1)
+            print("ae",ae)
+        elif front_legs is not True:
+            print("im not here")
+            ae.extend(singleLeg_walk( 0, 0, lift,alpha,beta,gama,1))
+        ae.extend(singleLeg_walk( 0, -step, 0,alpha,beta,gama,2))
+        ae.extend(singleLeg_walk( 0, -step, 0,alpha,beta,gama,3))
+        if middle_legs is True:
+            ae_stored4, xyz_stored4 = singleLeg_stairs( 0, 0, riser + lift,alpha,beta,gama,4)
+            ae.extend(ae_stored4)
+            pint("leg4 lift up")
+        elif middle_legs is not True:
+            print("ae",ae)
+            ae.extend(singleLeg_walk( 0, 0, lift,alpha,beta,gama,4))
+        if rare_legs is True: 
+            ae_stored5, xyz_stored5 = singleLeg_stairs( 0, 0, riser + lift,alpha,beta,gama,5)
+            ae.extend(ae_stored5)
+            pint("leg5 lift up")
+        elif rare_legs is not True:
+            ae.extend(singleLeg_walk( 0, 0, lift,alpha,beta,gama,5))
+            print("ae",ae)
+        ae.extend(singleLeg_walk( 0, -step, 0,alpha,beta,gama,6))
+        positionN(ae)
+        checking_for_errors(80,50,ae)
+    ###########pu forward ae1
+        ae1.extend(singleLeg_walk( -xyz_stored1[0], 2*step, 0, alpha, beta, gama,1))
+        ae1.extend(singleLeg_walk( 0, 0, 0, 0 , 0, 0,2))
+        ae1.extend(singleLeg_walk( 0, 0, 0, 0 , 0, 0,3))
+        ae1.extend(singleLeg_walk( 0, step, 0, alpha , beta, gama,4))
+        ae1.extend(singleLeg_walk( 0, step, 0, alpha , beta, gama,5))
+        ae1.extend(singleLeg_walk( 0, 0, 0, 0 , 0, 0,6))
+        positionN(ae1)
+        checking_for_errors(80,50,ae1)
+    ##########put down
+        checkContact()
+    
 
 def continiousTripodTactile(x, y, z, iterations):
     one_leg_calculation_up  = [x, y, z]
@@ -955,7 +1007,7 @@ def checkContact():
 	for x in range (20):
 		fsr = readFSR()
 		leg_trigger=[True]*6
-		print fsr
+		print ("fsr",fsr)
 		for x in range (6): 
 			if fsr[x] < 100:
 				print ("leg_",x+1 ,"is not activated")
