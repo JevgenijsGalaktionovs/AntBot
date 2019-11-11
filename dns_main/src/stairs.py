@@ -50,5 +50,6 @@ parallelGait(0,0,0,0, a[1], -a[0])
 time.sleep(3)
 parallelGait(0,0,0,0,30,0)
 time.sleep(3)
-tripodGait_stairsSecond(20, 0, 0, 0, 180, 100)
+tripodGait_stairs(20, True, False, False, 180, 100)
+
 
