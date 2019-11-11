@@ -639,7 +639,7 @@ def tripodGait_stairsFirst(lift, alpha, beta, gama, depth, riser):
         print("3")
     #########put down second group leg 3 and 6
         ae4.extend(singleLeg_walk( 0, 0, 0, 0 , 0, 0,1))
-        ae4.extend(singleLeg_walk( -xyz_stored2[0], step, 0, alpha, beta, gama,2))
+        ae4.extend(singleLeg_walk( -xyz_stored2[0], 0, 0, alpha, beta, gama,2))
         ae4.extend(singleLeg_walk( 0, 0, -lift, alpha , beta, gama,3))
         ae4.extend(singleLeg_walk( 0, 0, 0, 0 , 0, 0,4))
         ae4.extend(singleLeg_walk( 0, 0, 0, 0 , 0, 0,5))
@@ -682,9 +682,10 @@ def tripodGait_stairsFirst(lift, alpha, beta, gama, depth, riser):
         print(gone_forward)
         front_legs = False
 
-def tripodGait_stairsSecond(lift, alpha, beta, gama, depth, riser):
+def tripodGait_stairs(lift, front_legs ,middle_legs, rare_legs riser):
     gama,beta = K.get_orientation()
     delay = 2
+    alpha = 0 
     gone_forward = 0
     step = (depth/4)
     print("step",step)
@@ -695,9 +696,6 @@ def tripodGait_stairsSecond(lift, alpha, beta, gama, depth, riser):
     ae4 = []
     ae5 = []
     ae6 = []
-    front_legs = True
-    middle_legs = False
-    rare_legs = False
     while gone_forward < step:     #depth-step:
         if front_legs is True:
             ae_stored1, xyz_stored1 = singleLeg_stairs( 0, 0, riser + lift,alpha,beta,gama,1)
@@ -736,6 +734,74 @@ def tripodGait_stairsSecond(lift, alpha, beta, gama, depth, riser):
         checking_for_errors(80,50,ae1)
     ##########put down
         checkContact()
+        ae2.extend(singleLeg_walk( 0, 0, 0, 0 , 0, 0,1))
+        if front_legs is True:
+            ae_stored2, xyz_stored2 = singleLeg_stairs( 0, step, riser + lift,alpha,beta,gama,2)
+            ae2.extend(ae_stored2)
+            print("stored2",xyz_stored2)
+        elif front_legs is not True:
+            ae2.extend(singleLeg_walk( 0, 0, lift,alpha,beta,gama,2))
+        if middle_legs is True:
+            ae_stored3, xyz_stored3 = singleLeg_stairs( 0, 0, riser + lift,alpha,beta,gama,3)
+            ae2.extend(ae_stored3)
+        elif middle_legs is not True:
+            ae2.extend(singleLeg_walk( 0, 0, lift,alpha,beta,gama,3))
+        ae2.extend(singleLeg_walk( 0, 0, 0, 0 , 0, 0,4))
+        ae2.extend(singleLeg_walk( 0, 0, 0, 0 , 0, 0,5))
+        if rare_legs is True: 
+            ae_stored6, xyz_stored6 = singleLeg_stairs( 0, 0, riser + lift,alpha,beta,gama,6)
+            ae2.extend(ae_stored6)
+        elif rare_legs is not True:
+            ae2.extend(singleLeg_walk( 0, 0, lift,alpha,beta,gama,6))
+        positionN(ae2)
+        print(ae2)
+        checking_for_errors(80,50,ae2)
+        print("2")
+        
+    ########put forward second ae3
+        ae3.extend(singleLeg_walk( 0, 0, 0, 0 , 0, 0,1))
+        ae3.extend(singleLeg_walk( 0, step, 0, alpha, beta, gama,2))
+        ae3.extend(singleLeg_walk( 0, 2*step, 0, alpha , beta, gama,3))
+        ae3.extend(singleLeg_walk( 0, 0, 0, 0 , 0, 0,4))
+        ae3.extend(singleLeg_walk( 0, 0, 0, 0 , 0, 0,5))
+        ae3.extend(singleLeg_walk( 0, 2*step, 0, alpha , beta, gama,6))
+        positionN(ae3)
+        checking_for_errors(80,50,ae3)
+        print("3")
+    #########put down second group leg 3 and 6
+        ae4.extend(singleLeg_walk( 0, 0, 0, 0 , 0, 0,1))
+        ae4.extend(singleLeg_walk( -xyz_stored2[0], 0, 0, alpha, beta, gama,2))
+        ae4.extend(singleLeg_walk( 0, 0, -lift, alpha , beta, gama,3))
+        ae4.extend(singleLeg_walk( 0, 0, 0, 0 , 0, 0,4))
+        ae4.extend(singleLeg_walk( 0, 0, 0, 0 , 0, 0,5))
+        ae4.extend(singleLeg_walk( 0, 0, -lift, alpha , beta, gama,6))
+        positionN(ae4)
+        checking_for_errors(80,50,ae4)
+        print("4")
+    ####### now push with 5 legs
+        ae5.extend(singleLeg_walk( 0, -step/2, 0,alpha,beta,gama,1))
+        ae5.extend(singleLeg_walk( 0, 0, 0, 0 , 0, 0,2))
+        ae5.extend(singleLeg_walk( 0, -step/2, 0,alpha,beta,gama,3))
+        ae5.extend(singleLeg_walk( 0, -step/2, 0,alpha,beta,gama,4))
+        ae5.extend(singleLeg_walk( 0, -step/2, 0,alpha,beta,gama,5))
+        ae5.extend(singleLeg_walk( 0, -step/2, 0,alpha,beta,gama,6))
+        positionN(ae5)
+        checking_for_errors(80,50,ae5)
+        print("5")
+    #########################put down leg2
+        ae6.extend(singleLeg_walk( 0, -step/2, 0,alpha,beta,gama,1))
+        ae6.extend(singleLeg_walk( 0, 0, 0, 0 , 0, 0,2))
+        ae6.extend(singleLeg_walk( 0, -step/2, 0,alpha,beta,gama,3))
+        ae6.extend(singleLeg_walk( 0, -step/2, 0,alpha,beta,gama,4))
+        ae6.extend(singleLeg_walk( 0, -step/2, 0,alpha,beta,gama,5))
+        ae6.extend(singleLeg_walk( 0, -step/2, 0,alpha,beta,gama,6))
+        positionN(ae6)
+        checking_for_errors(80,50,ae6)
+        print("6")
+    ##########################
+        checkContact()
+        gone_forward = gone_forward + step
+        break
     
 
 def continiousTripodTactile(x, y, z, iterations):
