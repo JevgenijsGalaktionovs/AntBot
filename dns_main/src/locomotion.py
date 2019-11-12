@@ -4,7 +4,7 @@ from math import pi
 
 from service_router import *
 from kinematics     import Kinematics
-
+from math_calc import *
 
 
 ######################################################
@@ -43,6 +43,9 @@ def standUp():
     standup_pos = [2048, 2218, 1024,   2048, 2218, 1024,
                    2048, 2218, 1024,   2048, 2218, 1024,
                    2048, 2218, 1024,   2048, 2218, 1024]
+    #standup_pos =[1980, 2201, 953,   1972, 2030, 1082,
+    #              2096, 2183, 1106,  2111, 2202, 952, 
+    #              1941, 2204, 1028,  2003, 2183, 1107]
     front_standup  = list_combine(front_legs, standup_pos)
     rear_standup   = list_combine(rear_legs, standup_pos)
     middle_standup = list_combine(middle_legs, standup_pos)
@@ -512,17 +515,21 @@ def auto_calcTrajectory(x,y,z,leg_case):
     ee_xyz, servoPos = K.doFkine(all_positions)
     print("whole", ee_xyz)
     ee_xyz = [ee_xyz[3*(leg_case-1)],ee_xyz[3*(leg_case-1)+1],ee_xyz[3*(leg_case-1)+2]]
+    leng = length(ee_xyz)
     print("xyz",ee_xyz)
     while K.calc_ikine( x, y, z, ee_xyz,K.leg_list[leg_case-1], auto = 1) == -1:
         if leg_case % 2 == 1:
-            x = x + 1
-            print(x,y,z)
-            #time.sleep(0.2)
+            if leng < 483:
+                x = x + 1
+            elif leng > 483:
+                x = x - 1
+        
         elif leg_case % 2 == 0:
-            x = x - 1
-            print(x,y,z)
-            #time.sleep(0.2)
-
+            if leng < 483:
+                x = x - 1
+            elif leng > 483:
+                x = x + 1
+        print(x,y,z)
     return [x,y,z]
  
 def tripodGait_stairs(x, y, z):
@@ -548,14 +555,28 @@ def singleLeg_walk(x, y, z, alpha, beta, gama, leg_case):
     #positionN(ae)
     return ae
     
+def half_step(x,step,z,alpha,beta,gama):
+    aa = []
+    aa.extend(singleLeg_walk( 0,-step,0,alpha,beta,gama,1))
+    aa.extend(singleLeg_walk( 0,0,z,alpha,beta,gama,2))
+    aa.extend(singleLeg_walk( 0,0,z,alpha,beta,gama,3))
+    aa.extend(singleLeg_walk( 0,-step,0,alpha,beta,gama,4))
+    aa.extend(singleLeg_walk( 0,-step,0,alpha,beta,gama,5))
+    aa.extend(singleLeg_walk( 0,0,z,alpha,beta,gama,6))
+    positionN(aa)
+    time.sleep(2)
+    aa = []
+    aa.extend(singleLeg_walk( 0,0,-z,alpha,beta,gama,2))
+    aa.extend(singleLeg_walk( 0,0,-z,alpha,beta,gama,3))
+    aa.extend(singleLeg_walk( 0,0,-z,alpha,beta,gama,6))
+    positionN(aa)
 
 def tripodGait_stairs(lift, front_legs ,middle_legs, rare_legs, depth, riser):
     gama, beta = K.get_orientation()
     delay = 2
-    alphga = 0
+    alpha = 0
     gone_forward = 0
-    step = (depth/4)
-    print("step",step)
+    step = depth/8 + 20
     ae = []
     ae1 = []
     ae2 = []
@@ -563,128 +584,85 @@ def tripodGait_stairs(lift, front_legs ,middle_legs, rare_legs, depth, riser):
     ae4 = []
     ae5 = []
     ae6 = []
-    front_legs = True
-    middle_legs = False
-    rare_legs = False
     while gone_forward < step:     #depth-step:
         if front_legs is True:
-            ae_stored1, xyz_stored1 = singleLeg_stairs( 0, 0, riser + lift,alpha,beta,gama,1)
+            ae_stored1, xyz_stored1 = singleLeg_stairs( 0, 0, riser + lift, alpha, beta, gama,1)
             ae.extend(ae_stored1)
-            print("ae",ae)
         elif front_legs is not True:
-            print("im not here")
+            xyz_stored1 = [0]*3
             ae.extend(singleLeg_walk( 0, 0, lift,alpha,beta,gama,1))
         ae.extend(singleLeg_walk( 0, -step, 0,alpha,beta,gama,2))
         ae.extend(singleLeg_walk( 0, -step, 0,alpha,beta,gama,3))
         if middle_legs is True:
             ae_stored4, xyz_stored4 = singleLeg_stairs( 0, 0, riser + lift,alpha,beta,gama,4)
             ae.extend(ae_stored4)
-            pint("leg4 lift up")
         elif middle_legs is not True:
-            print("ae",ae)
+            xyz_stored4 = [0]*3
             ae.extend(singleLeg_walk( 0, 0, lift,alpha,beta,gama,4))
         if rare_legs is True: 
             ae_stored5, xyz_stored5 = singleLeg_stairs( 0, 0, riser + lift,alpha,beta,gama,5)
             ae.extend(ae_stored5)
-            pint("leg5 lift up")
         elif rare_legs is not True:
+            xyz_stored5 = [0]*3
             ae.extend(singleLeg_walk( 0, 0, lift,alpha,beta,gama,5))
-            print("ae",ae)
         ae.extend(singleLeg_walk( 0, -step, 0,alpha,beta,gama,6))
         positionN(ae)
         checking_for_errors(80,50,ae)
     ###########put forward ae1
         ae1.extend(singleLeg_walk( -xyz_stored1[0], 2*step, 0, alpha, beta, gama,1))
-        ae1.extend(singleLeg_walk( 0, 0, 0, 0 , 0, 0,2))
-        ae1.extend(singleLeg_walk( 0, 0, 0, 0 , 0, 0,3))
-        ae1.extend(singleLeg_walk( 0, step, 0, alpha , beta, gama,4))
-        ae1.extend(singleLeg_walk( 0, step, 0, alpha , beta, gama,5))
-        ae1.extend(singleLeg_walk( 0, 0, 0, 0 , 0, 0,6))
+        ae1.extend(singleLeg_walk( 0, -step, 0, alpha , beta, gama,2))
+        ae1.extend(singleLeg_walk( 0, -step, 0, alpha , beta, gama,3))
+        ae1.extend(singleLeg_walk( -xyz_stored4[0], 2*step, 0, alpha , beta, gama,4))
+        ae1.extend(singleLeg_walk( -xyz_stored5[0], 2*step, 0, alpha , beta, gama,5))
+        ae1.extend(singleLeg_walk( 0, -step, 0, alpha, beta, gama,6))
         positionN(ae1)
         checking_for_errors(80,50,ae1)
+        checkContact()
     ##########put down
         checkContact()
+        checkContact()
     ##########seconed group lift up and push
-        ae2.extend(singleLeg_walk( 0, 0, 0, 0 , 0, 0,1))
+        ae2.extend(singleLeg_walk( 0, -step, 0,alpha,beta,gama,1))
         if front_legs is True:
-            ae_stored2, xyz_stored2 = singleLeg_stairs( 0, step, riser + lift,alpha,beta,gama,2)
+            ae_stored2, xyz_stored2 = singleLeg_stairs( 0, 0, riser + lift, alpha, beta, gama,2)
             ae2.extend(ae_stored2)
-            print("stored2",xyz_stored2)
         elif front_legs is not True:
+            xyz_stored2 = [0]*3
             ae2.extend(singleLeg_walk( 0, 0, lift,alpha,beta,gama,2))
         if middle_legs is True:
             ae_stored3, xyz_stored3 = singleLeg_stairs( 0, 0, riser + lift,alpha,beta,gama,3)
             ae2.extend(ae_stored3)
         elif middle_legs is not True:
+            xyz_stored3 = [0]*3
             ae2.extend(singleLeg_walk( 0, 0, lift,alpha,beta,gama,3))
-        ae2.extend(singleLeg_walk( 0, 0, 0, 0 , 0, 0,4))
-        ae2.extend(singleLeg_walk( 0, 0, 0, 0 , 0, 0,5))
+        ae2.extend(singleLeg_walk( 0, -step, 0,alpha,beta,gama,4))
+        ae2.extend(singleLeg_walk( 0, -step, 0,alpha,beta,gama,5))
         if rare_legs is True: 
             ae_stored6, xyz_stored6 = singleLeg_stairs( 0, 0, riser + lift,alpha,beta,gama,6)
             ae2.extend(ae_stored6)
         elif rare_legs is not True:
+            xyz_stored6 = [0]*3
             ae2.extend(singleLeg_walk( 0, 0, lift,alpha,beta,gama,6))
         positionN(ae2)
-        print(ae2)
         checking_for_errors(80,50,ae2)
-        print("2")
-        
-    ########put forward second ae3
-        ae3.extend(singleLeg_walk( 0, 0, 0, 0 , 0, 0,1))
-        ae3.extend(singleLeg_walk( 0, step, 0, alpha, beta, gama,2))
-        ae3.extend(singleLeg_walk( 0, 2*step, 0, alpha , beta, gama,3))
-        ae3.extend(singleLeg_walk( 0, 0, 0, 0 , 0, 0,4))
-        ae3.extend(singleLeg_walk( 0, 0, 0, 0 , 0, 0,5))
-        ae3.extend(singleLeg_walk( 0, 2*step, 0, alpha , beta, gama,6))
+    ###########put forward ae1
+        ae3.extend(singleLeg_walk( 0, -step, 0, alpha , beta, gama,1))
+        ae3.extend(singleLeg_walk( -xyz_stored2[0], 2*step, 0, alpha, beta, gama,2))
+        ae3.extend(singleLeg_walk( -xyz_stored3[0], 2*step, 0, alpha , beta, gama,3))
+        ae3.extend(singleLeg_walk( 0, -step, 0, alpha , beta, gama,4))
+        ae3.extend(singleLeg_walk( 0, -step, 0, alpha, beta, gama,5))
+        ae3.extend(singleLeg_walk( -xyz_stored6[0], 2*step, 0, alpha , beta, gama,6))
         positionN(ae3)
         checking_for_errors(80,50,ae3)
-        print("3")
-    #########put down second group leg 3 and 6
-        ae4.extend(singleLeg_walk( 0, 0, 0, 0 , 0, 0,1))
-        ae4.extend(singleLeg_walk( -xyz_stored2[0], 0, 0, alpha, beta, gama,2))
-        ae4.extend(singleLeg_walk( 0, 0, -lift, alpha , beta, gama,3))
-        ae4.extend(singleLeg_walk( 0, 0, 0, 0 , 0, 0,4))
-        ae4.extend(singleLeg_walk( 0, 0, 0, 0 , 0, 0,5))
-        ae4.extend(singleLeg_walk( 0, 0, -lift, alpha , beta, gama,6))
-        positionN(ae4)
-        checking_for_errors(80,50,ae4)
-        print("4")
-    ####### now push with 5 legs
-        ae5.extend(singleLeg_walk( 0, -step/2, 0,alpha,beta,gama,1))
-        ae5.extend(singleLeg_walk( 0, 0, 0, 0 , 0, 0,2))
-        ae5.extend(singleLeg_walk( 0, -step/2, 0,alpha,beta,gama,3))
-        ae5.extend(singleLeg_walk( 0, -step/2, 0,alpha,beta,gama,4))
-        ae5.extend(singleLeg_walk( 0, -step/2, 0,alpha,beta,gama,5))
-        ae5.extend(singleLeg_walk( 0, -step/2, 0,alpha,beta,gama,6))
-        positionN(ae5)
-        checking_for_errors(80,50,ae5)
-        print("5")
-    #########################put down leg2
-        ae6.extend(singleLeg_walk( 0, -step/2, 0,alpha,beta,gama,1))
-        ae6.extend(singleLeg_walk( 0, 0, 0, 0 , 0, 0,2))
-        ae6.extend(singleLeg_walk( 0, -step/2, 0,alpha,beta,gama,3))
-        ae6.extend(singleLeg_walk( 0, -step/2, 0,alpha,beta,gama,4))
-        ae6.extend(singleLeg_walk( 0, -step/2, 0,alpha,beta,gama,5))
-        ae6.extend(singleLeg_walk( 0, -step/2, 0,alpha,beta,gama,6))
-        positionN(ae6)
-        checking_for_errors(80,50,ae6)
-        print("6")
-    ##########################
-        checkContact()
-        #time.sleep(2*delay)
-        gone_forward = 2*step
-        print("gone_forwad", gone_forward)
-        gama,beta = K.get_orientation()
-        time.sleep(0.1)
-        parallelGait(0,-beta,-gama,0,0,0)
-        time.sleep(delay)
-
     ##########put down
+        checkContact()
+        checkContact()
+    ##########seconed group lift up and push
         gone_forward = gone_forward + step
         print(gone_forward)
         front_legs = False
 
-def tripodGait_stairssecond(lift, front_legs ,middle_legs, rare_legs, riser):
+def tripodGait_stairssecond(lift, front_legs ,middle_legs, rare_legs, depth, riser):
     gama, beta = K.get_orientation()
     delay = 2
     alpha = 0 

@@ -291,9 +291,10 @@ class Kinematics(object):
         ee_xyz,servopos = self.doFkine(readPos())
         z = ee_xyz[17]
         print("z",z)
+        print(beta)
         r = z/cos(beta*pi/180)
         print("r",r)
-        difference = riser + r - 10
+        difference = riser + r + 20
         print("difference", difference)
         translation_z = difference * cos(beta * pi/180)
         translation_y = difference * sin(beta * pi/180)
