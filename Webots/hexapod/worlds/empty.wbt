@@ -166,7 +166,7 @@ Robot {
                                             children [
                                               USE SERVO-CYLINDER
                                               Transform {
-                                                rotation 0 1 0 -0.925408
+                                                rotation 0 1 0 -0.562108
                                                 children [
                                                   Solid {
                                                     translation 0 0 0.09683
@@ -338,7 +338,7 @@ Robot {
                                             children [
                                               USE SERVO-CYLINDER
                                               Transform {
-                                                rotation 0 1 0 -0.925408
+                                                rotation 0 1 0 -0.562108
                                                 children [
                                                   Solid {
                                                     translation 0 0 0.09683
@@ -489,7 +489,7 @@ Robot {
                                             children [
                                               USE SERVO-CYLINDER
                                               Transform {
-                                                rotation 0 1 0 -0.925408
+                                                rotation 0 1 0 -0.562108
                                                 children [
                                                   Solid {
                                                     translation 0 0 0.09683
@@ -641,7 +641,7 @@ Robot {
                                             children [
                                               USE SERVO-CYLINDER
                                               Transform {
-                                                rotation 0 1 0 -0.925408
+                                                rotation 0 1 0 -0.562108
                                                 children [
                                                   Solid {
                                                     translation 0 0 0.09683
@@ -793,7 +793,7 @@ Robot {
                                             children [
                                               USE SERVO-CYLINDER
                                               Transform {
-                                                rotation 0 1 0 -0.925408
+                                                rotation 0 1 0 -0.562108
                                                 children [
                                                   Solid {
                                                     translation 0 0 0.09683
@@ -945,7 +945,7 @@ Robot {
                                             children [
                                               USE SERVO-CYLINDER
                                               Transform {
-                                                rotation 0 1 0 -0.925408
+                                                rotation 0 1 0 -0.562108
                                                 children [
                                                   Solid {
                                                     translation 0 0 0.09683

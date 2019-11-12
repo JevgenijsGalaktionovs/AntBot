@@ -35,28 +35,28 @@ leg = {
 class LegConsts(object):
     ''' Class object to store characteristics of each leg '''
     def __init__(self, x_off, y_off, z_off, ang_off, side, leg_nr):
-        self.x_off     = x_off              # X offset from body origin to first servo (mm)
-        self.y_off     = y_off              # Y offset from body origin to first servo (mm)
-        self.z_off     = z_off              # Z offset from body origin to first servo (mm)
-        self.ang_off   = ang_off            # Angular offset from body origin to first servo (mm)
-        self.side      = side               # Left or Right-sided leg (servo angles inverted)
-        self.f_ang_off = 20.00 * pi / 180   # Angular offset of Femur
-        self.t_ang_off = -28.27 * pi / 180  # Angular offset of Tibia
-        self.c_len     = 66.50              # Link length of Coxa  (mm)
-        self.f_len     = 92.17              # Link length of Femur (mm)
-        self.t_len     = 193.66             # Link length of Tibia (mm)
-        self.leg_nr    = leg_nr             # Leg Number
+        self.x_off     =  x_off              # X offset from body origin to first servo (mm)
+        self.y_off     =  y_off              # Y offset from body origin to first servo (mm)
+        self.z_off     =  z_off              # Z offset from body origin to first servo (mm)
+        self.ang_off   =  ang_off            # Angular offset from body origin to first servo (mm)
+        self.side      =  side               # Left or Right-sided leg (servo angles inverted)
+        self.f_ang_off =  20.00   * pi / 180 # Angular offset of Femur
+        self.t_ang_off = -32.2064 * pi / 180 # Angular offset of Tibia
+        self.c_len     =  66.50              # Link length of Coxa  (mm)
+        self.f_len     =  92.17              # Link length of Femur (mm)
+        self.t_len     =  193.66             # Link length of Tibia (mm)
+        self.leg_nr    =  leg_nr             # Leg Number
 
 
 class Kinematics(object):
     ''' Class object to compute various types of kinematics data for AntBot '''
-    # Origin to coxa: x_off    y_off    z_off    ang_off  side     name
-    leg1 = LegConsts(71.6,     120.96, -17,    - pi / 3, "right", "Leg 1")
-    leg2 = LegConsts(-71.6,    120.96, -17, -2 * pi / 3, "left",  "Leg 2")
-    leg3 = LegConsts(141.33,   0,      -17,      0,      "right", "Leg 3")
-    leg4 = LegConsts(-141.33,  0,      -17,      pi,     "left",  "Leg 4")
-    leg5 = LegConsts(71.6,    -120.96, -17,      pi / 3, "right", "Leg 5")
-    leg6 = LegConsts(-71.6,   -120.96, -17,  2 * pi / 3, "left",  "Leg 6")
+    # Origin to coxa: x_off    y_off    z_off    ang_off   side     name
+    leg1 = LegConsts( 71.6,    120.96, -14.9,    - pi / 3, "right", "Leg 1")
+    leg2 = LegConsts(-71.6,    120.96, -14.9, -2 * pi / 3, "left",  "Leg 2")
+    leg3 = LegConsts( 141.33,  0,      -14.9,      0,      "right", "Leg 3")
+    leg4 = LegConsts(-141.33,  0,      -14.9,      pi,     "left",  "Leg 4")
+    leg5 = LegConsts( 71.6,   -120.96, -14.9,      pi / 3, "right", "Leg 5")
+    leg6 = LegConsts(-71.6,   -120.96, -14.9,  2 * pi / 3, "left",  "Leg 6")
     leg_list = [leg1, leg2, leg3, leg4, leg5, leg6]
 
     ################
@@ -254,15 +254,15 @@ def standUp():
     front_legs  = [1, 2, 3,  4, 5, 6]
     middle_legs = [7, 8, 9,  10, 11, 12]
     rear_legs   = [13, 14, 15,  16, 17, 18]
-    #standup_pos = [2048, -2218, 1024,   
+    #standup_pos = [2048, -2218, 1024,
     #               2048, -1878, 3048,
-    #               2048, -2218, 1024,   
+    #               2048, -2218, 1024,
     #               2048, -1878, 3048,
-    #               2048, -2218, 1024,   
-    #               2048, -1878, 3048]  
-    front_standup  = [0.00, 0.26, 1.07,    
+    #               2048, -2218, 1024,
+    #               2048, -1878, 3048]
+    front_standup  = [0.00, 0.26, 1.07,
                       0.00, 0.26, 1.07]
-    middle_standup = [0.00, 0.26, 1.07,    
+    middle_standup = [0.00, 0.26, 1.07,
                       0.00, 0.26, 1.07]
     rear_standup   = [0.00, 0.26, 1.07,
                       0.00, 0.26, 1.07]
@@ -270,7 +270,7 @@ def standUp():
     #rear_standup   = list_combine(rear_legs, standup_pos)
     #middle_standup = list_combine(middle_legs, standup_pos)
     #positions = K.step_to_rad(standup_pos)
-    C.positionN(front_legs, front_standup) 
+    C.positionN(front_legs, front_standup)
     #time.sleep(1)
     C.positionN(rear_legs, rear_standup)
     #time.sleep(1)
@@ -316,7 +316,7 @@ def yawRotation(degrees):
 
     do_motion([0, 0, 20], TG_1)
     #time.sleep(delay)
-    
+
     id_list = [1, 10, 13]
     positions = [K.step_to_rad(2048), K.step_to_rad(2048), K.step_to_rad(2048)]
     C.positionN(id_list, positions)
@@ -355,7 +355,7 @@ def rippleGait(x, y, z, iterations):
         do_motion(move3, l2 + l5)
         #time.sleep(delay)
 
-        C.positionAll(init_pos) 
+        C.positionAll(init_pos)
         #time.sleep(delay)
 
 
@@ -571,10 +571,11 @@ def do_motion(xyz_list, ID_list, orientation=None):
 
     #motion = list_combine(ID_list, next_pos)
     #print(motion) # just for debugging
-    
-    
+
+
     positions = K.step_to_rad(next_pos)
-    #print(positions) # just for debugging
+    print(ID_list)
+    print(positions) # just for debugging
     C.positionN(ID_list, positions)
 
 
@@ -596,6 +597,66 @@ def rippleMirror(x, y, z, alpha, beta, gama, leg_pair):
     do_motion([x, y, z], legs, orientation=[alpha, beta, gama])
     do_motion([-x, y, z], legs, orientation=[alpha, beta, gama])
 
+def calculate_motion(xyz_list, ID_list=None, orientation=None):
+    current_pos = C.readPos()
+    if orientation:
+        next_pos    = K.doIkine(current_pos, xyz_list[0], xyz_list[1], xyz_list[2], body_orient=orientation)
+    else:
+        next_pos    = K.doIkine(current_pos, xyz_list[0], xyz_list[1], xyz_list[2])
+    #scaler = calc_scaler(next_pos)
+    #vel_acc_value = list_combine(ID_list, scaler)
+    next_pos = K.step_to_rad(next_pos)
+    return next_pos
+    
+def tripod_gait_test_for_lars(x,y,z, iterations):
+    leg_calculation_up    = [x, y, z]
+    leg_calculation_down  = [x, y, 0]
+    push_leg_calculation  = [0, 0 , 0]
+    push_leg_calculation  = [-x,-y,0]
+    a1=calculate_motion(push_leg_calculation)
+    a2=calculate_motion(leg_calculation_up)
+    a3=calculate_motion(leg_calculation_down)
+    a4=calculate_motion(push_leg_calculation)
+    leg1_1=a1[:3]
+    leg2_1=a3[3:6]
+    leg3_1=a3[6:9]
+    leg4_1=a1[9:12]
+    leg5_1=a1[12:15]
+    leg6_1=a3[15:18]
+    motion1 = leg1_1+leg2_1+leg3_1+leg4_1+leg5_1+leg6_1
+    leg1_2_1=a2[:3]
+    leg2_2_1=a3[3:6]
+    leg3_2_1=a3[6:9]
+    leg4_2_1=a2[9:12]
+    leg5_2_1=a2[12:15]
+    leg6_2_1=a3[15:18]
+    motion2_1 = leg1_2_1+leg2_2_1+leg3_2_1+leg4_2_1+leg5_2_1+leg6_2_1
+    print(motion2_1)
+    leg1_2_2=a2[:3]
+    leg2_2_2=a1[3:6]
+    leg3_2_2=a1[6:9]
+    leg4_2_2=a2[9:12]
+    leg5_2_2=a2[12:15]
+    leg6_2_2=a1[15:18]
+    motion2_2 = leg1_2_2+leg2_2_2+leg3_2_2+leg4_2_2+leg5_2_2+leg6_2_2
+    print(motion2_2)
+    leg1_3=a3[:3]
+    leg2_3=a2[3:6]
+    leg3_3=a2[6:9]
+    leg4_3=a3[9:12]
+    leg5_3=a3[12:15]
+    leg6_3=a2[15:18]
+    motion3 = leg1_3+leg2_3+leg3_3+leg4_3+leg5_3+leg6_3
+    print(motion3)
+    for i in range(iterations):
+        C.positionAll(motion1)
+        #time.sleep(delay)
+        C.positionAll(motion2_1)
+        #time.sleep(delay)
+        C.positionAll(motion2_2)
+        #time.sleep(delay)
+        C.positionAll(motion3)
+        #time.sleep(delay)
 
 ###########################################################################################################################
 
@@ -694,17 +755,19 @@ class Controller():
 
     def reachedAllPos(self, positions):
         all_positions = []
+        #while self.robot.step(self.timeStep) != 1:
         while all_positions != positions:
             all_positions = [round(x, 2) for x in C.readPos()]
             positions = [round(y, 2) for y in positions]
-            #print(all_positions)   # just for debugging
-            #print(positions)       # just for debugging
+        #print(all_positions)   # just for debugging
+        #print(positions)       # just for debugging
 
     def reachedNPos(self, id_list, positions):
         #print('start id list:', id_list)
         #print('start pos list:', positions)
         temp_positions = []
         all_positions = [0] * len(id_list)
+        #while self.robot.step(self.timeStep) != 1:
         while all_positions != positions:
             temp_positions = [round(x, 2) for x in C.readPos()]
             positions = [round(y, 2) for y in positions]
@@ -718,24 +781,35 @@ class Controller():
 
     def walk(self):
         standUp()
+
+
+        #tripod_gait_test_for_lars(0,10,10,1)
         #tripodGait(0, 20, 10, 10)
         #waveGait(0, 20, 10, 1)
         #rippleGait(0, 40, 10, 5)
-        singleLeg(0, 40, 10, 0, 0, 0, 1)
-        singleLeg(0, 40, 10, 0, 0, 0, 4)
-        
-        singleLeg(-0/2, -40/2, 0, 0, 0, 0, 2)
-        singleLeg(-0/2, -40/2, 0, 0, 0, 0, 5)
-        singleLeg(-0/2, -40/2, 0, 0, 0, 0, 3)
-        singleLeg(-0/2, -40/2, 0, 0, 0, 0, 6)
-        
-        print('0')
-        singleLeg(0, 0, -10, 0, 0, 0, 1)
-        print('1')
-        singleLeg(0, 0, 40, 0, 0, 0, 4)
+        #singleLeg(0, 20, 10, 0, 0, 0, 1)
+        #singleLeg(0, 20, 10, 0, 0, 0, 4)
+
+        #time.sleep(2)
+
+        #singleLeg(0, -40/2, 0, 0, 0, 0, 2)
+        #time.sleep(2)
+        #singleLeg(0, -40/2, 0, 0, 0, 0, 5)
+        #time.sleep(2)
+        #singleLeg(0, -40/2, 0, 0, 0, 0, 3)
+        #time.sleep(2)
+        #singleLeg(0, -40/2, 0, 0, 0, 0, 6)
+        #time.sleep(2)
+
+        #print('0')
+        #singleLeg(0, 0, -10, 0, 0, 0, 1)
+        #print('1')
+        #singleLeg(0, 0, 40, 0, 0, 0, 4)
         #translationZ(50)
-        #parallelGait(50, 0, 0, 0, 0, 0)
-        
+        #parallelGait(0, 0, 0, 0, 0, -100)
+        all_positions = C.readPos()
+        K.printForward(all_positions)
+        #K.printInverse(all_positions)
     #move1 = [x, y, z]
     #move2 = [-x / 2, -y / 2, 0]
     #move3 = [0, 0, -z]
@@ -743,20 +817,24 @@ class Controller():
 if __name__ == "__main__":
     C = Controller()
     K = Kinematics()
-    
+
     #id_list = [4, 5, 6, 10, 11, 12]
     #positions = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
     #C.positionN(id_list, positions)
     #positions = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
     #C.positionAll(positions)
-    
+
     # Function for measuring contact
     #C.readTouch()
-    
 
+    positions = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    C.positionAll(positions)
     
+    all_positions = C.readPos()
+    K.printForward(all_positions)
 
-    
+
+
     C.walk()
-    
+
     print(C)
