@@ -7,8 +7,9 @@ from locomotion     import *
 
 
 
+
 riser = 170 #mm
-depth = 254 #mm
+depth = 264 #mm
 torque(0)
 pwm_list = [800]*18
 pwmAll(pwm_list)
@@ -20,38 +21,12 @@ accelerationAll(scaler_acc)
 torque(1)
 standUp()
 time.sleep(5)
-#a = K.doFkine(readPos())
-#print(a)
-half_step(0,35,20,0,0,0)
-time.sleep(1)
-parallelGait(0,0,0,0,0,20)
-time.sleep(2)
-tripodGait_stairs(20, True, False, False, 200, 160)
-gama,beta = K.get_orientation()
-time.sleep(1)
-parallelGait(0,-beta,-gama,0,0,0)
-time.sleep(1)
-a = K.calc_translationStairs(riser)
-print("a",a)
-time.sleep(1)
-parallelGait(0,0,0,0, a[1], a[0])
-time.sleep(1)
-checkContact()
-continiousTripodTactile(0,30,20,2)
-tripodGait_stairs(20, True, True, False, 200, 160)
-time.sleep(2)
-gama,beta = K.get_orientation()
-time.sleep(1)
-parallelGait(0,-beta,-gama,0,0,0)
-time.sleep(1)
-a = K.calc_translationStairs(riser)
-print("a",a)
-time.sleep(1)
-parallelGait(0,0,0,0, a[1], a[0])
-time.sleep(3)
-tripodGait_stairs(20, False, False, False, 200, 160)
-time.sleep(2)
-tripodGait_stairs(20, True, True, False, 200, 160)
+a = K.doFkine(readPos())
+print(a)
+
+tripodGait_stairs(True, 80 , depth, riser)
+#time.sleep(2)
+#checkContact()
 #time.sleep(2)
 #checkContact()
 
