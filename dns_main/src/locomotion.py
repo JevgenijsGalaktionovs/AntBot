@@ -541,6 +541,7 @@ def singleLeg_stairs(x, y, z, alpha, beta, gama, leg_case):
     all_positions = readPos()
     next_pos = K.doIkine(all_positions, my_list[0], my_list[1], my_list[2], body_orient=orient, leg=leg_case, auto=None)
     ae = [ID_list[0],next_pos[0],ID_list[1],next_pos[1],ID_list[2],next_pos[2]]
+    print(next_pos)
     #positionN(ae)
     return ae, my_list
 
@@ -551,6 +552,7 @@ def singleLeg_walk(x, y, z, alpha, beta, gama, leg_case):
     all_positions = readPos()
     next_pos = K.doIkine(all_positions, my_list[0], my_list[1], my_list[2], body_orient=orient, leg=leg_case, auto=None)
     ae = [ID_list[0],next_pos[0],ID_list[1],next_pos[1],ID_list[2],next_pos[2]]
+    print(next_pos)
     #positionN(ae)
     return ae
     
@@ -573,16 +575,18 @@ def half_step(x,step,z,alpha,beta,gama):
     aa.extend(singleLeg_walk( 0,0,-z,alpha,beta,gama,6))
     positionN(aa)
     checking_for_errors(80,50,aa)
+    checkContact()
 
 def tripodGait_stairs(stairs, distance, depth, riser):
     ee_xyz, servopos = K.doFkine(readPos())
     gama, beta = K.get_orientation()
+    print ("gama,beta",gama,beta)
     delay = 2
     alpha = 0
     step = 45
     ae = []
     ae1 = []
-    lift = 20
+    lift = 40
     y_off = 120.96
     leg1_liftedUp = False
     leg2_liftedUp = False
@@ -604,38 +608,44 @@ def tripodGait_stairs(stairs, distance, depth, riser):
     dist2NextLevel_2 = distance - step
     dist2NextLevel_3 = dist2NextLevel_3 - step
     dist2NextLevel_6 = dist2NextLevel_6 - step
-    
+
     print("dist2NextLevel",dist2NextLevel_2,dist2NextLevel_3,dist2NextLevel_6)
-    time.sleep(3)
+    time.sleep(30)
 
     while stairs is True: 
         if dist2NextLevel_1 < 2*step:
             ae_stored1, xyz_stored1 = singleLeg_stairs( 0, 0, riser + lift, alpha, beta, gama,1)
             ae.extend(ae_stored1)
-        else:
+            print("leg1", xyz_stored1)
+        elif dist2NextLevel_1 > 2*step:
             xyz_stored1 = [0]*3
-            ae.extend(singleLeg_walk( 0, 0, lift,alpha,beta,gama,1))
+            ae.extend(singleLeg_walk( 0, 0, lift, alpha, beta, gama,1))
         ae.extend(singleLeg_walk( 0, -step, 0,alpha,beta,gama,2))
         ae.extend(singleLeg_walk( 0, -step, 0,alpha,beta,gama,3))
         if dist2NextLevel_4 < 2*step:
             ae_stored4, xyz_stored4 = singleLeg_stairs( 0, 0, riser + lift,alpha,beta,gama,4)
             ae.extend(ae_stored4)
-        else:
+            print("leg4", xyz_stored4)
+        elif dist2NextLevel_4 > 2*step:
             xyz_stored4 = [0]*3
             ae.extend(singleLeg_walk( 0, 0, lift,alpha,beta,gama,4))
         if dist2NextLevel_5 < 2*step:
             ae_stored5, xyz_stored5 = singleLeg_stairs( 0, 0, riser + lift,alpha,beta,gama,5)
             ae.extend(ae_stored5)
-        else:
+            print("leg5", xyz_stored5)
+        elif dist2NextLevel_5 > 2*step:
             xyz_stored5 = [0]*3
-            ae.extend(singleLeg_walk( 0, 0, lift,alpha,beta,gama,5))
+            ae.extend(singleLeg_walk( 0, 0, lift, alpha,beta,gama,5))
         ae.extend(singleLeg_walk( 0, -step, 0,alpha,beta,gama,6))
         ee_xyz, servopos = K.doFkine(readPos())
         z1 = ee_xyz[2]
         z4 = ee_xyz[11]
         z5 = ee_xyz[14]
+        my_list = K.doFkine(ae)
         positionN(ae)
         checking_for_errors(80,50,ae)
+
+        time.sleep(10)
     ###########put forward ae1
         ae1.extend(singleLeg_walk( -xyz_stored1[0], 2*step, 0, alpha, beta, gama,1))
         ae1.extend(singleLeg_walk( 0, -step, 0, alpha , beta, gama,2))
@@ -647,6 +657,7 @@ def tripodGait_stairs(stairs, distance, depth, riser):
         checking_for_errors(80,50,ae1)
         checkContact()
     ##########put down
+        time.sleep(10)
         checkContact()
         checkContact()
         ee_xyz, servopos = K.doFkine(readPos())
@@ -692,21 +703,25 @@ def tripodGait_stairs(stairs, distance, depth, riser):
         if dist2NextLevel_2 < 2*step:
             ae_stored2, xyz_stored2 = singleLeg_stairs( 0, 0, riser + lift, alpha, beta, gama,2)
             ae.extend(ae_stored2)
-        else:
+            print("leg2", xyz_stored2)
+        elif dist2NextLevel_2 > 2*step:
             xyz_stored2 = [0]*3
             ae.extend(singleLeg_walk( 0, 0, lift,alpha,beta,gama,2))
+
         if dist2NextLevel_3 < 2*step:
             ae_stored3, xyz_stored3 = singleLeg_stairs( 0, 0, riser + lift,alpha,beta,gama,3)
             ae.extend(ae_stored3)
-        else:
+            print("leg3", xyz_stored3)
+        elif dist2NextLevel_3 > 2*step:
             xyz_stored3 = [0]*3
-            ae.extend(singleLeg_walk( 0, 0, lift,alpha,beta,gama,3))
+            ae.extend(singleLeg_walk( 0, 0, lift, alpha,beta,gama,3))
         ae.extend(singleLeg_walk( 0, -step, 0,alpha,beta,gama,4))
         ae.extend(singleLeg_walk( 0, -step, 0,alpha,beta,gama,5))
         if dist2NextLevel_6 < 2*step:
             ae_stored6, xyz_stored6 = singleLeg_stairs( 0, 0, riser + lift,alpha,beta,gama,6)
             ae.extend(ae_stored6)
-        else:
+            print("leg6", xyz_stored6)
+        elif dist2NextLevel_6 > 2*step:
             xyz_stored6 = [0]*3
             ae.extend(singleLeg_walk( 0, 0, lift,alpha,beta,gama,6))
         ee_xyz, servopos = K.doFkine(readPos())
