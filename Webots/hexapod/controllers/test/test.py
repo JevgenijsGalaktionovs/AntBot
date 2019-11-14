@@ -386,14 +386,12 @@ def waveGait(x, y, z, iterations):
 
 
 def tripodGait(x, y, z, iterations):
-
     start_pos = tripodGait_start(x, y, z)
     tripodGait_full(x, y, z, iterations, start_pos=start_pos)
     tripodGait_finish(x, y, z)
 
 
 def tripodGait_start(x, y, z):
-
     TG1_m1 = [-x, -y,  0]  # Tripod Group 1 : Motion 1
 
     TG2_m1 = [x,  y,  z]   # Tripod Group 2 : Motion 1
@@ -519,8 +517,7 @@ def do_motion(xyz_list, ID_list, orientation=None):
                        changed to reach end-tip x= +0, y= +30 and z= +20"""
     current_pos = C.readPos()
     current_pos = K.rad_to_step(current_pos)
-    #print(current_pos)
-    print('1: ', current_pos)
+    #print('1: ', current_pos) # just for debugging
     if orientation:
         next_pos = K.doIkine(current_pos, xyz_list[0], xyz_list[1],
                              xyz_list[2], body_orient=orientation)
@@ -755,15 +752,16 @@ class Controller():
         #singleLeg(0, 0, 40, 0, 0, 0, 4)
         
     # some other translations 
-        #translationZ(50)
-        #parallelGait(0, 0, 0, 0, 0, -100)
+        #translationZ(-50)
+        #parallelGait(0, 0, 3, 0, 0, 0)
         self.robot.step(1000)
     # reading and printing for debugging
         all_positions = C.readPos()
         K.printForward(all_positions)
+        print(K.rad_to_step(all_positions))
         #K.printInverse(all_positions)
-        new_pos = K.rad_to_step(all_positions)
-        print(new_pos)
+        #new_pos = K.rad_to_step(all_positions)
+        #print(new_pos)
 
 
 if __name__ == "__main__":

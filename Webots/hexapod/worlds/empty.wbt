@@ -2,8 +2,8 @@
 WorldInfo {
 }
 Viewpoint {
-  orientation 0.1645831143763585 -0.9723863759768833 -0.1654603707137207 4.267556429140438
-  position 1.5632021974427786 0.8082584594708407 -0.8385719831220023
+  orientation -0.2714760030772996 0.9245990103888361 0.26724043433050915 1.9008678710670692
+  position 1.6717607503387026 1.2489246983123858 -0.4697929660737699
 }
 TexturedBackground {
 }
@@ -163,7 +163,7 @@ Robot {
                                             }
                                           ]
                                           endPoint Solid {
-                                            rotation 1 0 0 -1.5707996938995747
+                                            rotation 0 0.707108281185553 0.70710528118436 3.1415919999999997
                                             children [
                                               USE SERVO-CYLINDER
                                               Transform {
@@ -319,6 +319,7 @@ Robot {
                                     USE FEMUR-2-CYLINDER-SHAPE
                                     Transform {
                                       translation 0 0.046085 0
+                                      rotation 0 1 0 3.141592653589793
                                       children [
                                         DEF LEG-2-TIBIA HingeJoint {
                                           jointParameters HingeJointParameters {
@@ -335,7 +336,7 @@ Robot {
                                             }
                                           ]
                                           endPoint Solid {
-                                            rotation 1 0 0 -1.5707996938995747
+                                            rotation 0 0.707108281185553 0.70710528118436 3.1415919999999997
                                             children [
                                               USE SERVO-CYLINDER
                                               Transform {
@@ -470,6 +471,7 @@ Robot {
                                     USE FEMUR-2-CYLINDER-SHAPE
                                     Transform {
                                       translation 0 0.046085 0
+                                      rotation 0 1 0 3.141592653589793
                                       children [
                                         DEF LEG-3-TIBIA HingeJoint {
                                           jointParameters HingeJointParameters {
@@ -486,7 +488,7 @@ Robot {
                                             }
                                           ]
                                           endPoint Solid {
-                                            rotation 1 0 0 -1.5707996938995747
+                                            rotation 0 0.707108281185553 0.70710528118436 3.1415919999999997
                                             children [
                                               USE SERVO-CYLINDER
                                               Transform {
@@ -622,6 +624,7 @@ Robot {
                                     USE FEMUR-2-CYLINDER-SHAPE
                                     Transform {
                                       translation 0 0.046085 0
+                                      rotation 0 1 0 3.141592653589793
                                       children [
                                         DEF LEG-4-TIBIA HingeJoint {
                                           jointParameters HingeJointParameters {
@@ -638,7 +641,7 @@ Robot {
                                             }
                                           ]
                                           endPoint Solid {
-                                            rotation 1 0 0 -1.5707996938995747
+                                            rotation 0 0.707108281185553 0.70710528118436 3.1415919999999997
                                             children [
                                               USE SERVO-CYLINDER
                                               Transform {
@@ -774,6 +777,7 @@ Robot {
                                     USE FEMUR-2-CYLINDER-SHAPE
                                     Transform {
                                       translation 0 0.046085 0
+                                      rotation 0 1 0 3.141592653589793
                                       children [
                                         DEF LEG-5-TIBIA HingeJoint {
                                           jointParameters HingeJointParameters {
@@ -790,7 +794,7 @@ Robot {
                                             }
                                           ]
                                           endPoint Solid {
-                                            rotation 1 0 0 -1.5707996938995747
+                                            rotation 0 0.707108281185553 0.70710528118436 3.1415919999999997
                                             children [
                                               USE SERVO-CYLINDER
                                               Transform {
@@ -926,6 +930,7 @@ Robot {
                                     USE FEMUR-2-CYLINDER-SHAPE
                                     Transform {
                                       translation 0 0.046085 0
+                                      rotation 0 1 0 3.141592653589793
                                       children [
                                         DEF LEG-6-TIBIA HingeJoint {
                                           jointParameters HingeJointParameters {
@@ -942,7 +947,7 @@ Robot {
                                             }
                                           ]
                                           endPoint Solid {
-                                            rotation 1 0 0 -1.5707996938995747
+                                            rotation 0 0.707108281185553 0.70710528118436 3.1415919999999997
                                             children [
                                               USE SERVO-CYLINDER
                                               Transform {
