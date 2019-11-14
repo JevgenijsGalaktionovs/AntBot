@@ -58,6 +58,8 @@ class ArduinoCommunication:
             ports = glob.glob('/dev/tty[A-Za-z]*')
         elif sys.platform.startswith('darwin'):
             ports = glob.glob('/dev/tty.*')
+	elif sys.platform.startswith('linux') or sys.platform.startswith('cygwin'):
+            ports = glob.glob('/dev/ttyACM*')
         else:
             raise EnvironmentError('Unsupported platform')
 
