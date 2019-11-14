@@ -361,58 +361,58 @@ def calculate_motion(xyz_list, ID_list, orientation=None):
     return next_pos
 
 
-def continiousMotion(x, y, z, iterations):
-	one_leg_calculation_up  = [x, y, z]
-	one_leg_calculation_down  = [x, y, 0]
-	one_push_leg_calculation = [0, 0 , 0]
+# def continiousMotion(x, y, z, iterations):
+# 	one_leg_calculation_up  = [x, y, z]
+# 	one_leg_calculation_down  = [x, y, 0]
+# 	one_push_leg_calculation = [0, 0 , 0]
 	
-    a=calculate_motion(one_leg_calculation_up, l1)
-	b=calculate_motion(one_leg_calculation_down, l1)
-	c=calculate_motion(one_push_leg_calculation, l1)
+#     a=calculate_motion(one_leg_calculation_up, l1)
+# 	b=calculate_motion(one_leg_calculation_down, l1)
+# 	c=calculate_motion(one_push_leg_calculation, l1)
 	
-	for i in range(iterations):
+# 	for i in range(iterations):
 		
-		positionN([1,a[0],2,a[1],3,a[2]])
-		ae=a[:3]
-		for x in range (10): 
-			current_pos = readPos()
-			x = current_pos[:3]
-			possition_error=x[0]-ae[0],x[1]-ae[1],x[2]-ae[2]
-			absoluteError= sum([abs(x) for x in possition_error])/3
-			print(possition_error)
-			if absoluteError < 10:
-				print(absoluteError, "1")
-				break
-		else:	
-                print("NotGood")
+# 		positionN([1,a[0],2,a[1],3,a[2]])
+# 		ae=a[:3]
+# 		for x in range (10): 
+# 			current_pos = readPos()
+# 			x = current_pos[:3]
+# 			possition_error=x[0]-ae[0],x[1]-ae[1],x[2]-ae[2]
+# 			absoluteError= sum([abs(x) for x in possition_error])/3
+# 			print(possition_error)
+# 			if absoluteError < 10:
+# 				print(absoluteError, "1")
+# 				break
+# 		else:	
+#                 print("NotGood")
 
-		positionN([1,b[0],2,b[1],3,b[2]])
-		ae=b[:3]
-		for x in range (10): 
-			current_pos = readPos()
-			x = current_pos[:3]
-			possition_error=x[0]-ae[0],x[1]-ae[1],x[2]-ae[2]
-			absoluteError= sum([abs(x) for x in possition_error])/3
-			print(possition_error)
-			if absoluteError < 10:
-				print(absoluteError,"2")
-				break
-		else:
-              print("NotGood")
+# 		positionN([1,b[0],2,b[1],3,b[2]])
+# 		ae=b[:3]
+# 		for x in range (10): 
+# 			current_pos = readPos()
+# 			x = current_pos[:3]
+# 			possition_error=x[0]-ae[0],x[1]-ae[1],x[2]-ae[2]
+# 			absoluteError= sum([abs(x) for x in possition_error])/3
+# 			print(possition_error)
+# 			if absoluteError < 10:
+# 				print(absoluteError,"2")
+# 				break
+# 		else:
+#               print("NotGood")
 
-		positionN([1,c[0],2,c[1],3,c[2]])
-		ae=c[:3]
-		for x in range (10): 
-			current_pos = readPos()
-			x = current_pos[:3]
-			possition_error=x[0]-ae[0],x[1]-ae[1],x[2]-ae[2]
-			absoluteError= sum([abs(x) for x in possition_error])/3
-			print(possition_error)
-			if absoluteError < 10:
-				print(absoluteError,"3")
-				break
-            else:
-                print("NotGood")
+		# positionN([1,c[0],2,c[1],3,c[2]])
+		# ae=c[:3]
+		# for x in range (10): 
+		# 	current_pos = readPos()
+		# 	x = current_pos[:3]
+		# 	possition_error=x[0]-ae[0],x[1]-ae[1],x[2]-ae[2]
+		# 	absoluteError= sum([abs(x) for x in possition_error])/3
+		# 	print(possition_error)
+		# 	if absoluteError < 10:
+		# 		print(absoluteError,"3")
+		# 		break
+        #     else:
+        #         print("NotGood")
 
 
 def continiousTripod(x, y, z, iterations):
@@ -484,11 +484,6 @@ def continiousTripod(x, y, z, iterations):
 			if absoluteError < 10:
 				print(absoluteError,"3")
 				break
-
-standUp()
-time.sleep(1)
-continiousTripod(0,45,20,20)
-
 
 def rippleMirror(x, y, z, alpha, beta, gama, leg_pair):
     if leg_pair == 1:  # Front legs
