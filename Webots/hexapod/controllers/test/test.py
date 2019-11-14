@@ -40,8 +40,8 @@ class LegConsts(object):
         self.z_off     =  z_off              # Z offset from body origin to first servo (mm)
         self.ang_off   =  ang_off            # Angular offset from body origin to first servo (mm)
         self.side      =  side               # Left or Right-sided leg (servo angles inverted)
-        self.f_ang_off =  20.00   * pi / 180 # Angular offset of Femur
-        self.t_ang_off = -32.2064 * pi / 180 # Angular offset of Tibia
+        self.f_ang_off =  20.00  * pi / 180  # Angular offset of Femur
+        self.t_ang_off = -32.264 * pi / 180  # Angular offset of Tibia
         self.c_len     =  66.50              # Link length of Coxa  (mm)
         self.f_len     =  92.17              # Link length of Femur (mm)
         self.t_len     =  193.66             # Link length of Tibia (mm)
@@ -52,11 +52,11 @@ class Kinematics(object):
     ''' Class object to compute various types of kinematics data for AntBot '''
     # Origin to coxa: x_off    y_off    z_off    ang_off   side     name
     leg1 = LegConsts( 71.6,    120.96, -14.9,    - pi / 3, "right", "Leg 1")
-    leg2 = LegConsts(-71.6,    120.96, -14.9, -2 * pi / 3, "left",  "Leg 2")
+    leg2 = LegConsts(-71.6,    120.96, -14.9, -2 * pi / 3, "right",  "Leg 2")
     leg3 = LegConsts( 141.33,  0,      -14.9,      0,      "right", "Leg 3")
-    leg4 = LegConsts(-141.33,  0,      -14.9,      pi,     "left",  "Leg 4")
+    leg4 = LegConsts(-141.33,  0,      -14.9,      pi,     "right",  "Leg 4")
     leg5 = LegConsts( 71.6,   -120.96, -14.9,      pi / 3, "right", "Leg 5")
-    leg6 = LegConsts(-71.6,   -120.96, -14.9,  2 * pi / 3, "left",  "Leg 6")
+    leg6 = LegConsts(-71.6,   -120.96, -14.9,  2 * pi / 3, "right",  "Leg 6")
     leg_list = [leg1, leg2, leg3, leg4, leg5, leg6]
 
     ################
@@ -69,7 +69,7 @@ class Kinematics(object):
             Return:    ee_xyz: list of x,y,z coordinates for all 6 legs
                        servoPos: servo positions in radians
         '''
-        servoPos = all_positions
+        servoPos = self.step_to_rad(all_positions)
         ee_xyz = []
         j = 0
         for i in range(0, 16, 3):
@@ -77,7 +77,9 @@ class Kinematics(object):
             j += 1
         return ee_xyz, servoPos
 
-    def doIkine(self, all_positions, x, y, z, body_orient=None, leg=None):
+    def doIkine(self, all_positions, x, y, z, body_orient=None, leg=None, auto=None):
+        #print("1.leg is: ", leg)
+        leg = leg
         ''' Function:   computes inverse kinematics
             Parameters: all_positions: list with 18 values of servo positions in steps from ID1 to ID18;
                         x,y,z: desired change in x,y,z coordinates (same for all legs)
@@ -107,10 +109,11 @@ class Kinematics(object):
 
         if leg:
             # Optional parameter. Compute inverse for a specific leg/s.
-
+            #print("2.leg is: ", leg)
             for i in range(len(leg)):
                 j = leg[i] - 1
                 thetas.extend(self.calc_ikine(x, y, z, ee_xyz[3 * j:3 * j + 3], self.leg_list[j]))
+
         else:
             # Compute inverse for all legs if not leg specified.
             for i in range(0, 16, 3):
@@ -179,19 +182,19 @@ class Kinematics(object):
 
     def calc_fkine(self, servoPos, leg):
         theta1 = servoPos[0] - leg.ang_off
-        #if leg.side == "right":
-        theta2 = servoPos[1] + leg.f_ang_off
-        theta3 = servoPos[2] + leg.t_ang_off
-        ee_z   = leg.f_len * sin(theta2) + leg.t_len * sin(theta3 + theta2) + leg.z_off
-        #elif leg.side == "left":
-        #    theta2 = servoPos[1] - leg.f_ang_off
-        #    theta3 = servoPos[2] - leg.t_ang_off
-        #    ee_z   = -(leg.f_len * sin(theta2) + leg.t_len * sin(theta3 + theta2) - leg.z_off)
+        if leg.side == "right":
+            theta2 = servoPos[1] + leg.f_ang_off
+            theta3 = servoPos[2] + leg.t_ang_off
+            ee_z   = leg.f_len * sin(theta2) + leg.t_len * sin(theta3 + theta2) + leg.z_off
+        elif leg.side == "left":
+            theta2 = servoPos[1] - leg.f_ang_off
+            theta3 = servoPos[2] - leg.t_ang_off
+            ee_z   = -(leg.f_len * sin(theta2) + leg.t_len * sin(theta3 + theta2) - leg.z_off)
         ee_x   = leg.x_off + cos(theta1) * (leg.c_len + leg.f_len * cos(theta2) + leg.t_len * cos(theta3 + theta2))
         ee_y   = leg.y_off + sin(theta1) * (leg.c_len + leg.f_len * cos(theta2) + leg.t_len * cos(theta3 + theta2))
         return [ee_x, ee_y, ee_z]
 
-    def calc_ikine(self, x, y, z, ee_xyz, leg):
+    def calc_ikine(self, x, y, z, ee_xyz, leg, auto=None):
         init_X   = ee_xyz[0]
         init_Y   = ee_xyz[1]
         init_Z   = ee_xyz[2]
@@ -212,16 +215,26 @@ class Kinematics(object):
             t3       = pi - acos(t3_term)
         except ValueError:
             print ("Cannot compute acos(", t3_term, ") for ", leg.leg_nr)
-            if t3_term < 0:
-                t3 = pi - acos(-0.99)
+            if auto is None:
+                #print("something went wrong")
+                if t3_term < 0:
+                    t3 = pi - acos(-0.99)
+                else:
+                    t3 = pi - acos(0.99)
             else:
-                t3 = pi - acos(0.99)
-        #if leg.side == "right":  # ODD LEGS
+                #print("im here dont worry")
+                return -1
+
         theta3 = -t3 - leg.t_ang_off
         theta2 = -(-atan2(Z, final_x) - atan2(leg.t_len * sin(t3), leg.f_len + leg.t_len * cos(t3)) + leg.f_ang_off)
-        #elif leg.side == "left":  # EVEN LEGS
-        #theta3 = t3 + leg.t_ang_off
-        #theta2 = -(atan2(Z, final_x) + atan2(leg.t_len * sin(t3), leg.f_len + leg.t_len * cos(t3)) - leg.f_ang_off)
+        #print("theta2 =",theta2)
+        #print("theta3 =",theta3)
+        if auto is not None:
+            #print("auto is not none")
+            if (theta2 > 1.8 or theta2 < -1.8) or (theta3 < -2.2 or theta3 > 2.2):
+                #print("servo limitation")
+                return -1
+
         return [theta1, theta2, theta3]
 
     def calc_rot_displacement(self, alpha_rad, beta_rad, gama_rad, ee_xyz):
@@ -248,6 +261,7 @@ class Kinematics(object):
     def step_to_rad(self, pos_steps):
         return [(((x / 2047.5) - 1) * pi) for x in pos_steps]
 
+
 ###########################################################################################################################
 
 def standUp():
@@ -260,22 +274,18 @@ def standUp():
     #               2048, -1878, 3048,
     #               2048, -2218, 1024,
     #               2048, -1878, 3048]
-    front_standup  = [0.00, 0.26, 1.07,
-                      0.00, 0.26, 1.07]
-    middle_standup = [0.00, 0.26, 1.07,
-                      0.00, 0.26, 1.07]
-    rear_standup   = [0.00, 0.26, 1.07,
-                      0.00, 0.26, 1.07]
+    front_standup  = K.step_to_rad([2048, 2218, 1024,
+                                    2048, 2218, 1024])
+    middle_standup = K.step_to_rad([2048, 2218, 1024,
+                                    2048, 2218, 1024])
+    rear_standup   = K.step_to_rad([2048, 2218, 1024,
+                                    2048, 2218, 1024])
     #front_standup  = list_combine(front_legs, standup_pos)
     #rear_standup   = list_combine(rear_legs, standup_pos)
     #middle_standup = list_combine(middle_legs, standup_pos)
-    #positions = K.step_to_rad(standup_pos)
     C.positionN(front_legs, front_standup)
-    #time.sleep(1)
     C.positionN(rear_legs, rear_standup)
-    #time.sleep(1)
     C.positionN(middle_legs, middle_standup)
-    #time.sleep(1)
 
 
 def parallelGait(alpha, beta, gamma, dist_x, dist_y, dist_z):
@@ -284,13 +294,9 @@ def parallelGait(alpha, beta, gamma, dist_x, dist_y, dist_z):
     gamma_rad = gamma * pi / 180
     current_pos = C.readPos()
     next_pos = K.doIkineRotationEuler(current_pos, alpha_rad, beta_rad, gamma_rad, dist_x, dist_y, dist_z)
-    #scaler = [50] * 18
-    #velocityAll(scaler)
-    #accelerationAll(scaler)
     next_pos = K.step_to_rad(next_pos)
-    print(next_pos)
+    #print(next_pos)
     C.positionAll(next_pos)
-    #time.sleep(0.35)
 
 
 def translationZ(distance):
@@ -299,37 +305,29 @@ def translationZ(distance):
 
 
 def yawRotation(degrees):
-    delay = 0.3
     alpha_rad   = degrees * pi / 180
 
     do_motion([0, 0, 20], TG_2)
-    #time.sleep(delay)
 
     current_pos = C.readPos()
     next_pos    = K.doIkineRotationEuler(current_pos, alpha_rad, 0, 0, 0, 0, 0)
     #pos_list    = list_combine(TG_1, next_pos)
     C.positionN(TG_1, next_pos)
-    #time.sleep(delay)
 
     do_motion([0, 0, -20], TG_2)
-    #time.sleep(delay)
 
     do_motion([0, 0, 20], TG_1)
-    #time.sleep(delay)
 
     id_list = [1, 10, 13]
     positions = [K.step_to_rad(2048), K.step_to_rad(2048), K.step_to_rad(2048)]
     C.positionN(id_list, positions)
-    #time.sleep(delay)
 
     #final_pos = list_combine(TG_1, current_pos)
     C.positionAll(current_pos)
-    #time.sleep(delay)
 
 
 def rippleGait(x, y, z, iterations):
     init_pos = C.readPos()
-    #delay = 0.3
 
     move1 = [x, y, z]
     move2 = [-x / 2, -y / 2, 0]
@@ -339,24 +337,17 @@ def rippleGait(x, y, z, iterations):
 
         do_motion(move1, l1 + l4)
         do_motion(move2, l2 + l3 + l5 + l6)
-        #time.sleep(delay)
         do_motion(move3, l1 + l4)
-        #time.sleep(delay)
 
         do_motion(move1, l3 + l6)
         do_motion(move2, l1 + l2 + l4 + l5)
-        #time.sleep(delay)
         do_motion(move3, l3 + l6)
-        #time.sleep(delay)
 
         do_motion(move1, l2 + l5)
         do_motion(move2, l1 + l3 + l4 + l6)
-        #time.sleep(delay)
         do_motion(move3, l2 + l5)
-        #time.sleep(delay)
 
         C.positionAll(init_pos)
-        #time.sleep(delay)
 
 
 def waveGait(x, y, z, iterations):
@@ -370,35 +361,28 @@ def waveGait(x, y, z, iterations):
 
         do_motion(one_leg_motion_up, l1)
         do_motion(five_leg_motion, l2 + l3 + l4 + l5 + l6)
-        #time.sleep(delay)
 
         do_motion(one_leg_motion_down, l1)
         do_motion(one_leg_motion_up, l3)
         do_motion(five_leg_motion, l2 + l4 + l5 + l6)
-        #time.sleep(delay)
 
         do_motion(one_leg_motion_down, l3)
         do_motion(one_leg_motion_up, l5)
         do_motion(five_leg_motion, l1 + l2 + l4 + l6)
-        #time.sleep(delay)
 
         do_motion(one_leg_motion_down, l5)
         do_motion(one_leg_motion_up, l2)
         do_motion(five_leg_motion, l1 + l3 + l4 + l6)
-        #time.sleep(delay)
 
         do_motion(one_leg_motion_down, l2)
         do_motion(one_leg_motion_up, l4)
         do_motion(five_leg_motion, l1 + l3 + l5 + l6)
-        #time.sleep(delay)
 
         do_motion(one_leg_motion_down, l4)
         do_motion(one_leg_motion_up, l6)
         do_motion(five_leg_motion, l1 + l2 + l3 + l5)
-        #time.sleep(delay)
 
         C.positionAll(init_pos)
-        #time.sleep(delay)
 
 
 def tripodGait(x, y, z, iterations):
@@ -409,7 +393,6 @@ def tripodGait(x, y, z, iterations):
 
 
 def tripodGait_start(x, y, z):
-    #delay = 0.2
 
     TG1_m1 = [-x, -y,  0]  # Tripod Group 1 : Motion 1
 
@@ -419,10 +402,9 @@ def tripodGait_start(x, y, z):
     # Motion 1
     do_motion(TG2_m1, TG_2)
     do_motion(TG1_m1, TG_1)
-    #time.sleep(delay)
+
     # Motion 2
     do_motion(TG2_m2, TG_2)
-    #time.sleep(delay)
     start_pos = C.readPos()
     return start_pos
 
@@ -435,17 +417,10 @@ def tripodGait_full(x, y, z, iterations, start_pos=None):
     #             2048, 2218, 1024,   2048, 1878, 3048]
     if start_pos:
         init_pos = start_pos
-    else:                                                  # old values in steps
-        init_pos = [2002, 2218, 957, 2012, 1918, 2971, 2127, 2200, 1027, 2123, 1887, 3048, 2011, 2188, 1097, 2003, 1872, 3120]
-        init_pos = K.step_to_rad(init_pos)
-        #init_pos = [-0.06981317,  0.26160759, -1.67321454, # 2002, 2218, 957,
-        #            -0.05446961, -0.19869902,  1.41697719, # 2012, 1918, 2971,
-        #             0.12198125,  0.23398919, -1.56580967, # 2127, 2200, 1027,
-        #             0.11584383, -0.24626403,  1.53512256, # 2123, 1887, 3048,
-        #            -0.05600397,  0.21557693, -1.45840479, # 2011, 2188, 1097,
-        #            -0.06827881, -0.26927937,  1.64559615] # 2003, 1872, 3120]
+    else:
+        init_pos = K.step_to_rad([2002, 2218, 957, 2012, 1918, 2971, 2127, 2200, 1027, 2123, 1887, 3048, 2011, 2188, 1097, 2003, 1872, 3120])
+    
     for i in range(iterations):
-
         TG1_m1 = [2 * x,  2 * y,  z]   # Tripod Group 1 : Motion 1
         TG1_m2 = [0,  0, -z]           # Tripod Group 1 : Motion 2
         TG1_m3 = [-2 * x, -2 * y,  0]  # Tripod Group 1 : Motion 3
@@ -456,28 +431,21 @@ def tripodGait_full(x, y, z, iterations, start_pos=None):
 
         # Motion 1
         do_motion(TG1_m1, TG_1)
-        #time.sleep(0.05)
         do_motion(TG2_m1, TG_2)
-        #time.sleep(delay)
+
 
         # Motion 2
         do_motion(TG1_m2, TG_1)
-        #time.sleep(delay)
 
         # Motion 3
         do_motion(TG2_m3, TG_2)
-        #time.sleep(0.05)
         do_motion(TG1_m3, TG_1)
-        #time.sleep(delay)
 
         # Motion 4
         do_motion(TG2_m4, TG_2)
-        #time.sleep(delay)
 
         # Motion 5
-        #positions = K.step_to_rad(init_pos)
         C.positionAll(init_pos)
-        #time.sleep(delay)
 
 
 def tripodGait_finish(x, y, z):
@@ -492,27 +460,21 @@ def tripodGait_finish(x, y, z):
     TG2_m6 = [0,  0, -z]   # Tripod Group 2 : Motion 6
     # Motion 1
     do_motion(TG1_m1, TG_1)
-    #time.sleep(delay)
 
     # Motion 2
     do_motion(TG1_m2, TG_1)
-    #time.sleep(delay)
 
     # Motion 3
     do_motion(TG1_m3, TG_1)
-    #time.sleep(delay)
 
     # Motion 4
     do_motion(TG2_m4, TG_2)
-    #time.sleep(delay)
 
     # Motion 5
     do_motion(TG2_m5, TG_2)
-    #time.sleep(delay)
 
     # Motion 6
     do_motion(TG2_m6, TG_2)
-    #time.sleep(delay)
 
 
 #def stepDown(leg_case):
@@ -556,7 +518,9 @@ def do_motion(xyz_list, ID_list, orientation=None):
        Example result: Position of servo ID7, ID8 and ID9 (Leg 3) will be
                        changed to reach end-tip x= +0, y= +30 and z= +20"""
     current_pos = C.readPos()
+    current_pos = K.rad_to_step(current_pos)
     #print(current_pos)
+    print('1: ', current_pos)
     if orientation:
         next_pos = K.doIkine(current_pos, xyz_list[0], xyz_list[1],
                              xyz_list[2], body_orient=orientation)
@@ -564,18 +528,13 @@ def do_motion(xyz_list, ID_list, orientation=None):
         next_pos = K.doIkine(current_pos, xyz_list[0], xyz_list[1],
                              xyz_list[2])
 
-    #scaler = calc_scaler(next_pos)
-    #vel_acc_value = list_combine(ID_list, scaler)
-    #velocityN(vel_acc_value)  # Setting same vel/acc = Trapezoid trajectory
-    #accelerationN(vel_acc_value)
-
     #motion = list_combine(ID_list, next_pos)
-    #print(motion) # just for debugging
+    #print(motion)           # just for debugging
 
-
+    #print('2: ', next_pos)  # just for debugging
     positions = K.step_to_rad(next_pos)
-    print(ID_list)
-    print(positions) # just for debugging
+    #print(ID_list)          # just for debugging
+    #print('3:', positions)  # just for debugging
     C.positionN(ID_list, positions)
 
 
@@ -585,7 +544,7 @@ def singleLeg(x, y, z, alpha, beta, gama, leg_case):
 
 
 def rippleMirror(x, y, z, alpha, beta, gama, leg_pair):
-    if leg_pair == 1:  # Front legs
+    if leg_pair == 1:    # Front legs
         legs = leg[1] + leg[2]
     elif leg_pair == 2:  # Middle legs
         legs = leg[3] + leg[4]
@@ -603,8 +562,6 @@ def calculate_motion(xyz_list, ID_list=None, orientation=None):
         next_pos    = K.doIkine(current_pos, xyz_list[0], xyz_list[1], xyz_list[2], body_orient=orientation)
     else:
         next_pos    = K.doIkine(current_pos, xyz_list[0], xyz_list[1], xyz_list[2])
-    #scaler = calc_scaler(next_pos)
-    #vel_acc_value = list_combine(ID_list, scaler)
     next_pos = K.step_to_rad(next_pos)
     return next_pos
     
@@ -650,13 +607,10 @@ def tripod_gait_test_for_lars(x,y,z, iterations):
     print(motion3)
     for i in range(iterations):
         C.positionAll(motion1)
-        #time.sleep(delay)
         C.positionAll(motion2_1)
-        #time.sleep(delay)
         C.positionAll(motion2_2)
-        #time.sleep(delay)
         C.positionAll(motion3)
-        #time.sleep(delay)
+
 
 ###########################################################################################################################
 
@@ -782,57 +736,52 @@ class Controller():
     def walk(self):
         standUp()
 
-
+    # different types of gaits
         #tripod_gait_test_for_lars(0,10,10,1)
         #tripodGait(0, 20, 10, 10)
         #waveGait(0, 20, 10, 1)
         #rippleGait(0, 40, 10, 5)
+        
+    # ripple gait manual imported
         #singleLeg(0, 20, 10, 0, 0, 0, 1)
         #singleLeg(0, 20, 10, 0, 0, 0, 4)
-
-        #time.sleep(2)
-
         #singleLeg(0, -40/2, 0, 0, 0, 0, 2)
-        #time.sleep(2)
         #singleLeg(0, -40/2, 0, 0, 0, 0, 5)
-        #time.sleep(2)
         #singleLeg(0, -40/2, 0, 0, 0, 0, 3)
-        #time.sleep(2)
         #singleLeg(0, -40/2, 0, 0, 0, 0, 6)
-        #time.sleep(2)
-
         #print('0')
         #singleLeg(0, 0, -10, 0, 0, 0, 1)
         #print('1')
         #singleLeg(0, 0, 40, 0, 0, 0, 4)
+        
+    # some other translations 
         #translationZ(50)
         #parallelGait(0, 0, 0, 0, 0, -100)
+        self.robot.step(1000)
+    # reading and printing for debugging
         all_positions = C.readPos()
         K.printForward(all_positions)
         #K.printInverse(all_positions)
-    #move1 = [x, y, z]
-    #move2 = [-x / 2, -y / 2, 0]
-    #move3 = [0, 0, -z]
+        new_pos = K.rad_to_step(all_positions)
+        print(new_pos)
+
 
 if __name__ == "__main__":
     C = Controller()
     K = Kinematics()
 
+# manually inputting positions to specific or all servos.
     #id_list = [4, 5, 6, 10, 11, 12]
     #positions = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
     #C.positionN(id_list, positions)
     #positions = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
     #C.positionAll(positions)
+# setting all servos to zero position
+    #positions = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    #C.positionAll(positions)
 
-    # Function for measuring contact
+# Function for measuring contact
     #C.readTouch()
-
-    positions = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-    C.positionAll(positions)
-    
-    all_positions = C.readPos()
-    K.printForward(all_positions)
-
 
 
     C.walk()

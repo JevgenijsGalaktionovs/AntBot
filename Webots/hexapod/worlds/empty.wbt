@@ -2,8 +2,8 @@
 WorldInfo {
 }
 Viewpoint {
-  orientation 0.19307371153921066 -0.9502964576535448 -0.24425229678264665 4.132992966048274
-  position 1.3348603349649426 1.0503088746054108 -0.944440445015348
+  orientation 0.1645831143763585 -0.9723863759768833 -0.1654603707137207 4.267556429140438
+  position 1.5632021974427786 0.8082584594708407 -0.8385719831220023
 }
 TexturedBackground {
 }
@@ -146,6 +146,7 @@ Robot {
                                     }
                                     Transform {
                                       translation 0 0.046085 0
+                                      rotation 0 1 0 3.141592653589793
                                       children [
                                         DEF LEG-1-TIBIA HingeJoint {
                                           jointParameters HingeJointParameters {
