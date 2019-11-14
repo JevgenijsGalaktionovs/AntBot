@@ -352,7 +352,7 @@ def singleLeg(x, y, z, alpha, beta, gama, leg_case):
     do_motion([x,y,z], ID_list, orientation = orient,leg = leg_case)
 
 
-def calculate_motion(xyz_list, ID_list, orientation=None):
+def calculate_motion(xyz_list, orientation=None):
     """Parameters: xyz_list: list of 3 integers with x,y,z changes to accomplish
                    ID_list:  list of servo IDs
        Example call  : do_motion([0, 30, 20], [7, 8, 9])
@@ -364,9 +364,6 @@ def calculate_motion(xyz_list, ID_list, orientation=None):
     else:
         next_pos    = K.doIkine(current_pos, xyz_list[0], xyz_list[1], xyz_list[2])
 
-    scaler = calc_scaler(next_pos)
-    vel_acc_value = list_combine(ID_list, scaler)
-    motion = list_combine(ID_list, next_pos)
     return next_pos
 
 
@@ -579,24 +576,24 @@ def half_step(x,step,z,alpha,beta,gama):
 
 def tripodGait_stairs(stairs, distance, depth, riser):
     ee_xyz, servopos = K.doFkine(readPos())
-    gama, beta = K.get_orientation()
+    gama, beta = K.get_orientation([1,5,6])
     print ("gama,beta",gama,beta)
     delay = 2
     alpha = 0
     step = 45
     ae = []
     ae1 = []
-    lift = 40
+    lift = 20
     y_off = 120.96
-    leg1_liftedUp = False
-    leg2_liftedUp = False
-    leg3_liftedUp = False
-    leg4_liftedUp = False
-    leg5_liftedUp = False
-    leg6_liftedUp = False
-    front = False
-    middle = False
-    rear = False
+    #leg1_liftedUp = False
+    #leg2_liftedUp = False
+    #leg3_liftedUp = False
+    #leg4_liftedUp = False
+    #leg5_liftedUp = False
+    #leg6_liftedUp = False
+    #front = False
+    #middle = False
+    #rear = False
     dist2NextLevel_1 = distance
     dist2NextLevel_2 = distance
     dist2NextLevel_3 = distance + y_off - ee_xyz[7]
@@ -610,7 +607,7 @@ def tripodGait_stairs(stairs, distance, depth, riser):
     dist2NextLevel_6 = dist2NextLevel_6 - step
 
     print("dist2NextLevel",dist2NextLevel_2,dist2NextLevel_3,dist2NextLevel_6)
-    time.sleep(30)
+    #time.sleep(30)
 
     while stairs is True: 
         if dist2NextLevel_1 < 2*step:
@@ -645,7 +642,7 @@ def tripodGait_stairs(stairs, distance, depth, riser):
         positionN(ae)
         checking_for_errors(80,50,ae)
 
-        time.sleep(10)
+        time.sleep(2)
     ###########put forward ae1
         ae1.extend(singleLeg_walk( -xyz_stored1[0], 2*step, 0, alpha, beta, gama,1))
         ae1.extend(singleLeg_walk( 0, -step, 0, alpha , beta, gama,2))
@@ -657,45 +654,50 @@ def tripodGait_stairs(stairs, distance, depth, riser):
         checking_for_errors(80,50,ae1)
         checkContact()
     ##########put down
-        time.sleep(10)
+        #checkContact()
         checkContact()
-        checkContact()
+        time.sleep(2)
         ee_xyz, servopos = K.doFkine(readPos())
         z1_new = ee_xyz[2]
         z4_new = ee_xyz[11]
         z5_new = ee_xyz[14]
         dist2NextLevel_1 = dist2NextLevel_1 - 2*step
-        if z1_new - z1 > riser - 10:
-            leg1_liftedUp = True
-            if dist2NextLevel_1 < 0:
+        if z1_new - z1 > riser/2:    #the leg is lifted up
+            if dist2NextLevel_1 > 0:
+                dist2NextLevel_1 = depth - 5
+                
+            else:
                 dist2NextLevel_1 = depth + dist2NextLevel_1
-            dist2NextLevel_1 = depth
-        elif z1_new - z1 < riser - 10:
-            dist2NextLevel_1 = 0.5
+        else:
+            if dist2NextLevel_1 < 0:
+                dist2NextLevel_1 = 10
 
         dist2NextLevel_4 = dist2NextLevel_4 - 2*step 
-        if z4_new - z4 > riser - 10:
-            leg4_liftedUp = True
-            if dist2NextLevel_4 < 0:
+        if z4_new - z4 > riser/2:    #the leg is lifted up
+            if dist2NextLevel_4 > 0:
+                dist2NextLevel_4 = depth - 5
+                
+            else:
                 dist2NextLevel_4 = depth + dist2NextLevel_4
-            dist2NextLevel_4 = depth
-        elif z4_new - z4 < riser - 10:
-            dist2NextLevel_4 = 0.5
+        else:
+            if dist2NextLevel_4 < 0:
+                dist2NextLevel_4 = 10
         
-
-        if z5_new - z5 > riser - 10:
-            leg5_liftedUp = True
-            if dist2NextLevel_5 < 0:
+        dist2NextLevel_5 = dist2NextLevel_5 - 2*step
+        if z5_new - z5 > riser/2:    #the leg is lifted up
+            if dist2NextLevel_5 > 0:
+                dist2NextLevel_5 = depth - 5
+                
+            else:
                 dist2NextLevel_5 = depth + dist2NextLevel_5
-            dist2NextLevel_5 = depth
-        elif z5_new - z5 < riser - 10:
-            dist2NextLevel_5 = 0.5
+        else:
+            if dist2NextLevel_5 < 0:
+                dist2NextLevel_5 = 10
 
 
-        #parallelGait(0,0,0,0, a[1], a[0])
         
-        print(dist2NextLevel_1,dist2NextLevel_2,dist2NextLevel_3,dist2NextLevel_4,dist2NextLevel_5,dist2NextLevel_6)
-        time.sleep(3)
+        print("dist",dist2NextLevel_1,dist2NextLevel_2,dist2NextLevel_3,dist2NextLevel_4,dist2NextLevel_5,dist2NextLevel_6)
+        time.sleep(2)
     ##########seconed group lift up and push
         ae = []
         ae1 = []
@@ -742,49 +744,56 @@ def tripodGait_stairs(stairs, distance, depth, riser):
         checkContact()
     ##########put down
         checkContact()
-        checkContact()
+        #checkContact()
         ee_xyz = []
         ee_xyz, servopos = K.doFkine(readPos())
-        z2_new = ee_xyz[2]
-        z3_new = ee_xyz[11]
-        z6_new = ee_xyz[14]
-
+        z2_new = ee_xyz[5]
+        z3_new = ee_xyz[8]
+        z6_new = ee_xyz[17]
         dist2NextLevel_2 = dist2NextLevel_2 - 2*step
-        if z2_new - z2 > riser - 10:
-            leg2_liftedUp = True
-            if dist2NextLevel_2 < 0:
+        if z2_new - z2 > riser/2:    #the leg is lifted up
+            if dist2NextLevel_2 > 0:
+                dist2NextLevel_2 = depth - 5
+                
+            else:
                 dist2NextLevel_2 = depth + dist2NextLevel_2
-            dist2NextLevel_2 = depth
-        elif z2_new - z2 < riser - 10:
-            dist2NextLevel_2 = 0.5
+        else:
+            if dist2NextLevel_2 < 0:
+                dist2NextLevel_2 = 10
 
         dist2NextLevel_3 = dist2NextLevel_3 - 2*step
-        leg5_liftedUp = True 
-        if z3_new - z3 > riser - 10:
-            leg3_liftedUp = True
-            if dist2NextLevel_3 < 0:
+        if z3_new - z3 > riser/2:    #the leg is lifted up
+            if dist2NextLevel_3 > 0:
+                dist2NextLevel_3 = depth - 3
+                
+            else:
                 dist2NextLevel_3 = depth + dist2NextLevel_3
-            dist2NextLevel_3 = depth
-        elif z3_new - z3 < riser - 10:
-            dist2NextLevel_3 = 0.5
+        else:
+            if dist2NextLevel_3 < 0:
+                dist2NextLevel_3 = 10
         
         dist2NextLevel_6 = dist2NextLevel_6 - 2*step
-        if z6_new - z6 > riser - 10:
-            leg6_liftedUp = True
-            if dist2NextLevel_6 < 0:
+        if z6_new - z6 > riser/2:    #the leg is lifted up
+            if dist2NextLevel_6 > 0:
+                dist2NextLevel_6 = depth - 5
+                
+            else:
                 dist2NextLevel_6 = depth + dist2NextLevel_6
-            dist2NextLevel_6 = depth
-        elif z6_new - z6 < riser - 10:
-            dist2NextLevel_6 = 0.5
+        else:
+            if dist2NextLevel_6 < 0:
+                dist2NextLevel_6 = 10
 
-        if (leg1_liftedUp is True) and (leg2_liftedUp is True):
-            front = True
-        if (leg3_liftedUp is True) and (leg4_liftedUp is True):
-            middle = True
-        if (leg4_liftedUp is True) and (leg5_liftedUp is True):
-            rear = True
-        if (front is True) or (middle is True) or (rear is True):
-            gama,beta = K.get_orientation()
+        print("dist",dist2NextLevel_1,dist2NextLevel_2,dist2NextLevel_3,dist2NextLevel_4,dist2NextLevel_5,dist2NextLevel_6)
+        ee_xyz = []
+        ee_xyz, servopos = K.doFkine(readPos())
+        z1 = ee_xyz[2]
+        z2 = ee_xyz[5]
+        z5 = ee_xyz[14]
+        z6 = ee_xyz[17]
+        z_front = abs(z1 - z2)
+        z_rear = abs(z5 - z6)
+        if (z_front<15) and (z_rear<15):
+            gama,beta = K.get_orientation([1,5,6])
             time.sleep(1)
             parallelGait(0,-beta,-gama,0,0,0)
             time.sleep(1)
@@ -792,422 +801,51 @@ def tripodGait_stairs(stairs, distance, depth, riser):
             time.sleep(1)
             parallelGait(0,0,0,0, a[1], a[0])
 
-        leg1_liftedUp = False
-        leg2_liftedUp = False
-        leg3_liftedUp = False
-        leg4_liftedUp = False
-        leg5_liftedUp = False
-        leg6_liftedUp = False
-
-
-def tripodGait_stairssecond(lift, front_legs ,middle_legs, rare_legs, depth, riser):
-    gama, beta = K.get_orientation()
-    delay = 2
-    alpha = 0 
-    gone_forward = 0
-    step = (depth/4)
-    print("step",step)
-    ae = []
-    ae1 = []
-    ae2 = []
-    ae3 = []
-    ae4 = []
-    ae5 = []
-    ae6 = []
-    half_step(0,45,20,0,0,0)
-
-    while gone_forward < step:     #depth-step:
-        half_step(0,45,20,0,0,0)
-        if front_legs is True:
-            ae_stored1, xyz_stored1 = singleLeg_stairs( 0, 0, riser + lift, alpha, beta, gama,1)
-            ae.extend(ae_stored1)
-            print("ae",ae)
-        elif front_legs is not True:
-            print("im not here")
-            ae.extend(singleLeg_walk( 0, 0, lift,alpha,beta,gama,1))
-        ae.extend(singleLeg_walk( 0, -step, 0,alpha,beta,gama,2))
-        ae.extend(singleLeg_walk( 0, -step, 0,alpha,beta,gama,3))
-        if middle_legs is True:
-            ae_stored4, xyz_stored4 = singleLeg_stairs( 0, 0, riser + lift,alpha,beta,gama,4)
-            ae.extend(ae_stored4)
-            pint("leg4 lift up")
-        elif middle_legs is not True:
-            print("ae",ae)
-            ae.extend(singleLeg_walk( 0, 0, lift,alpha,beta,gama,4))
-        if rare_legs is True: 
-            ae_stored5, xyz_stored5 = singleLeg_stairs( 0, 0, riser + lift,alpha,beta,gama,5)
-            ae.extend(ae_stored5)
-            pint("leg5 lift up")
-        elif rare_legs is not True:
-            ae.extend(singleLeg_walk( 0, 0, lift,alpha,beta,gama,5))
-            print("ae",ae)
-        ae.extend(singleLeg_walk( 0, -step, 0,alpha,beta,gama,6))
-        positionN(ae)
-        checking_for_errors(80,50,ae)
-    ###########pu forward ae1
-        ae1.extend(singleLeg_walk( -xyz_stored1[0], 2*step, 0, alpha, beta, gama,1))
-        ae1.extend(singleLeg_walk( 0, 0, 0, 0 , 0, 0,2))
-        ae1.extend(singleLeg_walk( 0, 0, 0, 0 , 0, 0,3))
-        ae1.extend(singleLeg_walk( 0, step, 0, alpha , beta, gama,4))
-        ae1.extend(singleLeg_walk( 0, step, 0, alpha , beta, gama,5))
-        ae1.extend(singleLeg_walk( 0, 0, 0, 0 , 0, 0,6))
-        positionN(ae1)
-        checking_for_errors(80,50,ae1)
-    ##########put down
-        checkContact()
-        ae2.extend(singleLeg_walk( 0, 0, 0, 0 , 0, 0,1))
-        if front_legs is True:
-            ae_stored2, xyz_stored2 = singleLeg_stairs( 0, step, riser + lift,alpha,beta,gama,2)
-            ae2.extend(ae_stored2)
-            print("stored2",xyz_stored2)
-        elif front_legs is not True:
-            ae2.extend(singleLeg_walk( 0, 0, lift,alpha,beta,gama,2))
-        if middle_legs is True:
-            ae_stored3, xyz_stored3 = singleLeg_stairs( 0, 0, riser + lift,alpha,beta,gama,3)
-            ae2.extend(ae_stored3)
-        elif middle_legs is not True:
-            ae2.extend(singleLeg_walk( 0, 0, lift,alpha,beta,gama,3))
-        ae2.extend(singleLeg_walk( 0, 0, 0, 0 , 0, 0,4))
-        ae2.extend(singleLeg_walk( 0, 0, 0, 0 , 0, 0,5))
-        if rare_legs is True: 
-            ae_stored6, xyz_stored6 = singleLeg_stairs( 0, 0, riser + lift,alpha,beta,gama,6)
-            ae2.extend(ae_stored6)
-        elif rare_legs is not True:
-            ae2.extend(singleLeg_walk( 0, 0, lift,alpha,beta,gama,6))
-        positionN(ae2)
-        print(ae2)
-        checking_for_errors(80,50,ae2)
-        print("2")
-        
-    ########put forward second ae3
-        ae3.extend(singleLeg_walk( 0, 0, 0, 0 , 0, 0,1))
-        ae3.extend(singleLeg_walk( 0, step, 0, alpha, beta, gama,2))
-        ae3.extend(singleLeg_walk( 0, 2*step, 0, alpha , beta, gama,3))
-        ae3.extend(singleLeg_walk( 0, 0, 0, 0 , 0, 0,4))
-        ae3.extend(singleLeg_walk( 0, 0, 0, 0 , 0, 0,5))
-        ae3.extend(singleLeg_walk( 0, 2*step, 0, alpha , beta, gama,6))
-        positionN(ae3)
-        checking_for_errors(80,50,ae3)
-        print("3")
-    #########put down second group leg 3 and 6
-        ae4.extend(singleLeg_walk( 0, 0, 0, 0 , 0, 0,1))
-        ae4.extend(singleLeg_walk( -xyz_stored2[0], 0, 0, alpha, beta, gama,2))
-        ae4.extend(singleLeg_walk( 0, 0, -lift, alpha , beta, gama,3))
-        ae4.extend(singleLeg_walk( 0, 0, 0, 0 , 0, 0,4))
-        ae4.extend(singleLeg_walk( 0, 0, 0, 0 , 0, 0,5))
-     
-    
-
-def continiousTripodTactile(x, y, z, iterations):
-    one_leg_calculation_up  = [x, y, z]
-    one_leg_calculation_down  = [x, y, 0]
-    one_push_leg_calculation = [0, 0 , 0]
-    push_leg_calculation     = [-x,-y,0]
-    #######Group 1
-    a1=calculate_motion(one_leg_calculation_up, l1)
-    b1=calculate_motion(one_leg_calculation_down, l1)
-    c1=calculate_motion(one_push_leg_calculation, l1)
-    
-    a4=calculate_motion(one_leg_calculation_up, l4)
-    b4=calculate_motion(one_leg_calculation_down, l4)
-    c4=calculate_motion(one_push_leg_calculation, l4)
-
-    a5=calculate_motion(one_leg_calculation_up, l5)
-    b5=calculate_motion(one_leg_calculation_down, l5)
-    c5=calculate_motion(one_push_leg_calculation, l5)
-    #####Group 2
-    a2=calculate_motion(one_leg_calculation_up, l2)
-    b2=calculate_motion(one_leg_calculation_down, l2)
-    c2=calculate_motion(one_push_leg_calculation, l2)
-
-    a3=calculate_motion(one_leg_calculation_up, l3)
-    b3=calculate_motion(one_leg_calculation_down, l3)
-    c3=calculate_motion(one_push_leg_calculation, l3)
-        
-    a6=calculate_motion(one_leg_calculation_up, l6)
-    b6=calculate_motion(one_leg_calculation_down, l6)
-    c6=calculate_motion(one_push_leg_calculation, l6)
-
-    leg1_1=a1[:3]
-    leg2_1=c2[3:6]
-    leg3_1=c3[6:9]
-    leg4_1=a4[9:12]
-    leg5_1=a5[12:15]
-    leg6_1=c6[15:18]
-    motion1 = leg1_1+leg2_1+leg3_1+leg4_1+leg5_1+leg6_1
-    print(motion1)
-
-    leg1_2_1=b1[:3]
-    leg2_2_1=c2[3:6]
-    leg3_2_1=c3[6:9]
-    leg4_2_1=b4[9:12]
-    leg5_2_1=b5[12:15]
-    leg6_2_1=c6[15:18]
-    motion2_1 = leg1_2_1+leg2_2_1+leg3_2_1+leg4_2_1+leg5_2_1+leg6_2_1
-    print(motion2_1)
-
-    leg1_2_2=b1[:3]
-    leg2_2_2=a2[3:6]
-    leg3_2_2=a3[6:9]
-    leg4_2_2=b4[9:12]
-    leg5_2_2=b5[12:15]
-    leg6_2_2=a6[15:18]
-    motion2_2 = leg1_2_2+leg2_2_2+leg3_2_2+leg4_2_2+leg5_2_2+leg6_2_2
-    print(motion2_2)
-
-    leg1_3=c1[:3]
-    leg2_3=b2[3:6]
-    leg3_3=b3[6:9]
-    leg4_3=c4[9:12]
-    leg5_3=c5[12:15]
-    leg6_3=b6[15:18]
-    motion3 = leg1_3+leg2_3+leg3_3+leg4_3+leg5_3+leg6_3
-    print(motion3)
-    itter=15
-
-    for i in range(iterations):
-        ##########################1-st Group upp, 2nd push
-        a1=calculate_motion(one_leg_calculation_up, l1)
-        a4=calculate_motion(one_leg_calculation_up, l4)
-        a5=calculate_motion(one_leg_calculation_up, l5)
-        c2=calculate_motion(push_leg_calculation, l2)
-        c3=calculate_motion(push_leg_calculation, l3)
-        c6=calculate_motion(push_leg_calculation, l6)
-        leg1_1=a1[:3]
-        leg2_1=c2[3:6]
-        leg3_1=c3[6:9]
-        leg4_1=a4[9:12]
-        leg5_1=a5[12:15]
-        leg6_1=c6[15:18]
-        motion1 = leg1_1+leg2_1+leg3_1+leg4_1+leg5_1+leg6_1
-        positionAll(motion1)
-        ae=motion1[:18]
-        for x in range (itter): 
-            current_pos = readPos()
-            pos = current_pos[:18]
-            possition_error_leg1=pos[0]-ae[0],pos[1]-ae[1],pos[2]-ae[2]
-            possition_error_leg4=pos[9]-ae[9],pos[10]-ae[10],pos[11]-ae[11]
-            possition_error_leg5=pos[12]-ae[12],pos[13]-ae[13],pos[14]-ae[14]
-            absoluteError_leg1= sum([abs(x) for x in possition_error_leg1])/3
-            absoluteError_leg4= sum([abs(x) for x in possition_error_leg4])/3
-            absoluteError_leg5= sum([abs(x) for x in possition_error_leg5])/3
-            absoluteError_swing = absoluteError_leg1+absoluteError_leg4+absoluteError_leg5
-
-            possition_error_leg2=pos[3]-ae[3],pos[4]-ae[4],pos[5]-ae[5]
-            possition_error_leg3=pos[6]-ae[6],pos[7]-ae[7],pos[8]-ae[8]
-            possition_error_leg6=pos[15]-ae[15],pos[16]-ae[16],pos[17]-ae[17]
-            absoluteError_leg2= sum([abs(x) for x in possition_error_leg1])/3
-            absoluteError_leg3= sum([abs(x) for x in possition_error_leg3])/3
-            absoluteError_leg6= sum([abs(x) for x in possition_error_leg4])/3
-            absoluteError_stance = absoluteError_leg2+absoluteError_leg3+absoluteError_leg6
-            absoluteError= absoluteError_stance+absoluteError_swing
-            print(absoluteError)
-            if absoluteError < 20:
-                print(absoluteError, "1")
-                break
-##########################1-st Group down
-        
-        c2=calculate_motion(one_push_leg_calculation, l2)
-        c3=calculate_motion(one_push_leg_calculation, l3)
-        c6=calculate_motion(one_push_leg_calculation, l6)
-        leg2_2_1=c2[3:6]
-        leg3_2_1=c3[6:9]
-        leg6_2_1=c6[15:18]
-        motion2_1 = leg1_2_1+leg2_2_1+leg3_2_1+leg4_2_1+leg5_2_1+leg6_2_1
-        positionAll(motion2_1)
-        ae=motion2_1[:18]
-        for x in range (itter): 
-            current_pos = readPos()
-            pos = current_pos[:18]
-            possition_error_leg1=pos[0]-ae[0],pos[1]-ae[1],pos[2]-ae[2]
-            possition_error_leg4=pos[9]-ae[9],pos[10]-ae[10],pos[11]-ae[11]
-            possition_error_leg5=pos[12]-ae[12],pos[13]-ae[13],pos[14]-ae[14]
-            absoluteError_leg1= sum([abs(x) for x in possition_error_leg1])/3
-            absoluteError_leg4= sum([abs(x) for x in possition_error_leg4])/3
-            absoluteError_leg5= sum([abs(x) for x in possition_error_leg5])/3
-            absoluteError_swing = absoluteError_leg1+absoluteError_leg4+absoluteError_leg5
-
-            possition_error_leg2=pos[3]-ae[3],pos[4]-ae[4],pos[5]-ae[5]
-            possition_error_leg3=pos[6]-ae[6],pos[7]-ae[7],pos[8]-ae[8]
-            possition_error_leg6=pos[15]-ae[15],pos[16]-ae[16],pos[17]-ae[17]
-            absoluteError_leg2= sum([abs(x) for x in possition_error_leg1])/3
-            absoluteError_leg3= sum([abs(x) for x in possition_error_leg3])/3
-            absoluteError_leg6= sum([abs(x) for x in possition_error_leg4])/3
-            absoluteError_stance = absoluteError_leg2+absoluteError_leg3+absoluteError_leg6
-            absoluteError= absoluteError_stance+absoluteError_swing
-            print(absoluteError)
-            fsr = readFSR()
-            fsr_leg1=fsr[0]
-            fsr_leg4=fsr[3]
-            fsr_leg5=fsr[4]
-            if absoluteError < 20:
-                print(absoluteError, "1")
-                break
-            if fsr_leg1 > 100:
-                leg=1
-                j=int(leg-1)
-                current_pos_leg1 = readPos()
-                pos_1 = current_pos_leg1[:18]
-                positionN([3*j+1,pos_1[3*j],3*j+2,pos_1[3*j+1],3*j+3,pos_1[3*j+2]])
-            if fsr_leg4 > 100:
-                leg=4
-                j=int(leg-1)
-                current_pos_leg4 = readPos()
-                pos_4 = current_pos_leg4[:18]
-                positionN([3*j+1,pos_4[3*j],3*j+2,pos_4[3*j+1],3*j+3,pos_4[3*j+2]])
-            if fsr_leg5 > 100:
-                leg=5
-                j=int(leg-1)
-                current_pos_leg5 = readPos()
-                pos_5 = current_pos_leg5[:18]
-                positionN([3*j+1,pos_5[3*j],3*j+2,pos_5[3*j+1],3*j+3,pos_5[3*j+2]])
-            elif fsr_leg1 > 100 and fsr_leg4 > 100 and fsr_leg5 > 100:
-                break  
-	checkContact()	
-        a2=calculate_motion(one_leg_calculation_up, l2)
-        a3=calculate_motion(one_leg_calculation_up, l3)
-        a6=calculate_motion(one_leg_calculation_up, l6)
-        c1=calculate_motion(one_push_leg_calculation, l1)
-        c4=calculate_motion(one_push_leg_calculation, l4)
-        c5=calculate_motion(one_push_leg_calculation, l5)
-        leg1_2_2=c1[:3] 
-        leg2_2_2=a2[3:6]
-        leg3_2_2=a3[6:9]
-        leg4_2_2=c4[9:12]
-        leg5_2_2=c5[12:15]
-        leg6_2_2=a6[15:18]
-        motion2_2 = leg1_2_2+leg2_2_2+leg3_2_2+leg4_2_2+leg5_2_2+leg6_2_2
-        print(motion2_2)
-        positionAll(motion2_2)
-        ae=motion2_2[:18]
-        for x in range (itter): 
-            current_pos = readPos()
-            pos = current_pos[:18]
-            possition_error_leg1=pos[0]-ae[0],pos[1]-ae[1],pos[2]-ae[2]
-            possition_error_leg4=pos[9]-ae[9],pos[10]-ae[10],pos[11]-ae[11]
-            possition_error_leg5=pos[12]-ae[12],pos[13]-ae[13],pos[14]-ae[14]
-            absoluteError_leg1= sum([abs(x) for x in possition_error_leg1])/3
-            absoluteError_leg4= sum([abs(x) for x in possition_error_leg4])/3
-            absoluteError_leg5= sum([abs(x) for x in possition_error_leg5])/3
-            absoluteError_swing = absoluteError_leg1+absoluteError_leg4+absoluteError_leg5
-
-            possition_error_leg2=pos[3]-ae[3],pos[4]-ae[4],pos[5]-ae[5]
-            possition_error_leg3=pos[6]-ae[6],pos[7]-ae[7],pos[8]-ae[8]
-            possition_error_leg6=pos[15]-ae[15],pos[16]-ae[16],pos[17]-ae[17]
-            absoluteError_leg2= sum([abs(x) for x in possition_error_leg1])/3
-            absoluteError_leg3= sum([abs(x) for x in possition_error_leg3])/3
-            absoluteError_leg6= sum([abs(x) for x in possition_error_leg4])/3
-            absoluteError_stance = absoluteError_leg2+absoluteError_leg3+absoluteError_leg6
-            absoluteError= absoluteError_stance+absoluteError_swing
-            print(absoluteError)
-            if absoluteError < 20:
-                print(absoluteError, "1")
-                break
-        c1=calculate_motion(push_leg_calculation, l1)
-        c4=calculate_motion(push_leg_calculation, l4)
-        c5=calculate_motion(push_leg_calculation, l5)
-        leg1_3=c1[:3]
-        leg4_3=c4[9:12]
-        leg5_3=c5[12:15]
-        motion3 = leg1_3+leg2_3+leg3_3+leg4_3+leg5_3+leg6_3
-        positionAll(motion3)
-        ae=motion3[:18]
-        for x in range (itter): 
-            current_pos = readPos()
-            pos = current_pos[:18]
-            possition_error_leg1=pos[0]-ae[0],pos[1]-ae[1],pos[2]-ae[2]
-            possition_error_leg4=pos[9]-ae[9],pos[10]-ae[10],pos[11]-ae[11]
-            possition_error_leg5=pos[12]-ae[12],pos[13]-ae[13],pos[14]-ae[14]
-            absoluteError_leg1= sum([abs(x) for x in possition_error_leg1])/3
-            absoluteError_leg4= sum([abs(x) for x in possition_error_leg4])/3
-            absoluteError_leg5= sum([abs(x) for x in possition_error_leg5])/3
-            absoluteError_swing = absoluteError_leg1+absoluteError_leg4+absoluteError_leg5
-
-            possition_error_leg2=pos[3]-ae[3],pos[4]-ae[4],pos[5]-ae[5]
-            possition_error_leg3=pos[6]-ae[6],pos[7]-ae[7],pos[8]-ae[8]
-            possition_error_leg6=pos[15]-ae[15],pos[16]-ae[16],pos[17]-ae[17]
-            absoluteError_leg2= sum([abs(x) for x in possition_error_leg1])/3
-            absoluteError_leg3= sum([abs(x) for x in possition_error_leg3])/3
-            absoluteError_leg6= sum([abs(x) for x in possition_error_leg4])/3
-            absoluteError_stance = absoluteError_leg2+absoluteError_leg3+absoluteError_leg6
-            absoluteError= absoluteError_stance+absoluteError_swing
-            print(absoluteError)
-            fsr = readFSR()
-            fsr_leg2=fsr[1]
-            fsr_leg3=fsr[2]
-            fsr_leg6=fsr[5]
-            if absoluteError < 20:
-                print(absoluteError, "1")
-                break
-            if fsr_leg2 > 100:
-                leg=2
-                j=int(leg-1)
-                current_pos_leg2 = readPos()
-                pos_2 = current_pos_leg2[:18]
-                positionN([3*j+1,pos_2[3*j],3*j+2,pos_2[3*j+1],3*j+3,pos_2[3*j+2]])
-            if fsr_leg3 > 100:
-                leg=3
-                j=int(leg-1)
-                current_pos_leg3 = readPos()
-                pos_3 = current_pos_leg3[:18]
-                positionN([3*j+1,pos_3[3*j],3*j+2,pos_3[3*j+1],3*j+3,pos_3[3*j+2]])
-            if fsr_leg6 > 100:
-                leg=6
-                j=int(leg-1)
-                current_pos_leg6 = readPos()
-                pos_6 = current_pos_leg6[:18]
-                positionN([3*j+1,pos_6[3*j],3*j+2,pos_6[3*j+1],3*j+3,pos_6[3*j+2]])
-            elif fsr_leg2 > 100 and fsr_leg3 > 100 and fsr_leg6 > 100:
-                break 
-	checkContact()	
-	#orientation=get_orietation()
-	#parallelGait(0, -orientation[1], -orientation[0], 0, 0, 0)
-	#time.sleep(2)
 def checkContact():
-	for x in range (20):
-		fsr = readFSR()
-		leg_trigger=[True]*6
-		print ("fsr",fsr)
-		for x in range (6): 
-			if fsr[x] < 100:
-				print ("leg_",x+1 ,"is not activated")
-				leg_trigger[x]=False
-		print leg_trigger 
-		for x in range (6):
-			stepping_down_calculation = [0,0,-5]
-	    		downCalc=calculate_motion(stepping_down_calculation,l1)
-			if leg_trigger[x] == False:
-				j = x
-		        	positionN([3*j+1,downCalc[3*j],3*j+2,downCalc[3*j+1],3*j+3,downCalc[3*j+2]])
-		if False in leg_trigger:
-			print "All legs are not in contact"
-		else:	
-			break
-#torque(0)
-#pwm_list = [800]*18
-#pwmAll(pwm_list)
-#scaler_acc = [20] * 18
-#scaler_vel = [50] * 18
-#velocityAll(scaler_vel)
-#accelerationAll(scaler_acc)
-#torque(1)
-#standUp()
-#time.sleep(1)
-#continiousTripodTactile(0, 30, 20, 20)
-#checkContact()	
+    stepping_down_calculation = [0,0,-5]
+    desired_Position = calculate_motion(stepping_down_calculation)
+    for x in range (20):
+        fsr = readFSR()
+        leg_trigger=[True]*6
+        print ("fsr",fsr)
+        for x in range (6): 
+            if fsr[x] < 100:
+                print ("leg_",x+1 ,"is not activated")
+                leg_trigger[x]=False
+        print (leg_trigger) 
+        for x in range (6):
+                if leg_trigger[x] == False:
+                    j = x
+                    positionN([3*j+1,desired_Position[3*j],3*j+2,desired_Position[3*j+1],3*j+3,desired_Position[3*j+2]])
+                if False in leg_trigger:
+                    print ("All legs are not in contact")
+                else:	
+                    break
+        time.sleep(0.5)
+        current_Position = readPos()
+        desired_Position=wannabeControlSystem(desired_Position,current_Position,0,0,-5)
 
-#velocityAll(scaler_vel)
-#accelerationAll(scaler_acc)
-#torque(1)
-#standUp()
-#velocityAll(scaler_vel)
-#accelerationAll(scaler_acc)
-#time.sleep(1)
-#translationZ(-50)
-#time.sleep(1)
-#velocityAll(scaler_vel)
-#accelerationAll(scaler_acc)
-#continiousTripodTactile(0, 10, 10, 20)
+def wannabeControlSystem(current_Position, desired_Position, x,y,z):
+    newPoss      = []
+    NewWhereIAm  = [0]*18
+    NewWhereToGo = [0]*18
+    WhereToGo = K.doFkine(desired_Position)[:1]
+    WhereIAm  = K.doFkine(current_Position)[:1]
+    for i in range (18):
+        NewWhereToGo[i] = WhereToGo[0][i] 
+        NewWhereIAm[i]  = WhereIAm[0][i]
+    Error = [i - j for i, j in zip(NewWhereToGo, NewWhereIAm)]
+    ee_xyz_error = [i * 0.9 for i in Error]
+    ee_xyz = [i - j for i, j in zip(NewWhereIAm,ee_xyz_error)]
+    print(NewWhereIAm)
+    print(ee_xyz_error)
+    j = 0
+    for i in xrange(0, 16, 3):
+        newPoss.extend(K.calc_ikine(x, y, z, ee_xyz[i:i + 3], K.leg_list[j]))
+        j += 1
+    result = [int(next_poss) for next_poss in K.rad_to_step(newPoss)]
+    print("Newposs",result)
+    return result
 
 def checking_for_errors(itter, allowed_error, desired_pos):
     ae = desired_pos[1],desired_pos[3],desired_pos[5],desired_pos[7],desired_pos[9],desired_pos[11],desired_pos[13],desired_pos[15],desired_pos[17],desired_pos[19],desired_pos[21],desired_pos[23],desired_pos[25],desired_pos[27],desired_pos[29],desired_pos[31],desired_pos[33],desired_pos[35]

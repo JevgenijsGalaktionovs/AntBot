@@ -31,6 +31,7 @@ def add(a,b):
 
 def unit(c):
     length_c = length(c)
+    print(length_c)
     unit_c = [c[0]/length_c, c[1]/length_c, c[2]/length_c]
     return unit_c
 
@@ -40,6 +41,13 @@ def make_polygon(ee_xyz):
         line.extend = [ee_xyz[3*j+3] - ee_xyz[3*j],ee_xyz[3*j+4] - ee_xyz[3*j+1],ee_xyz[3*j+5] - ee_xyz[3*j+2]]
     return line
 
+def abs(c):
+    if c < 0:
+        c = -c
+    else: 
+        c = c
+
+    return c
     
             
 

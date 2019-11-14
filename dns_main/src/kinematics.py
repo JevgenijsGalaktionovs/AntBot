@@ -13,10 +13,10 @@ class LegConsts(object):
         self.ang_off   = ang_off            # Angular offset from body origin to first servo (mm)
         self.side      = side               # Left or Right-sided leg (servo angles inverted)
         self.f_ang_off = 13.33*pi/180#20.00 * pi / 180   # Angular offset of Femur
-        self.t_ang_off = -38.934*pi/180#-32.264 * pi / 180  # Angular offset of Tibia
+        self.t_ang_off = -42.2400*pi/180#-38.934*pi/180#-32.264 * pi / 180  # Angular offset of Tibia
         self.c_len     = 66.50              # Link length of Coxa  (mm)
         self.f_len     = 144.40#92.17              # Link length of Femur (mm)
-        self.t_len     = 194.00             # Link length of Tibia (mm)
+        self.t_len     = 236.5#194.00             # Link length of Tibia (mm)
         self.leg_nr    = leg_nr             # Leg Number
 
 
@@ -24,12 +24,12 @@ class Kinematics(object):
 
     ''' Class object to compute various types of kinematics data for AntBot '''
     # Origin to coxa: x_off    y_off    z_off    ang_off  side     name
-    leg1 = LegConsts(71.6,     120.96, -14.9,    - pi / 3, "right", "Leg 1")
-    leg2 = LegConsts(-71.6,    120.96, -14.9, -2 * pi / 3, "right",  "Leg 2")
+    leg1 = LegConsts(70.5,     122.225, -14.9,    - pi / 3, "right", "Leg 1")#71.6,     120.96, -14.9,    - pi / 3, "right", "Leg 1")
+    leg2 = LegConsts(-70.5,    122.225, -14.9, -2 * pi / 3, "right",  "Leg 2")
     leg3 = LegConsts(141.33,   0,      -14.9,      0,      "right", "Leg 3")
     leg4 = LegConsts(-141.33,  0,      -14.9,      pi,     "right",  "Leg 4")
-    leg5 = LegConsts(71.6,    -120.96, -14.9,      pi / 3, "right", "Leg 5")
-    leg6 = LegConsts(-71.6,   -120.96, -14.9,  2 * pi / 3, "right",  "Leg 6")
+    leg5 = LegConsts(70.5,    -122.225, -14.9,      pi / 3, "right", "Leg 5")
+    leg6 = LegConsts(-70.5,   -122.225, -14.9,  2 * pi / 3, "right",  "Leg 6")
     leg_list = [leg1, leg2, leg3, leg4, leg5, leg6]
 
     ################
@@ -256,28 +256,34 @@ class Kinematics(object):
 
 
 
-    def get_orientation(self):
+    def get_orientation(self,leg_list):
+        #### in put is a list of 3 leg numbers
         ee_xyz,servopos = self.doFkine(readPos())
         #standup_pos = [2048, 2218, 1024,   2048, 1878, 3048,
     #               2048, 2218, 1024,   2048, 1878, 3048,
-    #               2048, 2218, 1024,   2048, 1878, 3048]          
+    #               2048, 2218, 1024,   2048, 1878, 3048]   
+          
         y_axis_unit = [0,1,0]
-        p1 =  ee_xyz[0:3]
-        p2 =  ee_xyz[3:6]
-        p3 =  ee_xyz[6:9]
-        p4 =  ee_xyz[9:12]
-        p5 =  ee_xyz[12:15]
-        p6 =  ee_xyz[15:18]
+        #p1 =  ee_xyz[0:3]
+        ##p2 =  ee_xyz[3:6]
+        #p3 =  ee_xyz[6:9]
+        #p4 =  ee_xyz[9:12]
+        #p5 =  ee_xyz[12:15]
+        #p6 =  ee_xyz[15:18]
+        p1 = ee_xyz[3*(leg_list[0]-1):3*(leg_list[0]-1)+3]
+        #print("p1",p1)
+        p2 = ee_xyz[3*(leg_list[1]-1):3*(leg_list[1]-1)+3]
+        #print("p2",p2)
+        p3 = ee_xyz[3*(leg_list[2]-1):3*(leg_list[2]-1)+3]
+        #print("p3",p3)
         length_p1 = length(p1)
-        p51 = subtract(p5,p1)
-        p56 = subtract(p5,p6)
-        p61 = subtract(p6,p1)
-        length_p51 = length(p51)
-        p52 = subtract(p5,p2)
-        length_p56 = length(p56)
-        p43 = subtract(p4,p3)
-        length_p43 = length(p43)
-        normz = crossProduct(p51,p56)
+        p21 = subtract(p2,p1)
+        #print(p21)
+        p23 = subtract(p2,p3)
+        #print(23)
+        length_p21 = length(p21)
+        normz = crossProduct(p21,p23)
+        #print("normz",normz)
         unitz = unit(normz)
       
         beta = atan2(normz[0],normz[2])*180/pi
@@ -287,11 +293,11 @@ class Kinematics(object):
         return gamma, beta
 
     def calc_translationStairs(self,riser):
-        gamma, beta = self.get_orientation()
+        gamma, beta = self.get_orientation([1,5,6])
         ee_xyz,servopos = self.doFkine(readPos())
         z = ee_xyz[17]
-        #print("z",z)
-        #print(beta)
+        print("z",z)
+        print("beta",beta)
         r = z/cos(beta*pi/180)
         #print("r",r)
         difference = riser + r + 20
