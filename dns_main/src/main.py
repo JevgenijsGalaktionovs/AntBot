@@ -1,11 +1,10 @@
 #!/usr/bin/env python2
 import rospy
-from service_router import *
-from locomotion import *
+
+from service_router import getStairs
 
 if __name__ == '__main__':
     try:
-        torque(1)
-        standUp()
+        print getStairs()
     except rospy.ROSInterruptException:
         SystemExit

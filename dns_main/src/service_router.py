@@ -66,7 +66,20 @@ def readPwm():
     return read_pwn_all_request(1)
 
 
+def getStairs():
+    return get_stair_dimensions_request(1)
+
+
 # Requests
+def get_stair_dimensions_request(command):
+    rospy.wait_for_service('get_stair_dimensions')
+    try:
+        get_stair_dimensions = rospy.ServiceProxy('get_stair_dimensions', stairs_key)
+        response = get_stair_dimensions(command)
+        return response.reply
+    except rospy.ServiceException, e:
+        print "Service call failed: %s" % e
+
 
 def read_pos_all_request(command):
     rospy.wait_for_service('read_all_pos')
