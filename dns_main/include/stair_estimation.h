@@ -7,6 +7,7 @@
 #include <sys/stat.h> // For checkFileExists method
 
 #include <ros/ros.h>
+#include <ros/package.h>
 #include <librealsense2/rs.hpp>
 
 #include <pcl/common/common_headers.h>
@@ -45,8 +46,8 @@ public:
   bool save_filtered;
   bool suppress_prints;
   std::string file_format   = ".pcd";
-  std::string name_raw      = "/home/eugeneswag/ros_workspace/src/DNS/dns_main/src/vision/pcd/raw_cloud";
-  std::string name_filtered = "/home/eugeneswag/ros_workspace/src/DNS/dns_main/src/vision/pcd/filtered_cloud";
+  std::string name_raw      = ros::package::getPath("dns") + "/src/vision/pcd/raw_cloud";
+  std::string name_filtered = ros::package::getPath("dns") + "/src/vision/pcd/filtered_cloud";
 
   double step_height, step_depth_withEq, step_depth_noEq, dist_z_to_1step, dist_x_to_1step;
 

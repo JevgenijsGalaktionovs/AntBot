@@ -454,7 +454,6 @@ void St::findPlaneData(int &num_found_planes, std::vector<int> &planeNrToDelete,
   }
 }
 
-
 int St::doEstimate()
 {
   int status;
