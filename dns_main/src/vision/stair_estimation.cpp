@@ -526,33 +526,107 @@ int St::doEstimate()
   return EXIT_SUCCESS;
 }
 
-std::tuple<double, double, double, double> St::getEstimate(){
+std::string status_check(int status){
+    std::string status_text;
+    if (status==1){
+      status_text = "Segmentation fail -> No planes found.";
+    }
+    else if (status==2){
+      status_text = "Segmentation fail -> Only 1 plane found (Must be at least 2).";
+    }
+    else if (status==3){
+      status_text = "Filtering -> No good planes found.";
+    }
+    else if (status==4){
+      status_text = "Filtering -> Only 1 good plane found.";
+    }
+    else if (status==5){
+      status_text = "Dimensions -> None of the planes is farther than 5cm from each other.";
+    }
+    else{
+      status_text = "Something weird happened... Only god knows.";
+    }
+    return status_text;
+}
+
+std::tuple<double, double, double, double> St::getAllEstimates(){
   std::string status_msg;
   int status = doEstimate();
   
   if(status == EXIT_SUCCESS){
-    status_msg = "OK";
-    return std::tuple<double, double, double, double>(step_height, step_depth_noEq, dist_z_to_1step, dist_x_to_1step);
+    return std::tuple<double, double, double, double>(step_depth_noEq, step_height, dist_z_to_1step, dist_x_to_1step);
   }
   else{
-    if (status==1){
-      status_msg = "Segmentation fail -> No planes found.";
-    }
-    else if (status==2){
-      status_msg = "Segmentation fail -> Only 1 plane found (Must be at least 2).";
-    }
-    else if (status==3){
-      status_msg = "Filtering -> No good planes found.";
-    }
-    else if (status==4){
-      status_msg = "Filtering -> Only 1 good plane found.";
-    }
-    else if (status==5){
-      status_msg = "Dimensions -> None of the planes is farther than 5cm from each other.";
+    status_msg = status_check(status);
+    if (suppress_prints != true){
+      std::cout << status_msg << "\n";
     }
     return std::tuple<double, double, double, double>(0, 0, 0, 0);
   }
+}
 
+double St::getDepth(){
+  std::string status_msg;
+  int status = doEstimate();
+  
+  if(status == EXIT_SUCCESS){
+    return step_depth_noEq;
+  }
+  else{
+    status_msg = status_check(status);
+    if (suppress_prints != true){
+      std::cout << status_msg << "\n";
+    }
+    return 0;
+  }
+}
+
+double St::getHeight(){
+  std::string status_msg;
+  int status = doEstimate();
+  
+  if(status == EXIT_SUCCESS){
+    return step_height;
+  }
+  else{
+    status_msg = status_check(status);
+    if (suppress_prints != true){
+      std::cout << status_msg << "\n";
+    }
+    return 0;
+  }
+}
+
+double St::getDistZ(){
+  std::string status_msg;
+  int status = doEstimate();
+  
+  if(status == EXIT_SUCCESS){
+    return dist_z_to_1step;
+  }
+  else{
+    status_msg = status_check(status);
+    if (suppress_prints != true){
+      std::cout << status_msg << "\n";
+    }
+    return 0;
+  }
+}
+
+double St::getDistX(){
+  std::string status_msg;
+  int status = doEstimate();
+  
+  if(status == EXIT_SUCCESS){
+    return dist_x_to_1step;
+  }
+  else{
+    status_msg = status_check(status);
+    if (suppress_prints != true){
+      std::cout << status_msg << "\n";
+    }
+    return 0;
+  }
 }
 
 St Stairs;

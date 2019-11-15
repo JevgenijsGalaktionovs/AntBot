@@ -5,19 +5,39 @@
 #include <stair_estimation.h>
 #include <dns/stairs_key.h>
 
-bool stairs_service(dns::stairs_key::Request &req, dns::stairs_key::Response &res){
+bool get_all_stairs_info_response(dns::stairs_key::Request &req, dns::stairs_key::Response &res){
     if (req.command == true){
         float response[4];
-        std::tuple<double, double, double, double> test_reply;
-        test_reply = Stairs.getEstimate();
-        response[0] = std::get<0>(test_reply);
-        response[1] = std::get<1>(test_reply);
-        response[2] = std::get<2>(test_reply);
-        response[3] = std::get<3>(test_reply);
+        std::tuple<double, double, double, double> data;
+        data = Stairs.getAllEstimates();
+        response[0] = std::get<0>(data);
+        response[1] = std::get<1>(data);
+        response[2] = std::get<2>(data);
+        response[3] = std::get<3>(data);
         for(int i=0; i< 4; i++){
             res.reply.push_back(response[i]);
         }
     }
+    return true;
+}
+
+bool get_stairs_depth_response(dns::stairs_key::Request &req, dns::stairs_key::Response &res){
+    res.reply.push_back(Stairs.getDepth());
+    return true;
+}
+
+bool get_stairs_height_response(dns::stairs_key::Request &req, dns::stairs_key::Response &res){
+    res.reply.push_back(Stairs.getHeight());
+    return true;
+}
+
+bool get_stairs_dist_z_response(dns::stairs_key::Request &req, dns::stairs_key::Response &res){
+    res.reply.push_back(Stairs.getDistZ());
+    return true;
+}
+
+bool get_stairs_dist_x_response(dns::stairs_key::Request &req, dns::stairs_key::Response &res){
+    res.reply.push_back(Stairs.getDistX());
     return true;
 }
 
@@ -26,7 +46,12 @@ int main (int argc, char** argv) try
   ros::init (argc, argv, "stair_estimation");
   ros::NodeHandle nh;
   while (ros::ok()){
-    ros::ServiceServer service = nh.advertiseService("get_stair_dimensions", stairs_service);
+    ros::ServiceServer s1 = nh.advertiseService("get_all_stairs_info", get_all_stairs_info_response);
+    ros::ServiceServer s2 = nh.advertiseService("get_stairs_depth", get_stairs_depth_response);
+    ros::ServiceServer s3 = nh.advertiseService("get_stairs_height", get_stairs_height_response);
+    ros::ServiceServer s4 = nh.advertiseService("get_stairs_dist_z", get_stairs_dist_z_response);
+    ros::ServiceServer s5 = nh.advertiseService("get_stairs_dist_x", get_stairs_dist_x_response);  
+
     ros::spin();
   }
   return 0;

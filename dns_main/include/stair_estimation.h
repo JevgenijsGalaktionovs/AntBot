@@ -28,7 +28,7 @@
 #define MAX_CURV      0.01
 
 #define SAVE_RAW false
-#define SAVE_FLT true
+#define SAVE_FLT false
 #define SUPPRESS_PRINTS false
 
 using PointT =  pcl::PointXYZRGB;
@@ -38,7 +38,7 @@ public:
   // Constructor
   StairEstimationClass(): save_raw(SAVE_RAW), save_filtered(SAVE_FLT), suppress_prints(SUPPRESS_PRINTS) {
     initializeCamera(pipe);
-   }
+  }
 
   // Public Members
   bool save_raw;
@@ -51,7 +51,13 @@ public:
   double step_height, step_depth_withEq, step_depth_noEq, dist_z_to_1step, dist_x_to_1step;
 
   // Public Methods
-  std::tuple<double, double, double, double> getEstimate();
+  std::tuple<double, double, double, double> getAllEstimates();
+  double getDepth();
+  double getHeight();
+  double getDistZ();
+  double getDistX();
+
+
   template <typename T>
   void swapTwoVariables(T *xp, T *yp);
   template <typename T>
