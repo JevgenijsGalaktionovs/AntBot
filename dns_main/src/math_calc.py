@@ -39,7 +39,10 @@ def make_polygon(ee_xyz):
     line = []
     for i in range(len(ee_xyz/3)):
         line.extend = [ee_xyz[3*j+3] - ee_xyz[3*j],ee_xyz[3*j+4] - ee_xyz[3*j+1],ee_xyz[3*j+5] - ee_xyz[3*j+2]]
+        print(line)
     return line
+
+
 
 def abs(c):
     if c < 0:

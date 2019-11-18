@@ -10,22 +10,29 @@ from locomotion     import *
 
 riser = 170 #mm
 depth = 264 #mm
-torque(0)
-pwm_list = [800]*18
-pwmAll(pwm_list)
-scaler_acc = [50] * 18
-scaler_vel = [20] * 18
-velocityAll(scaler_vel)
-accelerationAll(scaler_acc)
-time.sleep(0.1)
-torque(1)
-standUp()
-time.sleep(5)
+#torque(0)
+#pwm_list = [800]*18
+#pwmAll(pwm_list)
+#scaler_acc = [50] * 18
+#scaler_vel = [20] * 18
+#velocityAll(scaler_vel)
+#accelerationAll(scaler_acc)
+#time.sleep(0.1)
+#torque(1)
+#standUp()
+#time.sleep(5)
+parallelGait(0,0,-5,0,0,0)
+a = K.step_to_rad(readPos())
+print(a) 
+
+
+
 #singleLeg_walk(50,0,0,0,0,0,6)
 #time.sleep(2)
 #checkContact()
 #checkContact()
 #a = K.doFkine(readPos())
+#print ()
 #K.printForward(readPos())
 #singleLeg_walk(0,0,100,0,0,0,6)
 #time.sleep(2)
@@ -35,9 +42,9 @@ time.sleep(5)
 #K.printForward(readPos())
 #singleLeg_walk(50,0,0,0,0,0,6)
 #time.sleep(1)
-#checkContact()
-tripodGait_stairs(True, 80 , depth, riser)
-time.sleep(1)
+##################333#checkContact()
+###################tripodGait_stairs(True, 80 , depth, riser)
+#time.sleep(1)
 #checkContact()
 #time.sleep(2)
 #checkContact()

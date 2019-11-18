@@ -247,9 +247,10 @@ class Kinematics(object):
             xyz_polygon.extend((newEe_xyz[j * 3 :j * 3 + 3]))
         return xyz_polygon
 
-    def make_polygonLines(ee_xyz):
+    def make_polygonLines(self, ee_xyz):
         line = []
         for i in range(len(ee_xyz/3)):
+            j = i - 1
             line.extend = [ee_xyz[3*j+3] - ee_xyz[3*j],ee_xyz[3*j+4] - ee_xyz[3*j+1],ee_xyz[3*j+5] - ee_xyz[3*j+2]]
         return line
     #def make_polygon():
@@ -307,5 +308,5 @@ class Kinematics(object):
         return [translation_z, translation_y]
 
 
-
+    #def check_stability(self,) 
 
