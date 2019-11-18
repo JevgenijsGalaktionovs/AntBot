@@ -40,23 +40,23 @@ class LegConsts(object):
         self.z_off     =  z_off              # Z offset from body origin to first servo (mm)
         self.ang_off   =  ang_off            # Angular offset from body origin to first servo (mm)
         self.side      =  side               # Left or Right-sided leg (servo angles inverted)
-        self.f_ang_off =  20.00  * pi / 180  # Angular offset of Femur
-        self.t_ang_off = -32.264 * pi / 180  # Angular offset of Tibia
+        self.f_ang_off =  13.33 * pi / 180   # Angular offset of Femur          20.00
+        self.t_ang_off = -42.24 * pi / 180   # Angular offset of Tibia         -32.264
         self.c_len     =  66.50              # Link length of Coxa  (mm)
-        self.f_len     =  92.17              # Link length of Femur (mm)
-        self.t_len     =  193.66             # Link length of Tibia (mm)
+        self.f_len     =  144.4              # Link length of Femur (mm)        92.17
+        self.t_len     =  236.5              # Link length of Tibia (mm)        193.66
         self.leg_nr    =  leg_nr             # Leg Number
 
 
 class Kinematics(object):
     ''' Class object to compute various types of kinematics data for AntBot '''
     # Origin to coxa: x_off    y_off    z_off    ang_off   side     name
-    leg1 = LegConsts( 71.6,    120.96, -14.9,    - pi / 3, "right", "Leg 1")
-    leg2 = LegConsts(-71.6,    120.96, -14.9, -2 * pi / 3, "right",  "Leg 2")
-    leg3 = LegConsts( 141.33,  0,      -14.9,      0,      "right", "Leg 3")
-    leg4 = LegConsts(-141.33,  0,      -14.9,      pi,     "right",  "Leg 4")
-    leg5 = LegConsts( 71.6,   -120.96, -14.9,      pi / 3, "right", "Leg 5")
-    leg6 = LegConsts(-71.6,   -120.96, -14.9,  2 * pi / 3, "right",  "Leg 6")
+    leg1 = LegConsts( 70.5,    122.225, -14.9,    - pi / 3, "right", "Leg 1")        # 71.6,    120.96
+    leg2 = LegConsts(-70.5,    122.225, -14.9, -2 * pi / 3, "right",  "Leg 2")       # -71.6,    120.96
+    leg3 = LegConsts( 141.33,  0,       -14.9,      0,      "right", "Leg 3")        # 141.33,  0
+    leg4 = LegConsts(-141.33,  0,       -14.9,      pi,     "right",  "Leg 4")       # -141.33,  0
+    leg5 = LegConsts( 70.5,   -122.225, -14.9,      pi / 3, "right", "Leg 5")        #  71.6,   -120.96
+    leg6 = LegConsts(-70.5,   -122.225, -14.9,  2 * pi / 3, "right",  "Leg 6")       # -71.6,   -120.96
     leg_list = [leg1, leg2, leg3, leg4, leg5, leg6]
 
     ################
@@ -417,7 +417,7 @@ def tripodGait_full(x, y, z, iterations, start_pos=None):
         init_pos = start_pos
     else:
         init_pos = K.step_to_rad([2002, 2218, 957, 2012, 1918, 2971, 2127, 2200, 1027, 2123, 1887, 3048, 2011, 2188, 1097, 2003, 1872, 3120])
-    
+
     for i in range(iterations):
         TG1_m1 = [2 * x,  2 * y,  z]   # Tripod Group 1 : Motion 1
         TG1_m2 = [0,  0, -z]           # Tripod Group 1 : Motion 2
@@ -561,7 +561,7 @@ def calculate_motion(xyz_list, ID_list=None, orientation=None):
         next_pos    = K.doIkine(current_pos, xyz_list[0], xyz_list[1], xyz_list[2])
     next_pos = K.step_to_rad(next_pos)
     return next_pos
-    
+
 def tripod_gait_test_for_lars(x,y,z, iterations):
     leg_calculation_up    = [x, y, z]
     leg_calculation_down  = [x, y, 0]
@@ -738,7 +738,7 @@ class Controller():
         #tripodGait(0, 20, 10, 10)
         #waveGait(0, 20, 10, 1)
         #rippleGait(0, 40, 10, 5)
-        
+
     # ripple gait manual imported
         #singleLeg(0, 20, 10, 0, 0, 0, 1)
         #singleLeg(0, 20, 10, 0, 0, 0, 4)
@@ -750,8 +750,8 @@ class Controller():
         #singleLeg(0, 0, -10, 0, 0, 0, 1)
         #print('1')
         #singleLeg(0, 0, 40, 0, 0, 0, 4)
-        
-    # some other translations 
+
+    # some other translations
         #translationZ(-50)
         #parallelGait(0, 0, 3, 0, 0, 0)
         self.robot.step(1000)

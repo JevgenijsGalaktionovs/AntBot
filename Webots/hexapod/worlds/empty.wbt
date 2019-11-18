@@ -2,15 +2,12 @@
 WorldInfo {
 }
 Viewpoint {
-  orientation -0.2714760030772996 0.9245990103888361 0.26724043433050915 1.9008678710670692
-  position 1.6717607503387026 1.2489246983123858 -0.4697929660737699
-}
-TexturedBackground {
-}
-TexturedBackgroundLight {
+  orientation 0.01877510929060905 0.9693124840761926 0.24511385820709172 3.6246901271906737
+  position -1.6961205160391324 1.9099641837578971 -2.7077418237640583
 }
 RectangleArena {
-  floorSize 3 3
+  floorSize 5 5
+  wallHeight 0.2
 }
 Robot {
   translation 0 0.12 0
@@ -29,18 +26,18 @@ Robot {
               geometry IndexedFaceSet {
                 coord Coordinate {
                   point [
-                    0.0716 0.12096 0
-                    0.0716 0.12096 -0.0345
+                    0.0705 0.122225 0
+                    0.0705 0.122225 -0.0345
                     0.14133 0 0
                     0.14133 0 -0.0345
-                    0.0716 -0.12096 0
-                    0.0716 -0.12096 -0.0345
-                    -0.0716 -0.12096 0
-                    -0.0716 -0.12096 -0.0345
+                    0.0705 -0.122225 0
+                    0.0705 -0.122225 -0.0345
+                    -0.0705 -0.122225 0
+                    -0.0705 -0.122225 -0.0345
                     -0.14133 0 0
                     -0.14133 0 -0.0345
-                    -0.0716 0.12096 0
-                    -0.0716 0.12096 -0.0345
+                    -0.0705 0.122225 0
+                    -0.0705 0.122225 -0.0345
                   ]
                 }
                 ccw FALSE
@@ -61,7 +58,7 @@ Robot {
     DEF LEG-1-COXA HingeJoint {
       jointParameters HingeJointParameters {
         axis 0 0 1
-        anchor 0.0716 0.12096 0
+        anchor 0.0705 0.122225 0
       }
       device [
         PositionSensor {
@@ -74,7 +71,7 @@ Robot {
         }
       ]
       endPoint Solid {
-        translation 0.0716 0.12096 -0.017
+        translation 0.0705 0.122225 -0.017
         rotation 1 0 0 1.5707996938995747
         children [
           Transform {
@@ -127,10 +124,10 @@ Robot {
                           children [
                             USE SERVO-CYLINDER
                             Transform {
-                              rotation 0 1 0 0.349066
+                              rotation 0 1 0 0.232652
                               children [
                                 Solid {
-                                  translation 0 0 0.046085
+                                  translation 0 0 0.0722
                                   rotation 1 0 0 1.5707996938995747
                                   children [
                                     DEF FEMUR-2-CYLINDER-SHAPE Shape {
@@ -140,12 +137,12 @@ Robot {
                                         metalness 0
                                       }
                                       geometry Cylinder {
-                                        height 0.09217
+                                        height 0.1444
                                         radius 0.007
                                       }
                                     }
                                     Transform {
-                                      translation 0 0.046085 0
+                                      translation 0 0.0722 0
                                       rotation 0 1 0 3.141592653589793
                                       children [
                                         DEF LEG-1-TIBIA HingeJoint {
@@ -163,14 +160,14 @@ Robot {
                                             }
                                           ]
                                           endPoint Solid {
-                                            rotation 0 0.707108281185553 0.70710528118436 3.1415919999999997
+                                            rotation 0 0.7071082811855531 0.7071052811843601 3.1415919999999997
                                             children [
                                               USE SERVO-CYLINDER
                                               Transform {
-                                                rotation 0 1 0 -0.562108
+                                                rotation 0 1 0 -0.737227
                                                 children [
                                                   Solid {
-                                                    translation 0 0 0.09683
+                                                    translation 0 0 0.11825
                                                     rotation 1 0 0 1.5707996938995747
                                                     children [
                                                       DEF END-EFFECTOR Shape {
@@ -180,7 +177,7 @@ Robot {
                                                           metalness 0
                                                         }
                                                         geometry Cylinder {
-                                                          height 0.19366
+                                                          height 0.2365
                                                           radius 0.007
                                                         }
                                                       }
@@ -188,7 +185,7 @@ Robot {
                                                         rotation 1 0 0 0
                                                         children [
                                                           Solid {
-                                                            translation 0 0.09683 0
+                                                            translation 0 0.11825 0
                                                             rotation 0 0 1 0.9162996938995747
                                                             children [
                                                               DEF FEET Shape {
@@ -208,7 +205,7 @@ Robot {
                                                             physics USE PHYSICS
                                                           }
                                                           TouchSensor {
-                                                            translation 0 0.09683 0
+                                                            translation 0 0.11825 0
                                                             rotation 0 0 1 0.9163003061004252
                                                             name "f1_touch_sensor"
                                                             boundingObject USE FEET
@@ -263,7 +260,7 @@ Robot {
     DEF LEG-2-COXA HingeJoint {
       jointParameters HingeJointParameters {
         axis 0 0 1
-        anchor -0.0716 0.12096 0
+        anchor -0.0705 0.122225 0
       }
       device [
         PositionSensor {
@@ -276,7 +273,7 @@ Robot {
         }
       ]
       endPoint Solid {
-        translation -0.0717 0.12096 -0.017
+        translation -0.0717 0.122225 -0.017
         rotation 1 0 0 1.5707996938995747
         children [
           Transform {
@@ -310,15 +307,15 @@ Robot {
                           children [
                             USE SERVO-CYLINDER
                             Transform {
-                              rotation 0 1 0 3.49066
+                              rotation 0 1 0 3.37424
                               children [
                                 Solid {
-                                  translation 0 0 0.046085
+                                  translation 0 0 0.0722
                                   rotation 1 0 0 1.5708003061004252
                                   children [
                                     USE FEMUR-2-CYLINDER-SHAPE
                                     Transform {
-                                      translation 0 0.046085 0
+                                      translation 0 0.0722 0
                                       rotation 0 1 0 3.141592653589793
                                       children [
                                         DEF LEG-2-TIBIA HingeJoint {
@@ -336,14 +333,14 @@ Robot {
                                             }
                                           ]
                                           endPoint Solid {
-                                            rotation 0 0.707108281185553 0.70710528118436 3.1415919999999997
+                                            rotation 0 0.7071082811855531 0.7071052811843601 3.1415919999999997
                                             children [
                                               USE SERVO-CYLINDER
                                               Transform {
-                                                rotation 0 1 0 -0.562108
+                                                rotation 0 1 0 -0.737227
                                                 children [
                                                   Solid {
-                                                    translation 0 0 0.09683
+                                                    translation 0 0 0.11825
                                                     rotation 1 0 0 1.5707996938995747
                                                     children [
                                                       USE END-EFFECTOR
@@ -351,7 +348,7 @@ Robot {
                                                         rotation 1 0 0 0
                                                         children [
                                                           Solid {
-                                                            translation 0 0.09683 0
+                                                            translation 0 0.11825 0
                                                             rotation 0 0 1 0.9162996938995747
                                                             children [
                                                               USE FEET
@@ -361,7 +358,7 @@ Robot {
                                                             physics USE PHYSICS
                                                           }
                                                           TouchSensor {
-                                                            translation 0 0.09683 0
+                                                            translation 0 0.11825 0
                                                             rotation 0 0 1 0.9163003061004252
                                                             name "f2_touch_sensor"
                                                             boundingObject USE FEET
@@ -462,15 +459,15 @@ Robot {
                           children [
                             USE SERVO-CYLINDER
                             Transform {
-                              rotation 0 1 0 3.49066
+                              rotation 0 1 0 3.37424
                               children [
                                 Solid {
-                                  translation 0 0 0.046085
+                                  translation 0 0 0.0722
                                   rotation 1 0 0 1.5708003061004252
                                   children [
                                     USE FEMUR-2-CYLINDER-SHAPE
                                     Transform {
-                                      translation 0 0.046085 0
+                                      translation 0 0.0722 0
                                       rotation 0 1 0 3.141592653589793
                                       children [
                                         DEF LEG-3-TIBIA HingeJoint {
@@ -488,14 +485,14 @@ Robot {
                                             }
                                           ]
                                           endPoint Solid {
-                                            rotation 0 0.707108281185553 0.70710528118436 3.1415919999999997
+                                            rotation 0 0.7071082811855531 0.7071052811843601 3.1415919999999997
                                             children [
                                               USE SERVO-CYLINDER
                                               Transform {
-                                                rotation 0 1 0 -0.562108
+                                                rotation 0 1 0 -0.737227
                                                 children [
                                                   Solid {
-                                                    translation 0 0 0.09683
+                                                    translation 0 0 0.11825
                                                     rotation 1 0 0 1.5707996938995747
                                                     children [
                                                       USE END-EFFECTOR
@@ -503,7 +500,7 @@ Robot {
                                                         rotation 1 0 0 0
                                                         children [
                                                           Solid {
-                                                            translation 0 0.09683 0
+                                                            translation 0 0.11825 0
                                                             rotation 0 0 1 0.9162996938995747
                                                             children [
                                                               USE FEET
@@ -513,7 +510,7 @@ Robot {
                                                             physics USE PHYSICS
                                                           }
                                                           TouchSensor {
-                                                            translation 0 0.09683 0
+                                                            translation 0 0.11825 0
                                                             rotation 0 0 1 0.9163003061004252
                                                             name "f3_touch_sensor"
                                                             boundingObject USE FEET
@@ -615,15 +612,15 @@ Robot {
                           children [
                             USE SERVO-CYLINDER
                             Transform {
-                              rotation 0 1 0 3.49066
+                              rotation 0 1 0 3.37424
                               children [
                                 Solid {
-                                  translation 0 0 0.046085
+                                  translation 0 0 0.0722
                                   rotation 1 0 0 1.5708003061004252
                                   children [
                                     USE FEMUR-2-CYLINDER-SHAPE
                                     Transform {
-                                      translation 0 0.046085 0
+                                      translation 0 0.0722 0
                                       rotation 0 1 0 3.141592653589793
                                       children [
                                         DEF LEG-4-TIBIA HingeJoint {
@@ -641,14 +638,14 @@ Robot {
                                             }
                                           ]
                                           endPoint Solid {
-                                            rotation 0 0.707108281185553 0.70710528118436 3.1415919999999997
+                                            rotation 0 0.7071082811855531 0.7071052811843601 3.1415919999999997
                                             children [
                                               USE SERVO-CYLINDER
                                               Transform {
-                                                rotation 0 1 0 -0.562108
+                                                rotation 0 1 0 -0.737227
                                                 children [
                                                   Solid {
-                                                    translation 0 0 0.09683
+                                                    translation 0 0 0.11825
                                                     rotation 1 0 0 1.5707996938995747
                                                     children [
                                                       USE END-EFFECTOR
@@ -656,7 +653,7 @@ Robot {
                                                         rotation 1 0 0 0
                                                         children [
                                                           Solid {
-                                                            translation 0 0.09683 0
+                                                            translation 0 0.11825 0
                                                             rotation 0 0 1 0.9162996938995747
                                                             children [
                                                               USE FEET
@@ -666,7 +663,7 @@ Robot {
                                                             physics USE PHYSICS
                                                           }
                                                           TouchSensor {
-                                                            translation 0 0.09683 0
+                                                            translation 0 0.11825 0
                                                             rotation 0 0 1 0.9163003061004252
                                                             name "f4_touch_sensor"
                                                             boundingObject USE FEET
@@ -721,7 +718,7 @@ Robot {
     DEF LEG-5-COXA HingeJoint {
       jointParameters HingeJointParameters {
         axis 0 0 1
-        anchor 0.0716 -0.12096 0
+        anchor 0.0705 -0.122225 0
       }
       device [
         PositionSensor {
@@ -734,7 +731,7 @@ Robot {
         }
       ]
       endPoint Solid {
-        translation 0.0717 -0.12096 -0.017
+        translation 0.0717 -0.122225 -0.017
         rotation 1 0 0 1.5707996938995747
         children [
           Transform {
@@ -768,15 +765,15 @@ Robot {
                           children [
                             USE SERVO-CYLINDER
                             Transform {
-                              rotation 0 1 0 3.49066
+                              rotation 0 1 0 3.37424
                               children [
                                 Solid {
-                                  translation 0 0 0.046085
+                                  translation 0 0 0.0722
                                   rotation 1 0 0 1.5708003061004252
                                   children [
                                     USE FEMUR-2-CYLINDER-SHAPE
                                     Transform {
-                                      translation 0 0.046085 0
+                                      translation 0 0.0722 0
                                       rotation 0 1 0 3.141592653589793
                                       children [
                                         DEF LEG-5-TIBIA HingeJoint {
@@ -794,14 +791,14 @@ Robot {
                                             }
                                           ]
                                           endPoint Solid {
-                                            rotation 0 0.707108281185553 0.70710528118436 3.1415919999999997
+                                            rotation 0 0.7071082811855531 0.7071052811843601 3.1415919999999997
                                             children [
                                               USE SERVO-CYLINDER
                                               Transform {
-                                                rotation 0 1 0 -0.562108
+                                                rotation 0 1 0 -0.737227
                                                 children [
                                                   Solid {
-                                                    translation 0 0 0.09683
+                                                    translation 0 0 0.11825
                                                     rotation 1 0 0 1.5707996938995747
                                                     children [
                                                       USE END-EFFECTOR
@@ -809,7 +806,7 @@ Robot {
                                                         rotation 1 0 0 0
                                                         children [
                                                           Solid {
-                                                            translation 0 0.09683 0
+                                                            translation 0 0.11825 0
                                                             rotation 0 0 1 0.9162996938995747
                                                             children [
                                                               USE FEET
@@ -819,7 +816,7 @@ Robot {
                                                             physics USE PHYSICS
                                                           }
                                                           TouchSensor {
-                                                            translation 0 0.09683 0
+                                                            translation 0 0.11825 0
                                                             rotation 0 0 1 0.9163003061004252
                                                             name "f5_touch_sensor"
                                                             boundingObject USE FEET
@@ -874,7 +871,7 @@ Robot {
     DEF LEG-6-COXA HingeJoint {
       jointParameters HingeJointParameters {
         axis 0 0 1
-        anchor -0.0716 -0.12096 0
+        anchor -0.0705 -0.122225 0
       }
       device [
         PositionSensor {
@@ -887,7 +884,7 @@ Robot {
         }
       ]
       endPoint Solid {
-        translation -0.0717 -0.12096 -0.017
+        translation -0.0717 -0.122225 -0.017
         rotation 1 0 0 1.5707996938995747
         children [
           Transform {
@@ -921,15 +918,15 @@ Robot {
                           children [
                             USE SERVO-CYLINDER
                             Transform {
-                              rotation 0 1 0 3.49066
+                              rotation 0 1 0 3.37424
                               children [
                                 Solid {
-                                  translation 0 0 0.046085
+                                  translation 0 0 0.0722
                                   rotation 1 0 0 1.5708003061004252
                                   children [
                                     USE FEMUR-2-CYLINDER-SHAPE
                                     Transform {
-                                      translation 0 0.046085 0
+                                      translation 0 0.0722 0
                                       rotation 0 1 0 3.141592653589793
                                       children [
                                         DEF LEG-6-TIBIA HingeJoint {
@@ -947,14 +944,14 @@ Robot {
                                             }
                                           ]
                                           endPoint Solid {
-                                            rotation 0 0.707108281185553 0.70710528118436 3.1415919999999997
+                                            rotation 0 0.7071082811855531 0.7071052811843601 3.1415919999999997
                                             children [
                                               USE SERVO-CYLINDER
                                               Transform {
-                                                rotation 0 1 0 -0.562108
+                                                rotation 0 1 0 -0.737227
                                                 children [
                                                   Solid {
-                                                    translation 0 0 0.09683
+                                                    translation 0 0 0.11825
                                                     rotation 1 0 0 1.5707996938995747
                                                     children [
                                                       USE END-EFFECTOR
@@ -962,7 +959,7 @@ Robot {
                                                         rotation 1 0 0 0
                                                         children [
                                                           Solid {
-                                                            translation 0 0.09683 0
+                                                            translation 0 0.11825 0
                                                             rotation 0 0 1 0.9162996938995747
                                                             children [
                                                               USE FEET
@@ -972,7 +969,7 @@ Robot {
                                                             physics USE PHYSICS
                                                           }
                                                           TouchSensor {
-                                                            translation 0 0.09683 0
+                                                            translation 0 0.11825 0
                                                             rotation 0 0 1 0.9163003061004252
                                                             name "f6_touch_sensor"
                                                             boundingObject USE FEET
@@ -1030,4 +1027,15 @@ Robot {
   rotationStep 0.261799
   controller "test"
   supervisor TRUE
+}
+StraightStairs {
+  translation -0.855808 0 0.505649
+  rotation 0 1 0 -2.6179943071795866
+  stepSize 0.279 0.19 1
+  stepRise 0.178
+  nSteps 7
+  leftRail []
+  rightRail []
+}
+TexturedBackgroundLight {
 }
