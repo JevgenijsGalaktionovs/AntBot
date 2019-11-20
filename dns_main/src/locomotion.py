@@ -497,3 +497,12 @@ def rippleMirror(x, y, z, alpha, beta, gama, leg_pair):
 
     do_motion([x, y, z], legs, orientation=[alpha, beta, gama])
     do_motion([-x, y, z], legs, orientation=[alpha, beta, gama])
+
+def clear_view_stairs():
+    delay = 0.2
+    do_motion([0, 60, 30], l3+l4, leg=[3, 4])
+    time.sleep(delay)
+    do_motion([0, 0, -30], l3+l4, leg=[3, 4])
+    time.sleep(delay)
+    do_motion([0, 100, 0], l1, leg=[1])
+    do_motion([0, -100, 0], l5, leg=[5])
