@@ -4,6 +4,7 @@ import rospy
 from service_router import getAllStairsInfo, getStairsDepth, getStairsHeight, \
     getStairsDistZ, getStairsDistX
 
+
 if __name__ == '__main__':
     try:
         # Testing new functions. Don't use all together.

@@ -4,6 +4,7 @@ from math import pi
 
 from service_router import *
 from kinematics     import Kinematics
+from math_calc import *
 
 
 ######################################################
@@ -38,10 +39,12 @@ def standUp():
     front_legs  = [1, 2, 3,  4, 5, 6]
     rear_legs   = [13, 14, 15,  16, 17, 18]
     middle_legs = [7, 8, 9,  10, 11, 12]
-
-    standup_pos = [2048, 2218, 1024,   2048, 1878, 3048,
-                   2048, 2218, 1024,   2048, 1878, 3048,
-                   2048, 2218, 1024,   2048, 1878, 3048]
+    standup_pos = [2048, 2218, 1024,   2048, 2218, 1024,
+                   2048, 2218, 1024,   2048, 2218, 1024,
+                   2048, 2218, 1024,   2048, 2218, 1024]
+    #standup_pos =[1980, 2201, 953,   1972, 2030, 1082,
+    #              2096, 2183, 1106,  2111, 2202, 952, 
+    #              1941, 2204, 1028,  2003, 2183, 1107]
     front_standup  = list_combine(front_legs, standup_pos)
     rear_standup   = list_combine(rear_legs, standup_pos)
     middle_standup = list_combine(middle_legs, standup_pos)
@@ -298,11 +301,15 @@ def list_combine(id_list, value_list):
                     value_list: list of 18 values.
         Return:     list of format: [ID_1, Value_1, ... , ID_n, Value_n]
     '''
+    #print("id_list",id_list)
+    #print(value_list)
     sr_count = 0
     output = [0] * 2 * len(id_list)  # output size must be:  # of servos * 2 (ID + VALUE)
     for x in range(len(id_list)):
+        #print(x)
         output[x + sr_count] = id_list[x]
-        output[x + sr_count + 1] = value_list[id_list[x] - 1]
+        #print("output",output)
+        output[x + sr_count + 1] = value_list[x]#id_list[x] - 1]
         sr_count += 1
     return output
 
@@ -311,7 +318,7 @@ def calc_scaler(thetas):
     return [i * 1 for i in thetas]
 
 
-def do_motion(xyz_list, ID_list, orientation=None):
+def do_motion(xyz_list, ID_list, orientation=None,leg = None):
     """Parameters: xyz_list: list of 3 integers with x,y,z changes to accomplish
                    ID_list:  list of servo IDs
                    orientaiton: list of 3 rotation integers in degrees. alpha,beta,gama
@@ -321,10 +328,11 @@ def do_motion(xyz_list, ID_list, orientation=None):
     current_pos = readPos()
     if orientation:
         next_pos = K.doIkine(current_pos, xyz_list[0], xyz_list[1],
-                             xyz_list[2], body_orient=orientation)
+                             xyz_list[2], body_orient=orientation, leg= leg)
+        #print("next pos", next_pos)
     else:
         next_pos = K.doIkine(current_pos, xyz_list[0], xyz_list[1],
-                             xyz_list[2])
+                             xyz_list[2],leg = leg)
 
     scaler = calc_scaler(next_pos)
     vel_acc_value = list_combine(ID_list, scaler)
@@ -338,12 +346,13 @@ def do_motion(xyz_list, ID_list, orientation=None):
 
 
 def singleLeg(x, y, z, alpha, beta, gama, leg_case):
+    orient= [alpha,beta,gama]
     ID_list = leg[leg_case]
-    do_motion([x, y, z], ID_list, orientation=[alpha, beta, gama])
+    #print("ID_list=",ID_list)
+    do_motion([x,y,z], ID_list, orientation = orient,leg = leg_case)
 
 
-
-def calculate_motion(xyz_list, ID_list, orientation=None):
+def calculate_motion(xyz_list, orientation=None):
     """Parameters: xyz_list: list of 3 integers with x,y,z changes to accomplish
                    ID_list:  list of servo IDs
        Example call  : do_motion([0, 30, 20], [7, 8, 9])
@@ -355,9 +364,6 @@ def calculate_motion(xyz_list, ID_list, orientation=None):
     else:
         next_pos    = K.doIkine(current_pos, xyz_list[0], xyz_list[1], xyz_list[2])
 
-    scaler = calc_scaler(next_pos)
-    vel_acc_value = list_combine(ID_list, scaler)
-    motion = list_combine(ID_list, next_pos)
     return next_pos
 
 
@@ -378,9 +384,9 @@ def continiousMotion(x, y, z, iterations):
 			x = current_pos[:3]
 			possition_error=x[0]-ae[0],x[1]-ae[1],x[2]-ae[2]
 			absoluteError= sum([abs(x) for x in possition_error])/3
-			print(possition_error)
+			#print(possition_error)
 			if absoluteError < 10:
-				print(absoluteError, "1")
+				#print(absoluteError, "1")
 				break
 		else:	
                 	print("NotGood")
@@ -392,9 +398,9 @@ def continiousMotion(x, y, z, iterations):
 			x = current_pos[:3]
 			possition_error=x[0]-ae[0],x[1]-ae[1],x[2]-ae[2]
 			absoluteError= sum([abs(x) for x in possition_error])/3
-			print(possition_error)
+			#print(possition_error)
 			if absoluteError < 10:
-				print(absoluteError,"2")
+				#print(absoluteError,"2")
 				break
 		else:
 			print("NotGood")
@@ -406,9 +412,9 @@ def continiousMotion(x, y, z, iterations):
 			x = current_pos[:3]
 			possition_error=x[0]-ae[0],x[1]-ae[1],x[2]-ae[2]
 			absoluteError= sum([abs(x) for x in possition_error])/3
-			print(possition_error)
+			#print(possition_error)
 			if absoluteError < 10:
-				print(absoluteError,"3")
+				#print(absoluteError,"3")
 				break
 		else:
 			print("NotGood")
@@ -448,14 +454,14 @@ def continiousTripod(x, y, z, iterations):
 	for i in range(iterations):
 		
 		abssss=positionN([1,a1[0],2,a1[1],3,a1[2],4,c2[3],5,c2[4],6,c2[5],7,c3[6],8,c3[7],9,c3[8],10,a4[9],11,a4[10],12,a4[11],13,a5[12],14,a5[13],15,a5[14],16,c6[15],17,c6[16],18,c6[17]])
-		print(abssss)
+		#print(abssss)
 		ae=a1[:3]
 		for x in range (10): 
 			current_pos = readPos()
 			x = current_pos[:3]
 			possition_error=x[0]-ae[0],x[1]-ae[1],x[2]-ae[2]
 			absoluteError= sum([abs(x) for x in possition_error])/3
-			print(possition_error)
+			#print(possition_error)
 			if absoluteError < 10:
 				print(absoluteError, "1")
 				break
@@ -467,7 +473,7 @@ def continiousTripod(x, y, z, iterations):
 			x = current_pos[:3]
 			possition_error=x[0]-ae[0],x[1]-ae[1],x[2]-ae[2]
 			absoluteError= sum([abs(x) for x in possition_error])/3
-			print(possition_error)
+			#print(possition_error)
 			if absoluteError < 10:
 				print(absoluteError,"2")
 				break
@@ -479,21 +485,23 @@ def continiousTripod(x, y, z, iterations):
 			x = current_pos[:3]
 			possition_error=x[0]-ae[0],x[1]-ae[1],x[2]-ae[2]
 			absoluteError= sum([abs(x) for x in possition_error])/3
-			print(possition_error)
+			#print(possition_error)
 			if absoluteError < 10:
 				print(absoluteError,"3")
 				break
 
 
 def rippleMirror(x, y, z, alpha, beta, gama, leg_pair):
-    if leg_pair == 1:  # Front legs
-        legs = leg[1] + leg[2]
-    elif leg_pair == 2:  # Middle legs
-        legs = leg[3] + leg[4]
-    elif leg_pair == 3:  # Rear legs
-        legs = leg[5] + leg[6]
+    if leg_pair < 4 and leg_pair > 0:
+        legs = leg[2*(leg_pair-1)+1] + leg[2*(leg_pair-1)+2]
+    #if leg_pair == 1:  # Front legs
+    #    legs = leg[1] + leg[2]
+    #elif leg_pair == 2:  # Middle legs
+    #    legs = leg[3] + leg[4]
+    #elif leg_pair == 3:  # Rear legs
+    #    legs = leg[5] + leg[6]
     else:
-        raise ValueError('leg_pair value must be 1,2 or 3. Your value:', leg_pair)
+        raise ValuSeError('leg_pair value must be 1,2 or 3. Your value:', leg_pair)
 
     do_motion([x, y, z], legs, orientation=[alpha, beta, gama])
     do_motion([-x, y, z], legs, orientation=[alpha, beta, gama])
@@ -506,3 +514,368 @@ def clear_view_stairs():
     time.sleep(delay)
     do_motion([0, 100, 0], l1, leg=[1])
     do_motion([0, -100, 0], l5, leg=[5])
+def auto_calcTrajectory(x,y,z,leg_case):
+    all_positions = readPos()
+    ee_xyz, servoPos = K.doFkine(all_positions)
+    #print("whole", ee_xyz)
+    ee_xyz = [ee_xyz[3*(leg_case-1)],ee_xyz[3*(leg_case-1)+1],ee_xyz[3*(leg_case-1)+2]]
+    leng = length(ee_xyz)
+    #print("xyz",ee_xyz)
+    while K.calc_ikine( x, y, z, ee_xyz,K.leg_list[leg_case-1], auto = 1) == -1:
+        if leg_case % 2 == 1:
+            if leng < 483:
+                x = x + 1
+            elif leng > 483:
+                x = x - 1
+        
+        elif leg_case % 2 == 0:
+            if leng < 483:
+                x = x - 1
+            elif leng > 483:
+                x = x + 1
+        #print(x,y,z)
+    return [x,y,z]
+ 
+def tripodGait_stairs(x, y, z):
+    delay = 0.2
+
+def singleLeg_stairs(x, y, z, alpha, beta, gama, leg_case):
+    my_list= auto_calcTrajectory(x,y,z, leg_case)
+    orient= [alpha,beta,gama]
+    ID_list = [3*(leg_case-1)+1,3*(leg_case-1)+2,3*(leg_case-1)+3]
+    all_positions = readPos()
+    next_pos = K.doIkine(all_positions, my_list[0], my_list[1], my_list[2], body_orient=orient, leg=leg_case, auto=None)
+    ae = [ID_list[0],next_pos[0],ID_list[1],next_pos[1],ID_list[2],next_pos[2]]
+    print(next_pos)
+    #positionN(ae)
+    return ae, my_list
+
+def singleLeg_walk(x, y, z, alpha, beta, gama, leg_case):
+    my_list= [x,y,z]
+    orient= [alpha,beta,gama]
+    ID_list = [3*(leg_case-1)+1,3*(leg_case-1)+2,3*(leg_case-1)+3]
+    all_positions = readPos()
+    next_pos = K.doIkine(all_positions, my_list[0], my_list[1], my_list[2], body_orient=orient, leg=leg_case, auto=None)
+    ae = [ID_list[0],next_pos[0],ID_list[1],next_pos[1],ID_list[2],next_pos[2]]
+    print(next_pos)
+    #positionN(ae)
+    return ae
+    
+def half_step(x,step,z,alpha,beta,gama):
+    aa = []
+    aa.extend(singleLeg_walk( 0,-step,0,alpha,beta,gama,1))
+    aa.extend(singleLeg_walk( 0,0,z,alpha,beta,gama,2))
+    aa.extend(singleLeg_walk( 0,0,z,alpha,beta,gama,3))
+    aa.extend(singleLeg_walk( 0,-step,0,alpha,beta,gama,4))
+    aa.extend(singleLeg_walk( 0,-step,0,alpha,beta,gama,5))
+    aa.extend(singleLeg_walk( 0,0,z,alpha,beta,gama,6))
+    positionN(aa)
+    checking_for_errors(80,50,aa)
+    aa = []
+    aa.extend(singleLeg_walk( 0,0,0,alpha,beta,gama,1))
+    aa.extend(singleLeg_walk( 0,0,-z,alpha,beta,gama,2))
+    aa.extend(singleLeg_walk( 0,0,-z,alpha,beta,gama,3))
+    aa.extend(singleLeg_walk( 0,0,0,alpha,beta,gama,4))
+    aa.extend(singleLeg_walk( 0,0,0,alpha,beta,gama,5))
+    aa.extend(singleLeg_walk( 0,0,-z,alpha,beta,gama,6))
+    positionN(aa)
+    checking_for_errors(80,50,aa)
+    checkContact()
+
+def tripodGait_stairs(stairs, distance, depth, riser):
+    ee_xyz, servopos = K.doFkine(readPos())
+    gama, beta = K.get_orientation([1,5,6])
+    print ("gama,beta",gama,beta)
+    delay = 2
+    alpha = 0
+    step = 45
+    ae = []
+    ae1 = []
+    lift = 20
+    y_off = 120.96
+    #leg1_liftedUp = False
+    #leg2_liftedUp = False
+    #leg3_liftedUp = False
+    #leg4_liftedUp = False
+    #leg5_liftedUp = False
+    #leg6_liftedUp = False
+    #front = False
+    #middle = False
+    #rear = False
+    dist2NextLevel_1 = distance
+    dist2NextLevel_2 = distance
+    dist2NextLevel_3 = distance + y_off - ee_xyz[7]
+    dist2NextLevel_4 = distance + y_off - ee_xyz[10]
+    dist2NextLevel_5 = distance + y_off - ee_xyz[13]
+    dist2NextLevel_6 = distance + y_off - ee_xyz[16]
+    print("dist2NextLevel",dist2NextLevel_1,dist2NextLevel_2,dist2NextLevel_3,dist2NextLevel_4,dist2NextLevel_5,dist2NextLevel_6)
+    half_step(0,step,lift,alpha,beta,gama)
+    dist2NextLevel_2 = distance - step
+    dist2NextLevel_3 = dist2NextLevel_3 - step
+    dist2NextLevel_6 = dist2NextLevel_6 - step
+
+    print("dist2NextLevel",dist2NextLevel_2,dist2NextLevel_3,dist2NextLevel_6)
+    #time.sleep(30)
+
+    while stairs is True: 
+        if dist2NextLevel_1 < 2*step:
+            ae_stored1, xyz_stored1 = singleLeg_stairs( 0, 0, riser + lift, alpha, beta, gama,1)
+            ae.extend(ae_stored1)
+            print("leg1", xyz_stored1)
+        elif dist2NextLevel_1 > 2*step:
+            xyz_stored1 = [0]*3
+            ae.extend(singleLeg_walk( 0, 0, lift, alpha, beta, gama,1))
+        ae.extend(singleLeg_walk( 0, -step, 0,alpha,beta,gama,2))
+        ae.extend(singleLeg_walk( 0, -step, 0,alpha,beta,gama,3))
+        if dist2NextLevel_4 < 2*step:
+            ae_stored4, xyz_stored4 = singleLeg_stairs( 0, 0, riser + lift,alpha,beta,gama,4)
+            ae.extend(ae_stored4)
+            print("leg4", xyz_stored4)
+        elif dist2NextLevel_4 > 2*step:
+            xyz_stored4 = [0]*3
+            ae.extend(singleLeg_walk( 0, 0, lift,alpha,beta,gama,4))
+        if dist2NextLevel_5 < 2*step:
+            ae_stored5, xyz_stored5 = singleLeg_stairs( 0, 0, riser + lift,alpha,beta,gama,5)
+            ae.extend(ae_stored5)
+            print("leg5", xyz_stored5)
+        elif dist2NextLevel_5 > 2*step:
+            xyz_stored5 = [0]*3
+            ae.extend(singleLeg_walk( 0, 0, lift, alpha,beta,gama,5))
+        ae.extend(singleLeg_walk( 0, -step, 0,alpha,beta,gama,6))
+        ee_xyz, servopos = K.doFkine(readPos())
+        z1 = ee_xyz[2]
+        z4 = ee_xyz[11]
+        z5 = ee_xyz[14]
+        my_list = K.doFkine(ae)
+        positionN(ae)
+        checking_for_errors(80,50,ae)
+
+        time.sleep(2)
+    ###########put forward ae1
+        ae1.extend(singleLeg_walk( -xyz_stored1[0], 2*step, 0, alpha, beta, gama,1))
+        ae1.extend(singleLeg_walk( 0, -step, 0, alpha , beta, gama,2))
+        ae1.extend(singleLeg_walk( 0, -step, 0, alpha , beta, gama,3))
+        ae1.extend(singleLeg_walk( -xyz_stored4[0], 2*step, 0, alpha , beta, gama,4))
+        ae1.extend(singleLeg_walk( -xyz_stored5[0], 2*step, 0, alpha , beta, gama,5))
+        ae1.extend(singleLeg_walk( 0, -step, 0, alpha, beta, gama,6))
+        positionN(ae1)
+        checking_for_errors(80,50,ae1)
+        checkContact()
+    ##########put down
+        #checkContact()
+        checkContact()
+        time.sleep(2)
+        ee_xyz, servopos = K.doFkine(readPos())
+        z1_new = ee_xyz[2]
+        z4_new = ee_xyz[11]
+        z5_new = ee_xyz[14]
+        dist2NextLevel_1 = dist2NextLevel_1 - 2*step
+        if z1_new - z1 > riser/2:    #the leg is lifted up
+            if dist2NextLevel_1 > 0:
+                dist2NextLevel_1 = depth - 5
+                
+            else:
+                dist2NextLevel_1 = depth + dist2NextLevel_1
+        else:
+            if dist2NextLevel_1 < 0:
+                dist2NextLevel_1 = 10
+
+        dist2NextLevel_4 = dist2NextLevel_4 - 2*step 
+        if z4_new - z4 > riser/2:    #the leg is lifted up
+            if dist2NextLevel_4 > 0:
+                dist2NextLevel_4 = depth - 5
+                
+            else:
+                dist2NextLevel_4 = depth + dist2NextLevel_4
+        else:
+            if dist2NextLevel_4 < 0:
+                dist2NextLevel_4 = 10
+        
+        dist2NextLevel_5 = dist2NextLevel_5 - 2*step
+        if z5_new - z5 > riser/2:    #the leg is lifted up
+            if dist2NextLevel_5 > 0:
+                dist2NextLevel_5 = depth - 5
+                
+            else:
+                dist2NextLevel_5 = depth + dist2NextLevel_5
+        else:
+            if dist2NextLevel_5 < 0:
+                dist2NextLevel_5 = 10
+
+
+        
+        print("dist",dist2NextLevel_1,dist2NextLevel_2,dist2NextLevel_3,dist2NextLevel_4,dist2NextLevel_5,dist2NextLevel_6)
+        time.sleep(2)
+    ##########seconed group lift up and push
+        ae = []
+        ae1 = []
+        ae.extend(singleLeg_walk( 0, -step, 0,alpha,beta,gama,1))
+        if dist2NextLevel_2 < 2*step:
+            ae_stored2, xyz_stored2 = singleLeg_stairs( 0, 0, riser + lift, alpha, beta, gama,2)
+            ae.extend(ae_stored2)
+            print("leg2", xyz_stored2)
+        elif dist2NextLevel_2 > 2*step:
+            xyz_stored2 = [0]*3
+            ae.extend(singleLeg_walk( 0, 0, lift,alpha,beta,gama,2))
+
+        if dist2NextLevel_3 < 2*step:
+            ae_stored3, xyz_stored3 = singleLeg_stairs( 0, 0, riser + lift,alpha,beta,gama,3)
+            ae.extend(ae_stored3)
+            print("leg3", xyz_stored3)
+        elif dist2NextLevel_3 > 2*step:
+            xyz_stored3 = [0]*3
+            ae.extend(singleLeg_walk( 0, 0, lift, alpha,beta,gama,3))
+        ae.extend(singleLeg_walk( 0, -step, 0,alpha,beta,gama,4))
+        ae.extend(singleLeg_walk( 0, -step, 0,alpha,beta,gama,5))
+        if dist2NextLevel_6 < 2*step:
+            ae_stored6, xyz_stored6 = singleLeg_stairs( 0, 0, riser + lift,alpha,beta,gama,6)
+            ae.extend(ae_stored6)
+            print("leg6", xyz_stored6)
+        elif dist2NextLevel_6 > 2*step:
+            xyz_stored6 = [0]*3
+            ae.extend(singleLeg_walk( 0, 0, lift,alpha,beta,gama,6))
+        ee_xyz, servopos = K.doFkine(readPos())
+        z2 = ee_xyz[5]
+        z3 = ee_xyz[8]
+        z6 = ee_xyz[17]
+        positionN(ae)
+        checking_for_errors(80,50,ae)
+    ###########put forward ae1
+        ae1.extend(singleLeg_walk( 0, -step, 0, alpha , beta, gama,1))
+        ae1.extend(singleLeg_walk( -xyz_stored2[0], 2*step, 0, alpha, beta, gama,2))
+        ae1.extend(singleLeg_walk( -xyz_stored3[0], 2*step, 0, alpha , beta, gama,3))
+        ae1.extend(singleLeg_walk( 0, -step, 0, alpha , beta, gama,4))
+        ae1.extend(singleLeg_walk( 0, -step, 0, alpha , beta, gama,5))
+        ae1.extend(singleLeg_walk( -xyz_stored6[0], 2*step, 0, alpha , beta, gama,6))
+        positionN(ae1)
+        checking_for_errors(80,50,ae1)
+        checkContact()
+    ##########put down
+        checkContact()
+        #checkContact()
+        ee_xyz = []
+        ee_xyz, servopos = K.doFkine(readPos())
+        z2_new = ee_xyz[5]
+        z3_new = ee_xyz[8]
+        z6_new = ee_xyz[17]
+        dist2NextLevel_2 = dist2NextLevel_2 - 2*step
+        if z2_new - z2 > riser/2:    #the leg is lifted up
+            if dist2NextLevel_2 > 0:
+                dist2NextLevel_2 = depth - 5
+                
+            else:
+                dist2NextLevel_2 = depth + dist2NextLevel_2
+        else:
+            if dist2NextLevel_2 < 0:
+                dist2NextLevel_2 = 10
+
+        dist2NextLevel_3 = dist2NextLevel_3 - 2*step
+        if z3_new - z3 > riser/2:    #the leg is lifted up
+            if dist2NextLevel_3 > 0:
+                dist2NextLevel_3 = depth - 3
+                
+            else:
+                dist2NextLevel_3 = depth + dist2NextLevel_3
+        else:
+            if dist2NextLevel_3 < 0:
+                dist2NextLevel_3 = 10
+        
+        dist2NextLevel_6 = dist2NextLevel_6 - 2*step
+        if z6_new - z6 > riser/2:    #the leg is lifted up
+            if dist2NextLevel_6 > 0:
+                dist2NextLevel_6 = depth - 5
+                
+            else:
+                dist2NextLevel_6 = depth + dist2NextLevel_6
+        else:
+            if dist2NextLevel_6 < 0:
+                dist2NextLevel_6 = 10
+
+        print("dist",dist2NextLevel_1,dist2NextLevel_2,dist2NextLevel_3,dist2NextLevel_4,dist2NextLevel_5,dist2NextLevel_6)
+        ee_xyz = []
+        ee_xyz, servopos = K.doFkine(readPos())
+        z1 = ee_xyz[2]
+        z2 = ee_xyz[5]
+        z5 = ee_xyz[14]
+        z6 = ee_xyz[17]
+        z_front = abs(z1 - z2)
+        z_rear = abs(z5 - z6)
+        if (z_front<15) and (z_rear<15):
+            gama,beta = K.get_orientation([1,5,6])
+            time.sleep(1)
+            parallelGait(0,-beta,-gama,0,0,0)
+            time.sleep(1)
+            a = K.calc_translationStairs(riser)
+            time.sleep(1)
+            parallelGait(0,0,0,0, a[1], a[0])
+
+def checkContact():
+    stepping_down_calculation = [0,0,-5]
+    desired_Position = calculate_motion(stepping_down_calculation)
+    for x in range (20):
+        fsr = readFSR()
+        leg_trigger=[True]*6
+        print ("fsr",fsr)
+        for x in range (6): 
+            if fsr[x] < 100:
+                print ("leg_",x+1 ,"is not activated")
+                leg_trigger[x]=False
+        print (leg_trigger) 
+        for x in range (6):
+                if leg_trigger[x] == False:
+                    j = x
+                    positionN([3*j+1,desired_Position[3*j],3*j+2,desired_Position[3*j+1],3*j+3,desired_Position[3*j+2]])
+                if False in leg_trigger:
+                    print ("All legs are not in contact")
+                else:	
+                    break
+        time.sleep(0.5)
+        current_Position = readPos()
+        desired_Position=wannabeControlSystem(desired_Position,current_Position,0,0,-5)
+
+def wannabeControlSystem(current_Position, desired_Position, x,y,z):
+    newPoss      = []
+    NewWhereIAm  = [0]*18
+    NewWhereToGo = [0]*18
+    WhereToGo = K.doFkine(desired_Position)[:1]
+    WhereIAm  = K.doFkine(current_Position)[:1]
+    for i in range (18):
+        NewWhereToGo[i] = WhereToGo[0][i] 
+        NewWhereIAm[i]  = WhereIAm[0][i]
+    Error = [i - j for i, j in zip(NewWhereToGo, NewWhereIAm)]
+    ee_xyz_error = [i * 0.9 for i in Error]
+    ee_xyz = [i - j for i, j in zip(NewWhereIAm,ee_xyz_error)]
+    print(NewWhereIAm)
+    print(ee_xyz_error)
+    j = 0
+    for i in xrange(0, 16, 3):
+        newPoss.extend(K.calc_ikine(x, y, z, ee_xyz[i:i + 3], K.leg_list[j]))
+        j += 1
+    result = [int(next_poss) for next_poss in K.rad_to_step(newPoss)]
+    print("Newposs",result)
+    return result
+
+def checking_for_errors(itter, allowed_error, desired_pos):
+    ae = desired_pos[1],desired_pos[3],desired_pos[5],desired_pos[7],desired_pos[9],desired_pos[11],desired_pos[13],desired_pos[15],desired_pos[17],desired_pos[19],desired_pos[21],desired_pos[23],desired_pos[25],desired_pos[27],desired_pos[29],desired_pos[31],desired_pos[33],desired_pos[35]
+    for x in range (itter): 
+        current_pos = readPos()
+        pos = current_pos[:18]
+        possition_error_leg1=pos[0]-ae[0],pos[1]-ae[1],pos[2]-ae[2]
+        possition_error_leg4=pos[9]-ae[9],pos[10]-ae[10],pos[11]-ae[11]
+        possition_error_leg5=pos[12]-ae[12],pos[13]-ae[13],pos[14]-ae[14]
+        absoluteError_leg1= sum([abs(x) for x in possition_error_leg1])/3
+        absoluteError_leg4= sum([abs(x) for x in possition_error_leg4])/3
+        absoluteError_leg5= sum([abs(x) for x in possition_error_leg5])/3
+        absoluteError_swing = absoluteError_leg1+absoluteError_leg4+absoluteError_leg5
+        possition_error_leg2=pos[3]-ae[3],pos[4]-ae[4],pos[5]-ae[5]
+        possition_error_leg3=pos[6]-ae[6],pos[7]-ae[7],pos[8]-ae[8]
+        possition_error_leg6=pos[15]-ae[15],pos[16]-ae[16],pos[17]-ae[17]
+        absoluteError_leg2= sum([abs(x) for x in possition_error_leg2])/3
+        absoluteError_leg3= sum([abs(x) for x in possition_error_leg3])/3
+        absoluteError_leg6= sum([abs(x) for x in possition_error_leg4])/3
+        absoluteError_stance = absoluteError_leg2+absoluteError_leg3+absoluteError_leg6
+        absoluteError= absoluteError_stance+absoluteError_swing
+        print(absoluteError)
+        if absoluteError < allowed_error:
+            print(absoluteError, "1")
+            break
