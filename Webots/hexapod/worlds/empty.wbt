@@ -1,0 +1,1041 @@
+#VRML_SIM R2019b utf8
+WorldInfo {
+}
+Viewpoint {
+  orientation 0.01877510929060905 0.9693124840761926 0.24511385820709172 3.6246901271906737
+  position -1.6961205160391324 1.9099641837578971 -2.7077418237640583
+}
+RectangleArena {
+  floorSize 5 5
+  wallHeight 0.2
+}
+Robot {
+  translation 0 0.12 0
+  rotation 1 0 0 -1.5707996938995747
+  children [
+    DEF BODY Solid {
+      children [
+        Transform {
+          children [
+            DEF HEXAGON Shape {
+              appearance PBRAppearance {
+                baseColor 0 0 0
+                roughness 1
+                metalness 0
+              }
+              geometry IndexedFaceSet {
+                coord Coordinate {
+                  point [
+                    0.0705 0.122225 0
+                    0.0705 0.122225 -0.0345
+                    0.14133 0 0
+                    0.14133 0 -0.0345
+                    0.0705 -0.122225 0
+                    0.0705 -0.122225 -0.0345
+                    -0.0705 -0.122225 0
+                    -0.0705 -0.122225 -0.0345
+                    -0.14133 0 0
+                    -0.14133 0 -0.0345
+                    -0.0705 0.122225 0
+                    -0.0705 0.122225 -0.0345
+                  ]
+                }
+                ccw FALSE
+                coordIndex [
+                  0, 2, 4, 6, 8, 10, -1, 11, 9, 7, 5, 3, 1, -1, 0, 1, 3, 2, -1, 2, 3, 5, 4, -1, 4, 5, 7, 6, -1, 6, 7, 9, 8, -1, 8, 9, 11, 10, -1, 10, 11, 1, 0, -1
+                ]
+              }
+            }
+          ]
+        }
+      ]
+      boundingObject USE HEXAGON
+      physics DEF PHYSICS Physics {
+        density -1
+        mass 1
+      }
+    }
+    DEF LEG-1-COXA HingeJoint {
+      jointParameters HingeJointParameters {
+        axis 0 0 1
+        anchor 0.0705 0.122225 0
+      }
+      device [
+        PositionSensor {
+          name "c1_position_sensor"
+        }
+        RotationalMotor {
+          name "c1_motor"
+          maxVelocity 2
+          maxTorque 100
+        }
+      ]
+      endPoint Solid {
+        translation 0.0705 0.122225 -0.017
+        rotation 1 0 0 1.5707996938995747
+        children [
+          Transform {
+            rotation 0 1 0 1.0471996938995747
+            children [
+              DEF SERVO-CYLINDER Shape {
+                appearance PBRAppearance {
+                  roughness 1
+                  metalness 0
+                }
+                geometry Cylinder {
+                  height 0.0345
+                  radius 0.01
+                }
+              }
+              Solid {
+                translation 0.03325 0 0
+                rotation 0 0 1 1.5707996938995747
+                children [
+                  DEF FEMUR-1-CYLINDER-SHAPE Shape {
+                    appearance PBRAppearance {
+                      baseColor 1 0 0
+                      roughness 1
+                      metalness 0
+                    }
+                    geometry Cylinder {
+                      height 0.0665
+                      radius 0.007
+                    }
+                  }
+                  Transform {
+                    translation 0 -0.03325 0
+                    rotation 1 0 0 1.5707996938995747
+                    children [
+                      DEF LEG-1-FEMUR HingeJoint {
+                        jointParameters HingeJointParameters {
+                          axis 0 1 0
+                        }
+                        device [
+                          PositionSensor {
+                            name "f1_position_sensor"
+                          }
+                          RotationalMotor {
+                            name "f1_motor"
+                            maxVelocity 2
+                            maxTorque 100
+                          }
+                        ]
+                        endPoint Solid {
+                          children [
+                            USE SERVO-CYLINDER
+                            Transform {
+                              rotation 0 1 0 0.232652
+                              children [
+                                Solid {
+                                  translation 0 0 0.0722
+                                  rotation 1 0 0 1.5707996938995747
+                                  children [
+                                    DEF FEMUR-2-CYLINDER-SHAPE Shape {
+                                      appearance PBRAppearance {
+                                        baseColor 0 1 0
+                                        roughness 1
+                                        metalness 0
+                                      }
+                                      geometry Cylinder {
+                                        height 0.1444
+                                        radius 0.007
+                                      }
+                                    }
+                                    Transform {
+                                      translation 0 0.0722 0
+                                      rotation 0 1 0 3.141592653589793
+                                      children [
+                                        DEF LEG-1-TIBIA HingeJoint {
+                                          jointParameters HingeJointParameters {
+                                            axis 0 0 1
+                                          }
+                                          device [
+                                            PositionSensor {
+                                              name "t1_position_sensor"
+                                            }
+                                            RotationalMotor {
+                                              name "t1_motor"
+                                              maxVelocity 2
+                                              maxTorque 100
+                                            }
+                                          ]
+                                          endPoint Solid {
+                                            rotation 0 0.7071082811855531 0.7071052811843601 3.1415919999999997
+                                            children [
+                                              USE SERVO-CYLINDER
+                                              Transform {
+                                                rotation 0 1 0 -0.737227
+                                                children [
+                                                  Solid {
+                                                    translation 0 0 0.11825
+                                                    rotation 1 0 0 1.5707996938995747
+                                                    children [
+                                                      DEF END-EFFECTOR Shape {
+                                                        appearance PBRAppearance {
+                                                          baseColor 0 0 1
+                                                          roughness 1
+                                                          metalness 0
+                                                        }
+                                                        geometry Cylinder {
+                                                          height 0.2365
+                                                          radius 0.007
+                                                        }
+                                                      }
+                                                      Transform {
+                                                        rotation 1 0 0 0
+                                                        children [
+                                                          Solid {
+                                                            translation 0 0.11825 0
+                                                            rotation 0 0 1 0.9162996938995747
+                                                            children [
+                                                              DEF FEET Shape {
+                                                                appearance PBRAppearance {
+                                                                  baseColor 1 1 0
+                                                                  roughness 1
+                                                                  metalness 0
+                                                                }
+                                                                geometry Cylinder {
+                                                                  height 0.005
+                                                                  radius 0.02
+                                                                }
+                                                              }
+                                                            ]
+                                                            name "LEG-1-FEET-TOUCHSENSOR-SOLID"
+                                                            boundingObject USE FEET
+                                                            physics USE PHYSICS
+                                                          }
+                                                          TouchSensor {
+                                                            translation 0 0.11825 0
+                                                            rotation 0 0 1 0.9163003061004252
+                                                            name "f1_touch_sensor"
+                                                            boundingObject USE FEET
+                                                            physics USE PHYSICS
+                                                            rotationStep 0.261799
+                                                          }
+                                                        ]
+                                                      }
+                                                    ]
+                                                    name "LEG-1-END-EFFECTOR"
+                                                    boundingObject USE END-EFFECTOR
+                                                    physics USE PHYSICS
+                                                  }
+                                                ]
+                                              }
+                                            ]
+                                            name "LEG-1-TIBIA-SERVO"
+                                            boundingObject USE SERVO-CYLINDER
+                                            physics USE PHYSICS
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                  name "LEG-1-FEMUR-2-CYLINDER-SHAPE"
+                                  boundingObject USE FEMUR-2-CYLINDER-SHAPE
+                                  physics USE PHYSICS
+                                }
+                              ]
+                            }
+                          ]
+                          name "LEG-1-COXA-SERVO"
+                          boundingObject USE SERVO-CYLINDER
+                          physics USE PHYSICS
+                        }
+                      }
+                    ]
+                  }
+                ]
+                name "LEG-1-FEMUR-1-CYLINDER-SHAPE"
+                boundingObject USE FEMUR-1-CYLINDER-SHAPE
+                physics USE PHYSICS
+              }
+            ]
+          }
+        ]
+        name "LEG-1-COXA-SERVO-SOLID"
+        boundingObject USE SERVO-CYLINDER
+        physics USE PHYSICS
+      }
+    }
+    DEF LEG-2-COXA HingeJoint {
+      jointParameters HingeJointParameters {
+        axis 0 0 1
+        anchor -0.0705 0.122225 0
+      }
+      device [
+        PositionSensor {
+          name "c2_position_sensor"
+        }
+        RotationalMotor {
+          name "c2_motor"
+          maxVelocity 2
+          maxTorque 100
+        }
+      ]
+      endPoint Solid {
+        translation -0.0717 0.122225 -0.017
+        rotation 1 0 0 1.5707996938995747
+        children [
+          Transform {
+            rotation 0 1 0 -4.188789693899575
+            children [
+              USE SERVO-CYLINDER
+              Solid {
+                translation 0.03325 0 0
+                rotation 0 0 1 -1.5707996938995747
+                children [
+                  USE FEMUR-1-CYLINDER-SHAPE
+                  Transform {
+                    translation 0 0.03325 0
+                    rotation 1 0 0 1.5707996938995747
+                    children [
+                      DEF LEG-2-FEMUR HingeJoint {
+                        jointParameters HingeJointParameters {
+                          axis 0 1 0
+                        }
+                        device [
+                          PositionSensor {
+                            name "f2_position_sensor"
+                          }
+                          RotationalMotor {
+                            name "f2_motor"
+                            maxVelocity 2
+                            maxTorque 100
+                          }
+                        ]
+                        endPoint Solid {
+                          children [
+                            USE SERVO-CYLINDER
+                            Transform {
+                              rotation 0 1 0 3.37424
+                              children [
+                                Solid {
+                                  translation 0 0 0.0722
+                                  rotation 1 0 0 1.5708003061004252
+                                  children [
+                                    USE FEMUR-2-CYLINDER-SHAPE
+                                    Transform {
+                                      translation 0 0.0722 0
+                                      rotation 0 1 0 3.141592653589793
+                                      children [
+                                        DEF LEG-2-TIBIA HingeJoint {
+                                          jointParameters HingeJointParameters {
+                                            axis 0 0 1
+                                          }
+                                          device [
+                                            PositionSensor {
+                                              name "t2_position_sensor"
+                                            }
+                                            RotationalMotor {
+                                              name "t2_motor"
+                                              maxVelocity 2
+                                              maxTorque 100
+                                            }
+                                          ]
+                                          endPoint Solid {
+                                            rotation 0 0.7071082811855531 0.7071052811843601 3.1415919999999997
+                                            children [
+                                              USE SERVO-CYLINDER
+                                              Transform {
+                                                rotation 0 1 0 -0.737227
+                                                children [
+                                                  Solid {
+                                                    translation 0 0 0.11825
+                                                    rotation 1 0 0 1.5707996938995747
+                                                    children [
+                                                      USE END-EFFECTOR
+                                                      Transform {
+                                                        rotation 1 0 0 0
+                                                        children [
+                                                          Solid {
+                                                            translation 0 0.11825 0
+                                                            rotation 0 0 1 0.9162996938995747
+                                                            children [
+                                                              USE FEET
+                                                            ]
+                                                            name "LEG-2-FEET-TOUCHSENSOR-SOLID"
+                                                            boundingObject USE FEET
+                                                            physics USE PHYSICS
+                                                          }
+                                                          TouchSensor {
+                                                            translation 0 0.11825 0
+                                                            rotation 0 0 1 0.9163003061004252
+                                                            name "f2_touch_sensor"
+                                                            boundingObject USE FEET
+                                                            physics USE PHYSICS
+                                                            rotationStep 0.261799
+                                                          }
+                                                        ]
+                                                      }
+                                                    ]
+                                                    name "LEG-2-END-EFFECTOR"
+                                                    boundingObject USE END-EFFECTOR
+                                                    physics USE PHYSICS
+                                                  }
+                                                ]
+                                              }
+                                            ]
+                                            name "LEG-2-TIBIA-SERVO"
+                                            boundingObject USE SERVO-CYLINDER
+                                            physics USE PHYSICS
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                  name "LEG-2-FEMUR-2-CYLINDER-SHAPE"
+                                  boundingObject USE FEMUR-2-CYLINDER-SHAPE
+                                  physics USE PHYSICS
+                                }
+                              ]
+                            }
+                          ]
+                          name "LEG-2-COXA-SERVO"
+                          boundingObject USE SERVO-CYLINDER
+                          physics USE PHYSICS
+                        }
+                      }
+                    ]
+                  }
+                ]
+                name "LEG-2-FEMUR-1-CYLINDER-SHAPE"
+                boundingObject USE FEMUR-1-CYLINDER-SHAPE
+                physics USE PHYSICS
+              }
+            ]
+          }
+        ]
+        name "LEG-2-COXA-SERVO-SOLID"
+        boundingObject USE SERVO-CYLINDER
+        physics USE PHYSICS
+      }
+    }
+    DEF LEG-3-COXA HingeJoint {
+      jointParameters HingeJointParameters {
+        axis 0 0 1
+        anchor 0.14133 0 0
+      }
+      device [
+        PositionSensor {
+          name "c3_position_sensor"
+        }
+        RotationalMotor {
+          name "c3_motor"
+          maxVelocity 2
+          maxTorque 100
+        }
+      ]
+      endPoint Solid {
+        translation 0.14133 0 -0.017
+        rotation 1 0 0 1.5708003061004252
+        children [
+          Transform {
+            children [
+              USE SERVO-CYLINDER
+              Solid {
+                translation 0.03325 0 0
+                rotation 0 0 1 -1.5707996938995747
+                children [
+                  USE FEMUR-1-CYLINDER-SHAPE
+                  Transform {
+                    translation 0 0.03325 0
+                    rotation 1 0 0 1.5707996938995747
+                    children [
+                      DEF LEG-2-FEMUR HingeJoint {
+                        jointParameters HingeJointParameters {
+                          axis 0 1 0
+                        }
+                        device [
+                          PositionSensor {
+                            name "f3_position_sensor"
+                          }
+                          RotationalMotor {
+                            name "f3_motor"
+                            maxVelocity 2
+                            maxTorque 100
+                          }
+                        ]
+                        endPoint Solid {
+                          children [
+                            USE SERVO-CYLINDER
+                            Transform {
+                              rotation 0 1 0 3.37424
+                              children [
+                                Solid {
+                                  translation 0 0 0.0722
+                                  rotation 1 0 0 1.5708003061004252
+                                  children [
+                                    USE FEMUR-2-CYLINDER-SHAPE
+                                    Transform {
+                                      translation 0 0.0722 0
+                                      rotation 0 1 0 3.141592653589793
+                                      children [
+                                        DEF LEG-3-TIBIA HingeJoint {
+                                          jointParameters HingeJointParameters {
+                                            axis 0 0 1
+                                          }
+                                          device [
+                                            PositionSensor {
+                                              name "t3_position_sensor"
+                                            }
+                                            RotationalMotor {
+                                              name "t3_motor"
+                                              maxVelocity 2
+                                              maxTorque 100
+                                            }
+                                          ]
+                                          endPoint Solid {
+                                            rotation 0 0.7071082811855531 0.7071052811843601 3.1415919999999997
+                                            children [
+                                              USE SERVO-CYLINDER
+                                              Transform {
+                                                rotation 0 1 0 -0.737227
+                                                children [
+                                                  Solid {
+                                                    translation 0 0 0.11825
+                                                    rotation 1 0 0 1.5707996938995747
+                                                    children [
+                                                      USE END-EFFECTOR
+                                                      Transform {
+                                                        rotation 1 0 0 0
+                                                        children [
+                                                          Solid {
+                                                            translation 0 0.11825 0
+                                                            rotation 0 0 1 0.9162996938995747
+                                                            children [
+                                                              USE FEET
+                                                            ]
+                                                            name "LEG-3-FEET-TOUCHSENSOR-SOLID"
+                                                            boundingObject USE FEET
+                                                            physics USE PHYSICS
+                                                          }
+                                                          TouchSensor {
+                                                            translation 0 0.11825 0
+                                                            rotation 0 0 1 0.9163003061004252
+                                                            name "f3_touch_sensor"
+                                                            boundingObject USE FEET
+                                                            physics USE PHYSICS
+                                                            rotationStep 0.261799
+                                                          }
+                                                        ]
+                                                      }
+                                                    ]
+                                                    name "LEG-3-END-EFFECTOR"
+                                                    boundingObject USE END-EFFECTOR
+                                                    physics USE PHYSICS
+                                                  }
+                                                ]
+                                              }
+                                            ]
+                                            name "LEG-3-TIBIA-SERVO"
+                                            boundingObject USE SERVO-CYLINDER
+                                            physics USE PHYSICS
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                  name "LEG-3-FEMUR-2-CYLINDER-SHAPE"
+                                  boundingObject USE FEMUR-2-CYLINDER-SHAPE
+                                  physics USE PHYSICS
+                                }
+                              ]
+                            }
+                          ]
+                          name "LEG-3-COXA-SERVO"
+                          boundingObject USE SERVO-CYLINDER
+                          physics USE PHYSICS
+                        }
+                      }
+                    ]
+                  }
+                ]
+                name "LEG-3-FEMUR-1-CYLINDER-SHAPE"
+                boundingObject USE FEMUR-1-CYLINDER-SHAPE
+                physics USE PHYSICS
+              }
+            ]
+          }
+        ]
+        name "LEG-3-COXA-SERVO-SOLID"
+        boundingObject USE SERVO-CYLINDER
+        physics USE PHYSICS
+      }
+    }
+    DEF LEG-4-COXA HingeJoint {
+      jointParameters HingeJointParameters {
+        axis 0 0 1
+        anchor -0.14133 0 0
+      }
+      device [
+        PositionSensor {
+          name "c4_position_sensor"
+        }
+        RotationalMotor {
+          name "c4_motor"
+          maxVelocity 2
+          maxTorque 100
+        }
+      ]
+      endPoint Solid {
+        translation -0.14133 0 -0.017
+        rotation 1 0 0 1.5708003061004252
+        children [
+          Transform {
+            rotation 0 1 0 3.141592653589793
+            children [
+              USE SERVO-CYLINDER
+              Solid {
+                translation 0.03325 0 0
+                rotation 0 0 1 -1.5707996938995747
+                children [
+                  USE FEMUR-1-CYLINDER-SHAPE
+                  Transform {
+                    translation 0 0.03325 0
+                    rotation 1 0 0 1.5707996938995747
+                    children [
+                      DEF LEG-4-FEMUR HingeJoint {
+                        jointParameters HingeJointParameters {
+                          axis 0 1 0
+                        }
+                        device [
+                          PositionSensor {
+                            name "f4_position_sensor"
+                          }
+                          RotationalMotor {
+                            name "f4_motor"
+                            maxVelocity 2
+                            maxTorque 100
+                          }
+                        ]
+                        endPoint Solid {
+                          children [
+                            USE SERVO-CYLINDER
+                            Transform {
+                              rotation 0 1 0 3.37424
+                              children [
+                                Solid {
+                                  translation 0 0 0.0722
+                                  rotation 1 0 0 1.5708003061004252
+                                  children [
+                                    USE FEMUR-2-CYLINDER-SHAPE
+                                    Transform {
+                                      translation 0 0.0722 0
+                                      rotation 0 1 0 3.141592653589793
+                                      children [
+                                        DEF LEG-4-TIBIA HingeJoint {
+                                          jointParameters HingeJointParameters {
+                                            axis 0 0 1
+                                          }
+                                          device [
+                                            PositionSensor {
+                                              name "t4_position_sensor"
+                                            }
+                                            RotationalMotor {
+                                              name "t4_motor"
+                                              maxVelocity 2
+                                              maxTorque 100
+                                            }
+                                          ]
+                                          endPoint Solid {
+                                            rotation 0 0.7071082811855531 0.7071052811843601 3.1415919999999997
+                                            children [
+                                              USE SERVO-CYLINDER
+                                              Transform {
+                                                rotation 0 1 0 -0.737227
+                                                children [
+                                                  Solid {
+                                                    translation 0 0 0.11825
+                                                    rotation 1 0 0 1.5707996938995747
+                                                    children [
+                                                      USE END-EFFECTOR
+                                                      Transform {
+                                                        rotation 1 0 0 0
+                                                        children [
+                                                          Solid {
+                                                            translation 0 0.11825 0
+                                                            rotation 0 0 1 0.9162996938995747
+                                                            children [
+                                                              USE FEET
+                                                            ]
+                                                            name "LEG-4-FEET-TOUCHSENSOR-SOLID"
+                                                            boundingObject USE FEET
+                                                            physics USE PHYSICS
+                                                          }
+                                                          TouchSensor {
+                                                            translation 0 0.11825 0
+                                                            rotation 0 0 1 0.9163003061004252
+                                                            name "f4_touch_sensor"
+                                                            boundingObject USE FEET
+                                                            physics USE PHYSICS
+                                                            rotationStep 0.261799
+                                                          }
+                                                        ]
+                                                      }
+                                                    ]
+                                                    name "LEG-4-END-EFFECTOR"
+                                                    boundingObject USE END-EFFECTOR
+                                                    physics USE PHYSICS
+                                                  }
+                                                ]
+                                              }
+                                            ]
+                                            name "LEG-4-TIBIA-SERVO"
+                                            boundingObject USE SERVO-CYLINDER
+                                            physics USE PHYSICS
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                  name "LEG-4-FEMUR-2-CYLINDER-SHAPE"
+                                  boundingObject USE FEMUR-2-CYLINDER-SHAPE
+                                  physics USE PHYSICS
+                                }
+                              ]
+                            }
+                          ]
+                          name "LEG-4-COXA-SERVO"
+                          boundingObject USE SERVO-CYLINDER
+                          physics USE PHYSICS
+                        }
+                      }
+                    ]
+                  }
+                ]
+                name "LEG-4-FEMUR-1-CYLINDER-SHAPE"
+                boundingObject USE FEMUR-1-CYLINDER-SHAPE
+                physics USE PHYSICS
+              }
+            ]
+          }
+        ]
+        name "LEG-4-COXA-SERVO-SOLID"
+        boundingObject USE SERVO-CYLINDER
+        physics USE PHYSICS
+      }
+    }
+    DEF LEG-5-COXA HingeJoint {
+      jointParameters HingeJointParameters {
+        axis 0 0 1
+        anchor 0.0705 -0.122225 0
+      }
+      device [
+        PositionSensor {
+          name "c5_position_sensor"
+        }
+        RotationalMotor {
+          name "c5_motor"
+          maxVelocity 2
+          maxTorque 100
+        }
+      ]
+      endPoint Solid {
+        translation 0.0717 -0.122225 -0.017
+        rotation 1 0 0 1.5707996938995747
+        children [
+          Transform {
+            rotation 0 1 0 -1.0472
+            children [
+              USE SERVO-CYLINDER
+              Solid {
+                translation 0.03325 0 0
+                rotation 0 0 1 -1.5707996938995747
+                children [
+                  USE FEMUR-1-CYLINDER-SHAPE
+                  Transform {
+                    translation 0 0.03325 0
+                    rotation 1 0 0 1.5707996938995747
+                    children [
+                      DEF LEG-5-FEMUR HingeJoint {
+                        jointParameters HingeJointParameters {
+                          axis 0 1 0
+                        }
+                        device [
+                          PositionSensor {
+                            name "f5_position_sensor"
+                          }
+                          RotationalMotor {
+                            name "f5_motor"
+                            maxVelocity 2
+                            maxTorque 100
+                          }
+                        ]
+                        endPoint Solid {
+                          children [
+                            USE SERVO-CYLINDER
+                            Transform {
+                              rotation 0 1 0 3.37424
+                              children [
+                                Solid {
+                                  translation 0 0 0.0722
+                                  rotation 1 0 0 1.5708003061004252
+                                  children [
+                                    USE FEMUR-2-CYLINDER-SHAPE
+                                    Transform {
+                                      translation 0 0.0722 0
+                                      rotation 0 1 0 3.141592653589793
+                                      children [
+                                        DEF LEG-5-TIBIA HingeJoint {
+                                          jointParameters HingeJointParameters {
+                                            axis 0 0 1
+                                          }
+                                          device [
+                                            PositionSensor {
+                                              name "t5_position_sensor"
+                                            }
+                                            RotationalMotor {
+                                              name "t5_motor"
+                                              maxVelocity 2
+                                              maxTorque 100
+                                            }
+                                          ]
+                                          endPoint Solid {
+                                            rotation 0 0.7071082811855531 0.7071052811843601 3.1415919999999997
+                                            children [
+                                              USE SERVO-CYLINDER
+                                              Transform {
+                                                rotation 0 1 0 -0.737227
+                                                children [
+                                                  Solid {
+                                                    translation 0 0 0.11825
+                                                    rotation 1 0 0 1.5707996938995747
+                                                    children [
+                                                      USE END-EFFECTOR
+                                                      Transform {
+                                                        rotation 1 0 0 0
+                                                        children [
+                                                          Solid {
+                                                            translation 0 0.11825 0
+                                                            rotation 0 0 1 0.9162996938995747
+                                                            children [
+                                                              USE FEET
+                                                            ]
+                                                            name "LEG-5-FEET-TOUCHSENSOR-SOLID"
+                                                            boundingObject USE FEET
+                                                            physics USE PHYSICS
+                                                          }
+                                                          TouchSensor {
+                                                            translation 0 0.11825 0
+                                                            rotation 0 0 1 0.9163003061004252
+                                                            name "f5_touch_sensor"
+                                                            boundingObject USE FEET
+                                                            physics USE PHYSICS
+                                                            rotationStep 0.261799
+                                                          }
+                                                        ]
+                                                      }
+                                                    ]
+                                                    name "LEG-5-END-EFFECTOR"
+                                                    boundingObject USE END-EFFECTOR
+                                                    physics USE PHYSICS
+                                                  }
+                                                ]
+                                              }
+                                            ]
+                                            name "LEG-5-TIBIA-SERVO"
+                                            boundingObject USE SERVO-CYLINDER
+                                            physics USE PHYSICS
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                  name "LEG-5-FEMUR-2-CYLINDER-SHAPE"
+                                  boundingObject USE FEMUR-2-CYLINDER-SHAPE
+                                  physics USE PHYSICS
+                                }
+                              ]
+                            }
+                          ]
+                          name "LEG-5-COXA-SERVO"
+                          boundingObject USE SERVO-CYLINDER
+                          physics USE PHYSICS
+                        }
+                      }
+                    ]
+                  }
+                ]
+                name "LEG-5-FEMUR-1-CYLINDER-SHAPE"
+                boundingObject USE FEMUR-1-CYLINDER-SHAPE
+                physics USE PHYSICS
+              }
+            ]
+          }
+        ]
+        name "LEG-5-COXA-SERVO-SOLID"
+        boundingObject USE SERVO-CYLINDER
+        physics USE PHYSICS
+      }
+    }
+    DEF LEG-6-COXA HingeJoint {
+      jointParameters HingeJointParameters {
+        axis 0 0 1
+        anchor -0.0705 -0.122225 0
+      }
+      device [
+        PositionSensor {
+          name "c6_position_sensor"
+        }
+        RotationalMotor {
+          name "c6_motor"
+          maxVelocity 2
+          maxTorque 100
+        }
+      ]
+      endPoint Solid {
+        translation -0.0717 -0.122225 -0.017
+        rotation 1 0 0 1.5707996938995747
+        children [
+          Transform {
+            rotation 0 1 0 -2.09439
+            children [
+              USE SERVO-CYLINDER
+              Solid {
+                translation 0.03325 0 0
+                rotation 0 0 1 -1.5707996938995747
+                children [
+                  USE FEMUR-1-CYLINDER-SHAPE
+                  Transform {
+                    translation 0 0.03325 0
+                    rotation 1 0 0 1.5707996938995747
+                    children [
+                      DEF LEG-6-FEMUR HingeJoint {
+                        jointParameters HingeJointParameters {
+                          axis 0 1 0
+                        }
+                        device [
+                          PositionSensor {
+                            name "f6_position_sensor"
+                          }
+                          RotationalMotor {
+                            name "f6_motor"
+                            maxVelocity 2
+                            maxTorque 100
+                          }
+                        ]
+                        endPoint Solid {
+                          children [
+                            USE SERVO-CYLINDER
+                            Transform {
+                              rotation 0 1 0 3.37424
+                              children [
+                                Solid {
+                                  translation 0 0 0.0722
+                                  rotation 1 0 0 1.5708003061004252
+                                  children [
+                                    USE FEMUR-2-CYLINDER-SHAPE
+                                    Transform {
+                                      translation 0 0.0722 0
+                                      rotation 0 1 0 3.141592653589793
+                                      children [
+                                        DEF LEG-6-TIBIA HingeJoint {
+                                          jointParameters HingeJointParameters {
+                                            axis 0 0 1
+                                          }
+                                          device [
+                                            PositionSensor {
+                                              name "t6_position_sensor"
+                                            }
+                                            RotationalMotor {
+                                              name "t6_motor"
+                                              maxVelocity 2
+                                              maxTorque 100
+                                            }
+                                          ]
+                                          endPoint Solid {
+                                            rotation 0 0.7071082811855531 0.7071052811843601 3.1415919999999997
+                                            children [
+                                              USE SERVO-CYLINDER
+                                              Transform {
+                                                rotation 0 1 0 -0.737227
+                                                children [
+                                                  Solid {
+                                                    translation 0 0 0.11825
+                                                    rotation 1 0 0 1.5707996938995747
+                                                    children [
+                                                      USE END-EFFECTOR
+                                                      Transform {
+                                                        rotation 1 0 0 0
+                                                        children [
+                                                          Solid {
+                                                            translation 0 0.11825 0
+                                                            rotation 0 0 1 0.9162996938995747
+                                                            children [
+                                                              USE FEET
+                                                            ]
+                                                            name "LEG-6-FEET-TOUCHSENSOR-SOLID"
+                                                            boundingObject USE FEET
+                                                            physics USE PHYSICS
+                                                          }
+                                                          TouchSensor {
+                                                            translation 0 0.11825 0
+                                                            rotation 0 0 1 0.9163003061004252
+                                                            name "f6_touch_sensor"
+                                                            boundingObject USE FEET
+                                                            physics USE PHYSICS
+                                                            rotationStep 0.261799
+                                                          }
+                                                        ]
+                                                      }
+                                                    ]
+                                                    name "LEG-6-END-EFFECTOR"
+                                                    boundingObject USE END-EFFECTOR
+                                                    physics USE PHYSICS
+                                                  }
+                                                ]
+                                              }
+                                            ]
+                                            name "LEG-6-TIBIA-SERVO"
+                                            boundingObject USE SERVO-CYLINDER
+                                            physics USE PHYSICS
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                  name "LEG-6-FEMUR-2-CYLINDER-SHAPE"
+                                  boundingObject USE FEMUR-2-CYLINDER-SHAPE
+                                  physics USE PHYSICS
+                                }
+                              ]
+                            }
+                          ]
+                          name "LEG-6-COXA-SERVO"
+                          boundingObject USE SERVO-CYLINDER
+                          physics USE PHYSICS
+                        }
+                      }
+                    ]
+                  }
+                ]
+                name "LEG-6-FEMUR-1-CYLINDER-SHAPE"
+                boundingObject USE FEMUR-1-CYLINDER-SHAPE
+                physics USE PHYSICS
+              }
+            ]
+          }
+        ]
+        name "LEG-6-COXA-SERVO-SOLID"
+        boundingObject USE SERVO-CYLINDER
+        physics USE PHYSICS
+      }
+    }
+  ]
+  boundingObject USE HEXAGON
+  physics USE PHYSICS
+  rotationStep 0.261799
+  controller "test"
+  supervisor TRUE
+}
+StraightStairs {
+  translation -0.855808 0 0.505649
+  rotation 0 1 0 -2.6179943071795866
+  stepSize 0.279 0.19 1
+  stepRise 0.178
+  nSteps 7
+  leftRail []
+  rightRail []
+}
+TexturedBackgroundLight {
+}
