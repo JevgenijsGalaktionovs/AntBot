@@ -7,6 +7,7 @@ struct DataContainer{
     int servo_pwm[18];
     unsigned int FSR_pressure[6];
     float IR_distance[3];
+    float IMU_data[3];
 };
 
 // Serialization & Parsing
