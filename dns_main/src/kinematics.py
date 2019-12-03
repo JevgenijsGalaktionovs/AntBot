@@ -5,30 +5,29 @@ from math_calc import subtract, crossProduct
 
 class LegConsts(object):
     ''' Class object to store characteristics of each leg '''
-    def __init__(self, x_off, y_off, z_off, ang_off, side, leg_nr):
+    def __init__(self, x_off, y_off, z_off, ang_off, leg_nr):
         self.x_off = x_off                # X offset from body origin to first servo (mm)
         self.y_off = y_off                # Y offset from body origin to first servo (mm)
         self.z_off = z_off                # Z offset from body origin to first servo (mm)
         self.ang_off = ang_off            # Angular offset from body origin to first servo (mm)
-        self.side = side                  # Left or Right-sided leg (servo angles inverted)
-        self.f_ang_off = radians(13.33)   # 20.00 * pi / 180   # Angular offset of Femur
-        self.t_ang_off = radians(-42.24)  # -38.934*pi/180#-32.264 * pi / 180  # Angular offset of Tibia
+        self.f_ang_off = radians(13.33)   # Angular offset of Femur
+        self.t_ang_off = radians(-23.90)  # Angular offset of Tibia
         self.c_len = 66.50                # Link length of Coxa  (mm)
-        self.f_len = 144.40  # 92.17      # Link length of Femur (mm)
-        self.t_len = 236.5  # 194.00      # Link length of Tibia (mm)
+        self.f_len = 144.40               # Link length of Femur (mm)
+        self.t_len = 236.5                # Link length of Tibia (mm)
         self.leg_nr = leg_nr              # Leg Number
 
 
 class Kinematics(object):
 
     ''' Class object to compute various types of kinematics data for AntBot '''
-    # Origin to coxa: x_off, y_off, z_off, ang_off, side, name
-    leg1 = LegConsts(70.5, 122.225, -14.9, - pi / 3, "right", "Leg 1")
-    leg2 = LegConsts(-70.5, 122.225, -14.9, -2 * pi / 3, "right", "Leg 2")
-    leg3 = LegConsts(141.33, 0, -14.9, 0, "right", "Leg 3")
-    leg4 = LegConsts(-141.33, 0, -14.9, pi, "right", "Leg 4")
-    leg5 = LegConsts(70.5, -122.225, -14.9, pi / 3, "right", "Leg 5")
-    leg6 = LegConsts(-70.5, -122.225, -14.9, 2 * pi / 3, "right", "Leg 6")
+    # Origin to coxa: x_off, y_off, z_off, ang_off, name
+    leg1 = LegConsts(70.5, 122.225, -14.9, - pi / 3, "Leg 1")
+    leg2 = LegConsts(-70.5, 122.225, -14.9, -2 * pi / 3, "Leg 2")
+    leg3 = LegConsts(141.33, 0, -14.9, 0, "Leg 3")
+    leg4 = LegConsts(-141.33, 0, -14.9, pi, "Leg 4")
+    leg5 = LegConsts(70.5, -122.225, -14.9, pi / 3, "Leg 5")
+    leg6 = LegConsts(-70.5, -122.225, -14.9, 2 * pi / 3, "Leg 6")
     leg_list = [leg1, leg2, leg3, leg4, leg5, leg6]
 
     ################
@@ -95,9 +94,13 @@ class Kinematics(object):
     def doIkineRotationEuler(self, all_positions, alpha_rad, beta_rad, gama_rad, dist_x, dist_y, dist_z):
         ''' Function:   computes inverse kinematics and body rotation (Parallel kinematics)
             Parameters: all_positions: list with 18 values of servo positions in steps from ID1 to ID18;
-                        alpha,beta,gama: desired degree change in x,y,z coordinates of robot's body
-                        dist_x,dist_y,dist_z : desired translation along x,y,z of body
-            Return:     list of 18 integers with servo steps
+                        alpha,beta,gama:    # for leg in range(6):  # 6 legs
+    #     if leg in leg_list:
+    #         new_pos.extend(K.calc_ikine(x, y, z, ee_xyz[leg:leg + 3], K.leg_list[leg]))
+    #     else:
+    #         new_pos.append(current_pos[3 * leg])
+    #         new_pos.append(current_pos[3 * leg + 1])
+    #         new_pos.append(current_pos[3 * leg + 2])ers with servo steps
         '''
         final_eexyz, ee_xyz = self.calc_rot_matrix(all_positions, alpha_rad, beta_rad, gama_rad)
         thetas = []

@@ -335,7 +335,7 @@ def auto_calcTrajectory(x, y, z, leg_case):
     return x, y, z
 
 
-def calc_motion(x, y, z, orientation=None, leg_case=None):
+def calc_motion(xyz, orientation=None, leg_case=None):
 
     ID_list = list()
     if leg_case is None:
@@ -349,7 +349,7 @@ def calc_motion(x, y, z, orientation=None, leg_case=None):
         ID_list += leg[leg_case[x]]
 
     current_pos = readPos()
-    next_pos = K.doIkine(current_pos, x, y, z, body_orient=orientation, leg=leg_case)
+    next_pos = K.doIkine(current_pos, xyz[0], xyz[1], xyz[2], body_orient=orientation, leg=leg_case)
 
     if leg_case:
         motion = list_combine_notfull(ID_list, next_pos)
@@ -362,44 +362,42 @@ def do_motion(xyz, orientation=None, leg_case=None):
     """x, y, z: 3 integers with x,y,z changes to accomplish
        orientaiton: list of 3 integers in degrees. alpha, beta, gamma
        leg_nr: list (can be one) of leg indexes"""
-    motion = calc_motion(xyz[0], xyz[1], xyz[2], orientation=orientation, leg_case=leg_case)
+    motion = calc_motion(xyz, orientation=orientation, leg_case=leg_case)
     positionN(motion)
     return motion
 
 
 def singleLeg_stairs(x, y, z, alpha, beta, gamma, leg_case):
     x, y, z = auto_calcTrajectory(x, y, z, leg_case)
-    motion = calc_motion(x, y, z, orientation=[alpha, beta, gamma], leg_case=leg_case)
+    motion = calc_motion([x, y, z], orientation=[alpha, beta, gamma], leg_case=leg_case)
     return motion, [x, y, z]
-
-
-def singleLeg_walk(x, y, z, alpha, beta, gamma, leg_case):
-    motion = calc_motion(x, y, z, orientation=[alpha, beta, gamma], leg_case=leg_case)
-    return motion
 
 
 def half_step(x, y, z, alpha, beta, gamma):
 
-    pos = []
-    pos.extend(singleLeg_walk(0, -y, 0, alpha, beta, gamma, 1))
-    pos.extend(singleLeg_walk(0, 0, z, alpha, beta, gamma, 2))
-    pos.extend(singleLeg_walk(0, 0, z, alpha, beta, gamma, 3))
-    pos.extend(singleLeg_walk(0, -y, 0, alpha, beta, gamma, 4))
-    pos.extend(singleLeg_walk(0, -y, 0, alpha, beta, gamma, 5))
-    pos.extend(singleLeg_walk(0, 0, z, alpha, beta, gamma, 6))
+    move1 = [0, -y, 0]
+    move2 = [0, 0, z]
+    move3 = [0, 0, -z]
+    move4 = [0, 0, 0]
+    pos = list()
+    pos.extend(calc_motion(move1, orientation=[alpha, beta, gamma], leg_case=1))
+    pos.extend(calc_motion(move2, orientation=[alpha, beta, gamma], leg_case=2))
+    pos.extend(calc_motion(move2, orientation=[alpha, beta, gamma], leg_case=3))
+    pos.extend(calc_motion(move1, orientation=[alpha, beta, gamma], leg_case=4))
+    pos.extend(calc_motion(move1, orientation=[alpha, beta, gamma], leg_case=5))
+    pos.extend(calc_motion(move2, orientation=[alpha, beta, gamma], leg_case=6))
     positionN(pos)
     check_position_error(80, 50, pos)
 
-    pos2 = []
-    pos2.extend(singleLeg_walk(0, 0, 0, alpha, beta, gamma, 1))
-    pos2.extend(singleLeg_walk(0, 0, -z, alpha, beta, gamma, 2))
-    pos2.extend(singleLeg_walk(0, 0, -z, alpha, beta, gamma, 3))
-    pos2.extend(singleLeg_walk(0, 0, 0, alpha, beta, gamma, 4))
-    pos2.extend(singleLeg_walk(0, 0, 0, alpha, beta, gamma, 5))
-    pos2.extend(singleLeg_walk(0, 0, -z, alpha, beta, gamma, 6))
+    pos2 = list()
+    pos2.extend(calc_motion(move4, orientation=[alpha, beta, gamma], leg_case=1))
+    pos2.extend(calc_motion(move3, orientation=[alpha, beta, gamma], leg_case=2))
+    pos2.extend(calc_motion(move3, orientation=[alpha, beta, gamma], leg_case=3))
+    pos2.extend(calc_motion(move4, orientation=[alpha, beta, gamma], leg_case=4))
+    pos2.extend(calc_motion(move4, orientation=[alpha, beta, gamma], leg_case=5))
+    pos2.extend(calc_motion(move3, orientation=[alpha, beta, gamma], leg_case=6))
     positionN(pos2)
     check_position_error(80, 50, pos2)
-
     checkContact()
 
 
@@ -408,48 +406,50 @@ def checkContact():
     current_pos = readPos()
     goal_pos = K.doIkine(current_pos, x, y, z)
 
-    for x in range(20):
+    for j in range(10):  # 20 equals to total 10cm distance that leg will go down.
         fsr = readFSR()
-        leg_trigger = [True] * 6
-        print ("fsr", fsr)
+        print fsr
         for x in range(6):
-            if fsr[x] > 400:
-                print ("leg_", x + 1, "is not activated")
-                leg_trigger[x] = False
-        print (leg_trigger)
-        for x in range(6):
-            if leg_trigger[x] is False:
-                j = x
-                positionN([3 * j + 1, goal_pos[3 * j],
-                           3 * j + 2, goal_pos[3 * j + 1],
-                           3 * j + 3, goal_pos[3 * j + 2]])
-            if False in leg_trigger:
-                print ("At least 1 or more legs are not in contact")
-            else:
-                break
+            if fsr[x] == 0:
+                positionN([3 * x + 1, goal_pos[3 * x],
+                           3 * x + 2, goal_pos[3 * x + 1],
+                           3 * x + 3, goal_pos[3 * x + 2]])
         time.sleep(0.5)
-        current_pos = readPos()
-        goal_pos = wannabeControlSystem(goal_pos, current_pos, 0, 0, -5)
+        if all(sensor == 1 for sensor in fsr) is True:
+            break
+        else:
+            leg_list = list()
+            for leg in range(len(fsr)):
+                if fsr[leg] == 0:
+                    leg_list.append(leg)
+        goal_pos = ControlSystem(goal_pos, 0, 0, -5, leg_list)
 
 
-def wannabeControlSystem(current_Position, goal_pos, x, y, z):
-    newPoss = []
-    NewWhereIAm = [0] * 18
-    NewWhereToGo = [0] * 18
-    WhereToGo = K.doFkine(goal_pos)[:1]
-    WhereIAm = K.doFkine(current_Position)[:1]
-    for i in range(18):
-        NewWhereToGo[i] = WhereToGo[0][i]
-        NewWhereIAm[i] = WhereIAm[0][i]
-    Error = [i - j for i, j in zip(NewWhereToGo, NewWhereIAm)]
-    ee_xyz_error = [i * 0.9 for i in Error]
-    ee_xyz = [i - j for i, j in zip(NewWhereIAm, ee_xyz_error)]
-    j = 0
-    for i in xrange(0, 16, 3):
-        newPoss.extend(K.calc_ikine(x, y, z, ee_xyz[i:i + 3], K.leg_list[j]))
-        j += 1
-    result = [int(next_poss) for next_poss in K.rad_to_step(newPoss)]
-    print("Newposs", result)
+def ControlSystem(goal_pos, x, y, z, leg_list):
+    gain_x = 1  # 1.2
+    gain_y = -0.8  # -0.8
+    gain_z = 3  # 3
+    current_pos = readPos()
+    curr_ee_xyz = K.doFkine(current_pos)[0]
+    goal_ee_xyz = K.doFkine(goal_pos)[0]
+    err_ee_xyz = [i - j for i, j in zip(goal_ee_xyz, curr_ee_xyz)]
+
+    for i in range(6):
+        err_ee_xyz[3 * i] = err_ee_xyz[3 * i] * gain_x
+        err_ee_xyz[3 * i + 1] = err_ee_xyz[3 * i + 1] * gain_y
+        err_ee_xyz[3 * i + 2] = err_ee_xyz[3 * i + 2] * gain_z
+    ee_xyz = [i - j for i, j in zip(goal_ee_xyz, err_ee_xyz)]
+
+    new_pos = []
+    for leg in range(6):  # To list through numbers 1,2,3,4,5,6
+        if leg in leg_list:
+            new_pos.extend(K.rad_to_step(K.calc_ikine(x, y, z, ee_xyz[3 * leg:3 * leg + 3], K.leg_list[leg])))
+        else:
+            new_pos.append(current_pos[3 * leg])
+            new_pos.append(current_pos[3 * leg + 1])
+            new_pos.append(current_pos[3 * leg + 2])
+
+    result = [int(next_pos) for next_pos in new_pos]
     return result
 
 
@@ -502,24 +502,24 @@ def tripodGait_stairs(stairs, distance, depth, riser):
             print("leg1", xyz_stored1)
         elif dist2NextLevel_1 > 2 * step:
             xyz_stored1 = [0] * 3
-            ae.extend(singleLeg_walk(0, 0, lift, alpha, beta, gamma, 1))
-        ae.extend(singleLeg_walk(0, -step, 0, alpha, beta, gamma, 2))
-        ae.extend(singleLeg_walk(0, -step, 0, alpha, beta, gamma, 3))
+            ae.extend(calc_motion([0, 0, lift], orientation=[alpha, beta, gamma], leg_case=1))
+        ae.extend(calc_motion([0, -step, 0], orientation=[alpha, beta, gamma], leg_case=2))
+        ae.extend(calc_motion([0, -step, 0], orientation=[alpha, beta, gamma], leg_case=3))
         if dist2NextLevel_4 < 2 * step:
             ae_stored4, xyz_stored4 = singleLeg_stairs(0, 0, riser + lift, alpha, beta, gamma, 4)
             ae.extend(ae_stored4)
             print("leg4", xyz_stored4)
         elif dist2NextLevel_4 > 2 * step:
             xyz_stored4 = [0] * 3
-            ae.extend(singleLeg_walk(0, 0, lift, alpha, beta, gamma, 4))
+            ae.extend(calc_motion([0, 0, lift], orientation=[alpha, beta, gamma], leg_case=4))
         if dist2NextLevel_5 < 2 * step:
             ae_stored5, xyz_stored5 = singleLeg_stairs(0, 0, riser + lift, alpha, beta, gamma, 5)
             ae.extend(ae_stored5)
             print("leg5", xyz_stored5)
         elif dist2NextLevel_5 > 2 * step:
             xyz_stored5 = [0] * 3
-            ae.extend(singleLeg_walk(0, 0, lift, alpha, beta, gamma, 5))
-        ae.extend(singleLeg_walk(0, -step, 0, alpha, beta, gamma, 6))
+            ae.extend(calc_motion([0, 0, lift], orientation=[alpha, beta, gamma], leg_case=5))
+        ae.extend(calc_motion([0, -step, 0], orientation=[alpha, beta, gamma], leg_case=6))
         ee_xyz, servopos = K.doFkine(readPos())
         z1 = ee_xyz[2]
         z4 = ee_xyz[11]
@@ -529,12 +529,13 @@ def tripodGait_stairs(stairs, distance, depth, riser):
 
         time.sleep(2)
     # put forward ae1
-        ae1.extend(singleLeg_walk(-xyz_stored1[0], 2 * step, 0, alpha, beta, gamma, 1))
-        ae1.extend(singleLeg_walk(0, -step, 0, alpha, beta, gamma, 2))
-        ae1.extend(singleLeg_walk(0, -step, 0, alpha, beta, gamma, 3))
-        ae1.extend(singleLeg_walk(-xyz_stored4[0], 2 * step, 0, alpha, beta, gamma, 4))
-        ae1.extend(singleLeg_walk(-xyz_stored5[0], 2 * step, 0, alpha, beta, gamma, 5))
-        ae1.extend(singleLeg_walk(0, -step, 0, alpha, beta, gamma, 6))
+
+        ae1.extend(calc_motion([-xyz_stored1[0], 2 * step, 0], orientation=[alpha, beta, gamma], leg_case=1))
+        ae1.extend(calc_motion([0, -step, 0], orientation=[alpha, beta, gamma], leg_case=2))
+        ae1.extend(calc_motion([0, -step, 0], orientation=[alpha, beta, gamma], leg_case=3))
+        ae1.extend(calc_motion([-xyz_stored4[0], 2 * step, 0], orientation=[alpha, beta, gamma], leg_case=4))
+        ae1.extend(calc_motion([-xyz_stored5[0], 2 * step, 0], orientation=[alpha, beta, gamma], leg_case=5))
+        ae1.extend(calc_motion([0, -step, 0], orientation=[alpha, beta, gamma], leg_case=6))
         positionN(ae1)
         check_position_error(80, 50, ae1)
         checkContact()
@@ -579,14 +580,14 @@ def tripodGait_stairs(stairs, distance, depth, riser):
     # seconed group lift up and push
         ae = []
         ae1 = []
-        ae.extend(singleLeg_walk(0, -step, 0, alpha, beta, gamma, 1))
+        ae.extend(calc_motion([0, -step, 0], orientation=[alpha, beta, gamma], leg_case=1))
         if dist2NextLevel_2 < 2 * step:
             ae_stored2, xyz_stored2 = singleLeg_stairs(0, 0, riser + lift, alpha, beta, gamma, 2)
             ae.extend(ae_stored2)
             print("leg2", xyz_stored2)
         elif dist2NextLevel_2 > 2 * step:
             xyz_stored2 = [0] * 3
-            ae.extend(singleLeg_walk(0, 0, lift, alpha, beta, gamma, 2))
+            ae.extend(calc_motion([0, 0, lift], orientation=[alpha, beta, gamma], leg_case=2))
 
         if dist2NextLevel_3 < 2 * step:
             ae_stored3, xyz_stored3 = singleLeg_stairs(0, 0, riser + lift, alpha, beta, gamma, 3)
@@ -594,16 +595,16 @@ def tripodGait_stairs(stairs, distance, depth, riser):
             print("leg3", xyz_stored3)
         elif dist2NextLevel_3 > 2 * step:
             xyz_stored3 = [0] * 3
-            ae.extend(singleLeg_walk(0, 0, lift, alpha, beta, gamma, 3))
-        ae.extend(singleLeg_walk(0, -step, 0, alpha, beta, gamma, 4))
-        ae.extend(singleLeg_walk(0, -step, 0, alpha, beta, gamma, 5))
+            ae.extend(calc_motion([0, 0, lift], orientation=[alpha, beta, gamma], leg_case=3))
+        ae.extend(calc_motion([0, -step, 0], orientation=[alpha, beta, gamma], leg_case=4))
+        ae.extend(calc_motion([0, -step, 0], orientation=[alpha, beta, gamma], leg_case=5))
         if dist2NextLevel_6 < 2 * step:
             ae_stored6, xyz_stored6 = singleLeg_stairs(0, 0, riser + lift, alpha, beta, gamma, 6)
             ae.extend(ae_stored6)
             print("leg6", xyz_stored6)
         elif dist2NextLevel_6 > 2 * step:
             xyz_stored6 = [0] * 3
-            ae.extend(singleLeg_walk(0, 0, lift, alpha, beta, gamma, 6))
+            ae.extend(calc_motion([0, 0, lift], orientation=[alpha, beta, gamma], leg_case=6))
         ee_xyz, servopos = K.doFkine(readPos())
         z2 = ee_xyz[5]
         z3 = ee_xyz[8]
@@ -611,15 +612,16 @@ def tripodGait_stairs(stairs, distance, depth, riser):
         positionN(ae)
         check_position_error(80, 50, ae)
     # put forward ae1
-        ae1.extend(singleLeg_walk(0, -step, 0, alpha, beta, gamma, 1))
-        ae1.extend(singleLeg_walk(-xyz_stored2[0], 2 * step, 0, alpha, beta, gamma, 2))
-        ae1.extend(singleLeg_walk(-xyz_stored3[0], 2 * step, 0, alpha, beta, gamma, 3))
-        ae1.extend(singleLeg_walk(0, -step, 0, alpha, beta, gamma, 4))
-        ae1.extend(singleLeg_walk(0, -step, 0, alpha, beta, gamma, 5))
-        ae1.extend(singleLeg_walk(-xyz_stored6[0], 2 * step, 0, alpha, beta, gamma, 6))
+        ae1.extend(calc_motion([0, -step, 0], orientation=[alpha, beta, gamma], leg_case=1))
+        ae1.extend(calc_motion([-xyz_stored2[0], 2 * step, 0], orientation=[alpha, beta, gamma], leg_case=2))
+        ae1.extend(calc_motion([-xyz_stored3[0], 2 * step, 0], orientation=[alpha, beta, gamma], leg_case=3))
+        ae1.extend(calc_motion([0, -step, 0], orientation=[alpha, beta, gamma], leg_case=4))
+        ae1.extend(calc_motion([0, -step, 0], orientation=[alpha, beta, gamma], leg_case=5))
+        ae1.extend(calc_motion([-xyz_stored6[0], 2 * step, 0], orientation=[alpha, beta, gamma], leg_case=6))
         positionN(ae1)
         check_position_error(80, 50, ae1)
         checkContact()
+
     # put down
         checkContact()
         ee_xyz = []
