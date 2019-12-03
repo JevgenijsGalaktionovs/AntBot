@@ -55,7 +55,12 @@ def readIR():
 
 
 def readFSR():
-    return read_FSR_request(1)
+    fsr_data = read_FSR_request(1)
+    # Our touch sensors are digital(HIGH,LOW), but we read it from analogue pins with analogue values
+    # Therefore, we digitalize it here and INVERT so that NO TOUCH will return 0, and TOUCH returns 1
+    fsr_data_digitalized = [0 if x < 200 else 1 for x in fsr_data]
+    fsr_data_inverted = [0 if x == 1 else 1 for x in fsr_data_digitalized]
+    return fsr_data_inverted
 
 
 def readPos():
@@ -84,6 +89,27 @@ def getStairsDistZ():
 
 def getStairsDistX():
     return get_stairs_dist_x_request(1)[0]
+
+
+# Sensor requests ================================================
+def read_IR_request(command):
+    rospy.wait_for_service('read_IR_filt')
+    try:
+        read_IR = rospy.ServiceProxy('read_IR_filt', pos_key)
+        response = read_IR(command)
+        return response.reply
+    except rospy.ServiceException, e:
+        print "Service call failed: %s" % e
+
+
+def read_FSR_request(command):
+    rospy.wait_for_service('read_FSR_filt')
+    try:
+        read_FSR = rospy.ServiceProxy('read_FSR_filt', pos_key)
+        response = read_FSR(command)
+        return response.reply
+    except rospy.ServiceException, e:
+        print "Service call failed: %s" % e
 
 
 # Vision requests ================================================
@@ -153,31 +179,11 @@ def read_pos_all_request(command):
         print "Service call failed: %s" % e
 
 
-def read_FSR_request(command):
-    rospy.wait_for_service('read_FSR_filt')
-    try:
-        read_FSR = rospy.ServiceProxy('read_FSR_filt', pos_key)
-        response = read_FSR(command)
-        return response.reply
-    except rospy.ServiceException, e:
-        print "Service call failed: %s" % e
-
-
 def read_pwn_all_request(command):
     rospy.wait_for_service('read_all_pwm')
     try:
         read_all_pwm = rospy.ServiceProxy('read_all_pwm', pos_key)
         response = read_all_pwm(command)
-        return response.reply
-    except rospy.ServiceException, e:
-        print "Service call failed: %s" % e
-
-
-def read_IR_request(command):
-    rospy.wait_for_service('read_IR_filt')
-    try:
-        read_IR = rospy.ServiceProxy('read_IR_filt', pos_key)
-        response = read_IR(command)
         return response.reply
     except rospy.ServiceException, e:
         print "Service call failed: %s" % e
