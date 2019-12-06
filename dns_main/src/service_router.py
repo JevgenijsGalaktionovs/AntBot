@@ -1,7 +1,7 @@
 ﻿#!/usr/bin/env python2
 import rospy
 
-from dns.srv import *
+from dns.srv import pos_key, list_key, bool_key #,stairs_key
 
 
 # Wrappers (for user convenience)
@@ -55,7 +55,12 @@ def readIR():
 
 
 def readFSR():
-    return read_FSR_request(1)
+    fsr_data = read_FSR_request(1)
+    # Our touch sensors are digital(HIGH,LOW), but we read it from analogue pins with analogue values
+    # Therefore, we digitalize it here and INVERT so that NO TOUCH will return 0, and TOUCH returns 1
+    fsr_data_digitalized = [0 if x < 200 else 1 for x in fsr_data]
+    fsr_data_inverted = [0 if x == 1 else 1 for x in fsr_data_digitalized]
+    return fsr_data_inverted
 
 
 def readPos():
@@ -66,13 +71,32 @@ def readPwm():
     return read_pwn_all_request(1)
 
 
-# Requests
+def getAllStairsInfo():
+    return get_all_stairs_info_request(1)
 
-def read_pos_all_request(command):
-    rospy.wait_for_service('read_all_pos')
+
+def getStairsDepth():
+    return get_stairs_depth_request(1)[0]
+
+
+def getStairsHeight():
+    return get_stairs_height_request(1)[0]
+
+
+def getStairsDistZ():
+    return get_stairs_dist_z_request(1)[0]
+
+
+def getStairsDistX():
+    return get_stairs_dist_x_request(1)[0]
+
+
+# Sensor requests ================================================
+def read_IR_request(command):
+    rospy.wait_for_service('read_IR_filt')
     try:
-        read_all_pos = rospy.ServiceProxy('read_all_pos', pos_key)
-        response = read_all_pos(command)
+        read_IR = rospy.ServiceProxy('read_IR_filt', pos_key)
+        response = read_IR(command)
         return response.reply
     except rospy.ServiceException, e:
         print "Service call failed: %s" % e
@@ -88,21 +112,78 @@ def read_FSR_request(command):
         print "Service call failed: %s" % e
 
 
-def read_pwn_all_request(command):
-    rospy.wait_for_service('read_all_pwm')
+# Vision requests ================================================
+def get_all_stairs_info_request(command):
+    rospy.wait_for_service('get_all_stairs_info')
     try:
-        read_all_pwm = rospy.ServiceProxy('read_all_pwm', pos_key)
-        response = read_all_pwm(command)
+        get_all_stairs_info = rospy.ServiceProxy('get_all_stairs_info',
+                                                 stairs_key)
+        response = get_all_stairs_info(command)
         return response.reply
     except rospy.ServiceException, e:
         print "Service call failed: %s" % e
 
 
-def read_IR_request(command):
-    rospy.wait_for_service('read_IR_filt')
+def get_stairs_depth_request(command):
+    rospy.wait_for_service('get_stairs_depth')
     try:
-        read_IR = rospy.ServiceProxy('read_IR_filt', pos_key)
-        response = read_IR(command)
+        get_stairs_depth = rospy.ServiceProxy('get_stairs_depth',
+                                              stairs_key)
+        response = get_stairs_depth(command)
+        return response.reply
+    except rospy.ServiceException, e:
+        print "Service call failed: %s" % e
+
+
+def get_stairs_height_request(command):
+    rospy.wait_for_service('get_stairs_height')
+    try:
+        get_stairs_height = rospy.ServiceProxy('get_stairs_height',
+                                               stairs_key)
+        response = get_stairs_height(command)
+        return response.reply
+    except rospy.ServiceException, e:
+        print "Service call failed: %s" % e
+
+
+def get_stairs_dist_z_request(command):
+    rospy.wait_for_service('get_stairs_dist_z')
+    try:
+        get_stairs_dist_z = rospy.ServiceProxy('get_stairs_dist_z',
+                                               stairs_key)
+        response = get_stairs_dist_z(command)
+        return response.reply
+    except rospy.ServiceException, e:
+        print "Service call failed: %s" % e
+
+
+def get_stairs_dist_x_request(command):
+    rospy.wait_for_service('get_stairs_dist_x')
+    try:
+        get_stairs_dist_x = rospy.ServiceProxy('get_stairs_dist_x',
+                                               stairs_key)
+        response = get_stairs_dist_x(command)
+        return response.reply
+    except rospy.ServiceException, e:
+        print "Service call failed: %s" % e
+
+
+# Dynamixel requests ================================================
+def read_pos_all_request(command):
+    rospy.wait_for_service('read_all_pos')
+    try:
+        read_all_pos = rospy.ServiceProxy('read_all_pos', pos_key)
+        response = read_all_pos(command)
+        return response.reply
+    except rospy.ServiceException, e:
+        print "Service call failed: %s" % e
+
+
+def read_pwn_all_request(command):
+    rospy.wait_for_service('read_all_pwm')
+    try:
+        read_all_pwm = rospy.ServiceProxy('read_all_pwm', pos_key)
+        response = read_all_pwm(command)
         return response.reply
     except rospy.ServiceException, e:
         print "Service call failed: %s" % e

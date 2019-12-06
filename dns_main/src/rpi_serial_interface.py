@@ -6,7 +6,7 @@ import rospy
 import json
 
 from dns.srv import bool_key, bool_keyResponse, list_key, \
-    list_keyResponse, pos_key,  pos_keyResponse
+    list_keyResponse, pos_key, pos_keyResponse
 
 
 class ArduinoCommunication:
@@ -28,19 +28,19 @@ class ArduinoCommunication:
 
         rospy.Service('write_tor_all', bool_key, self.tor_srv)
         rospy.Service('write_rst_all', bool_key, self.rst_srv)
-        rospy.Service('write_pos_1',   list_key, self.pos_1_srv)
+        rospy.Service('write_pos_1', list_key, self.pos_1_srv)
         rospy.Service('write_pos_all', list_key, self.pos_all_srv)
         rospy.Service('write_vel_all', list_key, self.vel_all_srv)
         rospy.Service('write_acc_all', list_key, self.acc_all_srv)
         rospy.Service('write_pwm_all', list_key, self.pwm_all_srv)
-        rospy.Service('write_pos_N',   list_key, self.pos_N_srv)
-        rospy.Service('write_vel_N',   list_key, self.vel_N_srv)
-        rospy.Service('write_acc_N',   list_key, self.acc_N_srv)
-        rospy.Service('write_pwm_N',   list_key, self.pwm_N_srv)
-        rospy.Service('read_all_pos',  pos_key,  self.read_pos_all_srv)
-        rospy.Service('read_all_pwm',  pos_key,  self.read_pwm_all_srv)
-        rospy.Service('read_IR_filt',  pos_key,  self.read_IR_filt_srv)
-        rospy.Service('read_FSR_filt', pos_key,  self.read_FSR_filt_srv)
+        rospy.Service('write_pos_N', list_key, self.pos_N_srv)
+        rospy.Service('write_vel_N', list_key, self.vel_N_srv)
+        rospy.Service('write_acc_N', list_key, self.acc_N_srv)
+        rospy.Service('write_pwm_N', list_key, self.pwm_N_srv)
+        rospy.Service('read_all_pos', pos_key, self.read_pos_all_srv)
+        rospy.Service('read_all_pwm', pos_key, self.read_pwm_all_srv)
+        rospy.Service('read_IR_filt', pos_key, self.read_IR_filt_srv)
+        rospy.Service('read_FSR_filt', pos_key, self.read_FSR_filt_srv)
 
         rate = rospy.Rate(100)  # 100hz
         while not rospy.is_shutdown():
@@ -55,11 +55,11 @@ class ArduinoCommunication:
             ports = ['COM%s' % (i + 1) for i in range(256)]
         elif sys.platform.startswith('linux') or sys.platform.startswith('cygwin'):
             # this excludes your current terminal "/dev/tty"
-            ports = glob.glob('/dev/tty[A-Za-z]*')
+            ports = glob.glob('/dev/ttyACM*')
         elif sys.platform.startswith('darwin'):
             ports = glob.glob('/dev/tty.*')
-	elif sys.platform.startswith('linux') or sys.platform.startswith('cygwin'):
-            ports = glob.glob('/dev/ttyACM*')
+        elif sys.platform.startswith('linux') or sys.platform.startswith('cygwin'):
+            ports = glob.glob('/dev/tty[A-Za-z]*')
         else:
             raise EnvironmentError('Unsupported platform')
 
@@ -76,7 +76,7 @@ class ArduinoCommunication:
     def openSerialPort(self, baudrate):
         port = self.serialPorts()
         print "Available ports: ", port, " Connecting to: ", port[0]
-        ser  = serial.Serial(port[0], baudrate)
+        ser = serial.Serial(port[0], baudrate)
         return ser
 
     def sendSerial(self, data_package):
@@ -149,7 +149,7 @@ class ArduinoCommunication:
             while self.ser.inWaiting() > 0:
                 in_data = self.ser.readline()
                 try:  # Take only non-corrupted JSON messages
-                    sr_pos  = json.loads(in_data).get('sr_pos')
+                    sr_pos = json.loads(in_data).get('sr_pos')
                     if sr_pos is not None:
                         return pos_keyResponse(sr_pos)
                 except ValueError:
@@ -163,7 +163,7 @@ class ArduinoCommunication:
             while self.ser.inWaiting() > 0:
                 in_data = self.ser.readline()
                 try:  # Take only non-corrupted JSON messages
-                    sr_pwm  = json.loads(in_data).get('sr_pwm')
+                    sr_pwm = json.loads(in_data).get('sr_pwm')
                     if sr_pwm is not None:
                         return pos_keyResponse(sr_pwm)
                 except ValueError:
@@ -178,7 +178,7 @@ class ArduinoCommunication:
                 in_data = self.ser.readline()
 
                 try:  # Take only non-corrupted JSON messages
-                    IR_read  = json.loads(in_data).get('IR_dist')
+                    IR_read = json.loads(in_data).get('IR_dist')
                     if IR_read is not None:
                         return pos_keyResponse(IR_read)
                 except ValueError:
@@ -193,7 +193,7 @@ class ArduinoCommunication:
                 in_data = self.ser.readline()
 
                 try:  # Take only non-corrupted JSON messages
-                    FSR_read  = json.loads(in_data).get('FSR_pres')
+                    FSR_read = json.loads(in_data).get('FSR_pres')
                     if FSR_read is not None:
                         return pos_keyResponse(FSR_read)
                 except ValueError:

@@ -1,32 +1,34 @@
 # !/usr/bin/env python2
-from math import pi, cos, sin, atan2, acos, sqrt, pow, radians
+from math import pi, cos, sin, atan2, acos, sqrt, pow, radians, asin
+from math_calc import *
+from service_router import readPos
 
 
 class LegConsts(object):
     ''' Class object to store characteristics of each leg '''
-    def __init__(self, x_off, y_off, z_off, ang_off, side, leg_nr):
-        self.x_off     = x_off              # X offset from body origin to first servo (mm)
-        self.y_off     = y_off              # Y offset from body origin to first servo (mm)
-        self.z_off     = z_off              # Z offset from body origin to first servo (mm)
-        self.ang_off   = ang_off            # Angular offset from body origin to first servo (mm)
-        self.side      = side               # Left or Right-sided leg (servo angles inverted)
-        self.f_ang_off = 20.00 * pi / 180   # Angular offset of Femur
-        self.t_ang_off = -32.264 * pi / 180  # Angular offset of Tibia
-        self.c_len     = 66.50              # Link length of Coxa  (mm)
-        self.f_len     = 92.17              # Link length of Femur (mm)
-        self.t_len     = 194.00             # Link length of Tibia (mm)
-        self.leg_nr    = leg_nr             # Leg Number
+    def __init__(self, x_off, y_off, z_off, ang_off, leg_nr):
+        self.x_off = x_off                # X offset from body origin to first servo (mm)
+        self.y_off = y_off                # Y offset from body origin to first servo (mm)
+        self.z_off = z_off                # Z offset from body origin to first servo (mm)
+        self.ang_off = ang_off            # Angular offset from body origin to first servo (mm)
+        self.f_ang_off = radians(13.33)   # Angular offset of Femur
+        self.t_ang_off = radians(-23.90)  # Angular offset of Tibia
+        self.c_len = 66.50                # Link length of Coxa  (mm)
+        self.f_len = 144.40               # Link length of Femur (mm)
+        self.t_len = 236.5                # Link length of Tibia (mm)
+        self.leg_nr = leg_nr              # Leg Number
 
 
 class Kinematics(object):
+
     ''' Class object to compute various types of kinematics data for AntBot '''
-    # Origin to coxa: x_off    y_off    z_off    ang_off  side     name
-    leg1 = LegConsts(71.6,     120.96, -14.9,    - pi / 3, "right", "Leg 1")
-    leg2 = LegConsts(-71.6,    120.96, -14.9, -2 * pi / 3, "left",  "Leg 2")
-    leg3 = LegConsts(141.33,   0,      -14.9,      0,      "right", "Leg 3")
-    leg4 = LegConsts(-141.33,  0,      -14.9,      pi,     "left",  "Leg 4")
-    leg5 = LegConsts(71.6,    -120.96, -14.9,      pi / 3, "right", "Leg 5")
-    leg6 = LegConsts(-71.6,   -120.96, -14.9,  2 * pi / 3, "left",  "Leg 6")
+    # Origin to coxa: x_off, y_off, z_off, ang_off, name
+    leg1 = LegConsts(70.5, 122.225, -14.9, - pi / 3, "Leg 1")
+    leg2 = LegConsts(-70.5, 122.225, -14.9, -2 * pi / 3, "Leg 2")
+    leg3 = LegConsts(141.33, 0, -14.9, 0, "Leg 3")
+    leg4 = LegConsts(-141.33, 0, -14.9, pi, "Leg 4")
+    leg5 = LegConsts(70.5, -122.225, -14.9, pi / 3, "Leg 5")
+    leg6 = LegConsts(-70.5, -122.225, -14.9, 2 * pi / 3, "Leg 6")
     leg_list = [leg1, leg2, leg3, leg4, leg5, leg6]
 
     ################
@@ -40,16 +42,15 @@ class Kinematics(object):
                        servoPos: servo positions in radians
         '''
         servoPos = self.step_to_rad(all_positions)
+        #print("step 2 rad:", servoPos)
         ee_xyz = []
         j = 0
         for i in xrange(0, 16, 3):
-            ee_xyz.extend(self.calc_fkine(servoPos[i:i + 3],   self.leg_list[j]))
+            ee_xyz.extend(self.calc_fkine(servoPos[i:i + 3], self.leg_list[j]))
             j += 1
         return ee_xyz, servoPos
 
     def doIkine(self, all_positions, x, y, z, body_orient=None, leg=None, auto=None):
-        print("1.leg is:",leg )
-        leg = leg
         ''' Function:   computes inverse kinematics
             Parameters: all_positions: list with 18 values of servo positions in steps from ID1 to ID18;
                         x,y,z: desired change in x,y,z coordinates (same for all legs)
@@ -79,22 +80,14 @@ class Kinematics(object):
 
         if leg:
             # Optional parameter. Compute inverse for a specific leg/s.
-            print("2.leg is:",leg )
             for i in range(len(leg)):
-                print(leg)     
-                print("3.leg is:",leg )
-                print("i :",i , leg[i] )
                 j = leg[i] - 1
-                print(j)
-                print(ee_xyz)
-                print(self.leg_list[0])
-                print(x,y,z)
-                thetas.extend(self.calc_ikine(x, y, z, ee_xyz[j * 3 :j * 3 + 3], self.leg_list[j]))
+                thetas.extend(self.calc_ikine(x, y, z, ee_xyz[j * 3:j * 3 + 3], self.leg_list[j]))
 
         else:
             # Compute inverse for all legs if not leg specified.
             for i in xrange(0, 16, 3):
-                thetas.extend(self.calc_ikine(x, y, z, ee_xyz[i:i + 3],   self.leg_list[j]))
+                thetas.extend(self.calc_ikine(x, y, z, ee_xyz[i:i + 3], self.leg_list[j]))
                 j += 1
 
         result = [int(each_theta) for each_theta in self.rad_to_step(thetas)]
@@ -103,9 +96,13 @@ class Kinematics(object):
     def doIkineRotationEuler(self, all_positions, alpha_rad, beta_rad, gama_rad, dist_x, dist_y, dist_z):
         ''' Function:   computes inverse kinematics and body rotation (Parallel kinematics)
             Parameters: all_positions: list with 18 values of servo positions in steps from ID1 to ID18;
-                        alpha,beta,gama: desired degree change in x,y,z coordinates of robot's body
-                        dist_x,dist_y,dist_z : desired translation along x,y,z of body
-            Return:     list of 18 integers with servo steps
+                        alpha,beta,gama:    # for leg in range(6):  # 6 legs
+    #     if leg in leg_list:
+    #         new_pos.extend(K.calc_ikine(x, y, z, ee_xyz[leg:leg + 3], K.leg_list[leg]))
+    #     else:
+    #         new_pos.append(current_pos[3 * leg])
+    #         new_pos.append(current_pos[3 * leg + 1])
+    #         new_pos.append(current_pos[3 * leg + 2])ers with servo steps
         '''
         final_eexyz, ee_xyz = self.calc_rot_matrix(all_positions, alpha_rad, beta_rad, gama_rad)
         thetas = []
@@ -133,10 +130,11 @@ class Kinematics(object):
         print "Leg 6: " + str(RoundedCoords[15:18])
         print ""
 
-    def printInverse(self, theta_list):
+    def printInverse(self, all_positions, x, y, z):
         ''' Function:   Prints servo positions, in radians, needed to reach the position
             Parameters: theta_list: 18 servo positions in radians.
         '''
+        theta_list = self.doIkine(all_positions, x, y, z)
         RoundedThetas = ['%.4f' % elem for elem in theta_list]
         print ""
         print "Theta angles of each servo:"
@@ -151,7 +149,7 @@ class Kinematics(object):
 
     def printKinematics(self, all_positions, x, y, z):
         self.printForward(all_positions)
-        self.printInverse(self.doIkine(all_positions, x, y, z))
+        self.printInverse(all_positions, x, y, z)
 
     #################
     # Private methods
@@ -159,62 +157,49 @@ class Kinematics(object):
 
     def calc_fkine(self, servoPos, leg):
         theta1 = servoPos[0] - leg.ang_off
-        if leg.side == "right":
-            theta2 = servoPos[1] + leg.f_ang_off
-            theta3 = servoPos[2] + leg.t_ang_off
-            ee_z   = leg.f_len * sin(theta2) + leg.t_len * sin(theta3 + theta2) + leg.z_off
-        elif leg.side == "left":
-            theta2 = servoPos[1] - leg.f_ang_off
-            theta3 = servoPos[2] - leg.t_ang_off
-            ee_z   = -(leg.f_len * sin(theta2) + leg.t_len * sin(theta3 + theta2) - leg.z_off)
-        ee_x   = leg.x_off + cos(theta1) * (leg.c_len + leg.f_len * cos(theta2) + leg.t_len * cos(theta3 + theta2))
-        ee_y   = leg.y_off + sin(theta1) * (leg.c_len + leg.f_len * cos(theta2) + leg.t_len * cos(theta3 + theta2))
+        theta2 = servoPos[1] + leg.f_ang_off
+        theta3 = servoPos[2] + leg.t_ang_off
+        ee_z = leg.f_len * sin(theta2) + leg.t_len * sin(theta3 + theta2) + leg.z_off
+        ee_x = leg.x_off + cos(theta1) * (leg.c_len + leg.f_len * cos(theta2) + leg.t_len * cos(theta3 + theta2))
+        ee_y = leg.y_off + sin(theta1) * (leg.c_len + leg.f_len * cos(theta2) + leg.t_len * cos(theta3 + theta2))
         return [ee_x, ee_y, ee_z]
 
     def calc_ikine(self, x, y, z, ee_xyz, leg, auto=None):
-        init_X   = ee_xyz[0]
-        init_Y   = ee_xyz[1]
-        init_Z   = ee_xyz[2]
-        X        = init_X + (x) - leg.x_off
-        Y        = init_Y + (y) - leg.y_off
-        Z        = init_Z + (z) - leg.z_off
-        theta1   = atan2(Y, X)   + leg.ang_off
+        init_X = ee_xyz[0]
+        init_Y = ee_xyz[1]
+        init_Z = ee_xyz[2]
+        X = init_X + (x) - leg.x_off
+        Y = init_Y + (y) - leg.y_off
+        Z = init_Z + (z) - leg.z_off
+        theta1 = atan2(Y, X) + leg.ang_off
         if theta1 < -pi:
             theta1 += 2 * pi
         if theta1 > pi:
             theta1 -= 2 * pi
-        new_x    = cos(leg.ang_off) * X   - sin(leg.ang_off) * Y
-        new_y    = sin(leg.ang_off) * X   + cos(leg.ang_off) * Y
-        final_x  = cos(theta1) * new_x    + sin(theta1) * new_y - leg.c_len
-        s        = sqrt(pow(final_x, 2)   + pow(Z, 2))
+        new_x = cos(leg.ang_off) * X - sin(leg.ang_off) * Y
+        new_y = sin(leg.ang_off) * X + cos(leg.ang_off) * Y
+        final_x = cos(theta1) * new_x + sin(theta1) * new_y - leg.c_len
+        s = sqrt(pow(final_x, 2) + pow(Z, 2))
         try:
             t3_term = (-pow(s, 2) + pow(leg.f_len, 2) + pow(leg.t_len, 2)) / (2 * leg.f_len * leg.t_len)
-            t3       = pi - acos(t3_term)
+            t3 = pi - acos(t3_term)
         except ValueError:
             print "Cannot compute acos(", t3_term, ") for ", leg.leg_nr
             if auto is None:
-                print("something went wrong")
                 if t3_term < 0:
                     t3 = pi - acos(-0.99)
                 else:
                     t3 = pi - acos(0.99)
             else:
-                print("im here dont worry")
                 return -1
 
+        theta3 = -t3 - leg.t_ang_off
+        theta2 = -(-atan2(Z, final_x) - atan2(leg.t_len * sin(t3), leg.f_len + leg.t_len * cos(t3)) + leg.f_ang_off)
 
-        if leg.side == "right":  # ODD LEGS
-            theta3 = -t3 - leg.t_ang_off
-            theta2 = -(-atan2(Z, final_x) - atan2(leg.t_len * sin(t3), leg.f_len + leg.t_len * cos(t3)) + leg.f_ang_off)
-        elif leg.side == "left":  # EVEN LEGS
-            theta3 = t3 + leg.t_ang_off
-            theta2 = -(atan2(Z, final_x) + atan2(leg.t_len * sin(t3), leg.f_len + leg.t_len * cos(t3)) - leg.f_ang_off)
-        print("theta2 =",theta2)
-        print("theta3 =",theta3)
         if auto is not None:
-            if (theta2 > 1.9 or theta2 < -1.9) or (theta3 < -2.3 or theta3 > 2.3):
+            if (theta2 > 1.8 or theta2 < -1.8) or (theta3 < -2.2 or theta3 > 2.2):
                 return -1
-        
+
         return [theta1, theta2, theta3]
 
     def calc_rot_displacement(self, alpha_rad, beta_rad, gama_rad, ee_xyz):
@@ -240,3 +225,125 @@ class Kinematics(object):
 
     def step_to_rad(self, pos_steps):
         return [(((x / 2047.5) - 1) * pi) for x in pos_steps]
+
+    def make_poligonCorners(self, all_positions, leg_list):
+        if leg_list is int:
+            leg_list = [leg_list]
+
+        xyz_polygon = []
+        ee_xyz, servoPos = self.doFkine(all_positions)
+        newEe_xyz = [ee_xyz[0], ee_xyz[1], ee_xyz[2], ee_xyz[3], ee_xyz[4], ee_xyz[5],
+                     ee_xyz[9], ee_xyz[10], ee_xyz[11], ee_xyz[15], ee_xyz[16], ee_xyz[17],
+                     ee_xyz[12], ee_xyz[13], ee_xyz[14], ee_xyz[6], ee_xyz[7], ee_xyz[8]]
+
+        for i in range(len(leg_list)):
+            j = leg_list[i] - 1
+            xyz_polygon.extend((newEe_xyz[j * 3:j * 3 + 3]))
+        return xyz_polygon
+
+    def make_polygonLines(self,leg_list,ee_xyz):
+        #ee_xy""z, servoPos = self.doFkine(readPos())
+        print("leglistLins", leg_list)
+        polygon_points = self.make_poligonCorners(ee_xyz,leg_list)
+        line = []
+        for i in range(len(ee_xyz / 3)):
+            j = i - 1
+            line.extend = [ee_xyz[3 * j + 3] - ee_xyz[3 * j],
+                           ee_xyz[3 * j + 4] - ee_xyz[3 * j + 1],
+                           ee_xyz[3 * j + 5] - ee_xyz[3 * j + 2]]
+        return line
+    def check_stabilty(self,t_poly = None):
+        ee_xyz, servoPos = self.doFkine(readPos())
+        #tac = readFSR()
+        tac = [False, True, False, True, True, False]
+        #tac = [False, True, True, False, False, True]
+        leg_list = []
+        for i in range(len(tac)):
+            if tac[i] is True:
+                leg_list.extend([i+1])
+        poly_lines,poly_points = self.make_polygonLines(leg_list,ee_xyz)
+        print("lines",poly_lines)
+        if tac[1] is True and tac[2] is True and tac[5]is True:
+            #gamma, beta = 10,20 #self.get_orientation(tac)
+            #n = [0,-sin(beta),cos(beta)]
+            print("im not here")
+            P1 = [ee_xyz[3],ee_xyz[4],1]
+            P2 = [ee_xyz[6],ee_xyz[7],1]
+            P3 = [ee_xyz[15],ee_xyz[16],1]
+            print(P1,P2,P3)
+        elif tac[0] is True and tac[3] is True and tac[4] is True:
+            print("im here")
+            P1 = [ee_xyz[0],ee_xyz[1],1]
+            P3 = [ee_xyz[9],ee_xyz[10],1]
+            P2 = [ee_xyz[12],ee_xyz[13],1]
+            print(P1,P2,P3)
+        k = 1 #dotProduct(n,P1)
+        x = 0
+        y = 1 
+        z = 2
+        lambda_1 = ((P2[x]*P3[y] - P2[y]*P3[x])*k)/(P1[x]*P2[y]*P3[z] - P1[x]*P2[z]*P3[y] - P1[y]*P2[x]*P3[z] + P1[y]*P2[z]*P3[x] + P1[z]*P2[x]*P3[y] - P1[z]*P2[y]*P3[x])
+        lambda_2 = -((P1[x]*P3[y] - P1[y]*P3[x])*k)/(P1[x]*P2[y]*P3[z] - P1[x]*P2[z]*P3[y] - P1[y]*P2[x]*P3[z] + P1[y]*P2[z]*P3[x] + P1[z]*P2[x]*P3[y] - P1[z]*P2[y]*P3[x])
+        lambda_3 = ((P1[x]*P2[y] - P1[y]*P2[x])*k)/(P1[x]*P2[y]*P3[z] - P1[x]*P2[z]*P3[y] - P1[y]*P2[x]*P3[z] + P1[y]*P2[z]*P3[x] + P1[z]*P2[x]*P3[y] - P1[z]*P2[y]*P3[x])
+        if lambda_1 > 0.1 and lambda_2 > 0.1 and lambda_3 > 0.1 and lambda_3 > 0.1:
+            if lambda_1 < 0.9 and lambda_2 < 0.9 and lambda_3 < 0.9:
+                if lambda_1 + lambda_2 + lambda_3 == 1:
+                    inside = True
+        side1 = subtract(P1,P2)
+        side2 = subtract(P3,P2)
+        side3 = subtract(P1,P3)
+        G = [0,0,1]
+        P2_G = subtract(G,P2)
+        P3_G = subtract(G,P3)
+        margin_s1 = sqrt(pow(dotProduct(P2_G,unit_vec(side1)),2)+dotProduct(P2_G,P2_G))
+        margin_s2 = sqrt(pow(dotProduct(P2_G,unit_vec(side2)),2)+dotProduct(P2_G,P2_G))
+        margin_s3 = sqrt(pow(dotProduct(P3_G,unit_vec(side3)),2)+dotProduct(P3_G,P3_G))
+        aa = min(margin_s1,margin_s2,margin_s3)
+        print(aa, inside)
+        return aa, inside
+
+    def get_orientation(self,leg_list):
+        ee_xyz, servoPos = self.doFkine(readPos())
+        p1 = ee_xyz[3 * (leg_list[0] - 1):3 * (leg_list[0] - 1) + 3]
+        p2 = ee_xyz[3 * (leg_list[1] - 1):3 * (leg_list[1] - 1) + 3]
+        p3 = ee_xyz[3 * (leg_list[2] - 1):3 * (leg_list[2] - 1) + 3]
+        p21 = subtract(p2, p1)
+        p23 = subtract(p2, p3)
+        normz = crossProduct(p21, p23)
+        beta = atan2(normz[0], normz[2]) * 180 / pi
+        gamma = -atan2(normz[1], normz[2]) * 180 / pi
+        return gamma, beta
+
+
+    def calc_translationStairs(self,riser,climbed_stairs_front, climbed_stairs_rear):
+        #gamma, beta = self.get_orientation([1,5,6])
+        ee_xyz,servopos = self.doFkine(readPos())
+        dist_y = abs(ee_xyz[1]-ee_xyz[13])
+        riser_diff = (climbed_stairs_front - climbed_stairs_rear)*riser
+        #print("riser", riser_diff)
+        omega = asin(riser_diff/dist_y)*180/pi
+        #print("omega", omega)
+        AB = -ee_xyz[14] + 30
+        #print("z",-ee_xyz[14])
+        #print("AB",AB)
+        AC = AB/cos(omega*pi/180)
+        #print("AC",AC)
+        BC = AC * sin(omega*pi/180)
+        BE = sqrt(pow(ee_xyz[12],2)+pow(ee_xyz[11],2))-141.33
+        CE = BE - BC
+        CD = BC*CE/AC
+        #print("CD",CD)
+        #print(AC+CD)
+
+        if AC+CD <= riser_diff:
+            trans_z_g = riser_diff - AC - CD + 10
+            #print("tans_Z_G",trans_z_g)
+            # r = z6/cos(beta*pi/180)
+            # difference = riser + r + 20
+            translation_z = trans_z_g * cos(omega * pi/180)
+            translation_y = trans_z_g * sin(omega * pi/180)
+        else:
+            translation_z = 0
+            translation_y = 0
+        #print("last",translation_z,translation_y)
+        return [translation_z, translation_y]
+
