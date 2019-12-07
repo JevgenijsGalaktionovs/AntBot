@@ -12,9 +12,9 @@ K=Kinematics()
 
 
 def standUpForStairs():
-    standup_pos = [1748, 2048, 1296, 2348, 2048, 1296,
+    standup_pos = [1948, 2048, 1296, 2148, 2048, 1296,
                    2048, 2048, 1296, 2048, 2048, 1296,
-                   2348, 2048, 1296, 1748, 2048, 1296]
+                   2148, 2048, 1296, 1948, 2048, 1296]
 
     front_standup = list_combine(leg[1] + leg[2], standup_pos)
     rear_standup = list_combine(leg[5] + leg[6], standup_pos)
@@ -934,7 +934,8 @@ print distance
 #time.sleep(2)
 distanceToStair = 25.0, 25.0, 25.0, 25.0, 25.9592456137348, 25.7755305462598
 walkUpAllLegs(distanceToStair,0, stepSize*2, threshold, riser, 0,0,0)
-parallelGait(0,0,0,0,100,0)
+parallelGait(0,0,0,0,100,30)
+time.sleep(2)
 newdistance = updateDistance(distanceToStair, stepSize*2)
 print("new_Distance", newdistance)
 distance = min(newdistance) 
@@ -946,6 +947,7 @@ print distance
 distanceToStair = 25.0, 25.0, 25.0, 25.0, 25.9592456137348, 25.7755305462598
 walkUpAllLegs(distanceToStair,0, stepSize*2, threshold, riser, 0,0,0)
 parallelGait(0,0,0,0,100,0)
+time.sleep(2)
 newdistance = updateDistance(distanceToStair, stepSize*2)
 print("new_Distance", newdistance)
 distance = min(newdistance) 
@@ -957,5 +959,6 @@ print distance
 distanceToStair = 25.0, 25.0, 25.0, 25.0, 25.9592456137348, 25.7755305462598
 walkUpAllLegs(distanceToStair,0, stepSize*2, threshold, riser, 0,0,0)
 parallelGait(0,0,0,0,100,0)
+time.sleep(2)
 
 
