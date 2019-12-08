@@ -3,6 +3,7 @@ import time
 from math import radians
 from service_router import *
 from locomotion     import *
+from math import asin, pi
 #, positionN, \
 #    velocityAll, accelerationAll, positionAll, readFSR
 from kinematics import Kinematics
@@ -12,9 +13,9 @@ K=Kinematics()
 
 
 def standUpForStairs():
-    standup_pos = [1948, 2048, 1296, 2148, 2048, 1296,
+    standup_pos = [2048, 2048, 1296, 2048, 2048, 1296,
                    2048, 2048, 1296, 2048, 2048, 1296,
-                   2148, 2048, 1296, 1948, 2048, 1296]
+                   2048, 2048, 1296, 2048, 2048, 1296]
 
     front_standup = list_combine(leg[1] + leg[2], standup_pos)
     rear_standup = list_combine(leg[5] + leg[6], standup_pos)
@@ -39,6 +40,39 @@ def initialDistance(distance):
     print dist2FirstStep
     return dist2FirstStep
 
+def initConfig_legs(depth):
+    maxy = 344.74638441867046
+    r = 392.55798277243395 - 141.33 #maximumy - y_offset of leg one
+    miny = 181.0804846109524
+    phai = asin((depth-miny)/r) * 2048/pi # change of coxa in steps
+    #print(int(phai))
+    if depth < maxy:
+        standup_pos = [ 1536 + int(phai), 2048, 1296, 2560 - int(phai), 2048, 1296,
+                        2048            , 2048, 1296, 2048       , 2048, 1296,
+                        2560 - int(phai), 2048, 1296, 1536 + int(phai), 2048, 1296]
+        lift_up = [2048, 2448,1296,2048,2448,1296,
+                   2048, 2448,1296,2048,2448,1296,
+                   2048, 2448,1296,2048,2448,1296]
+        #print(standup_pos)
+        front_liftup = list_combine(leg[2] + leg[5],lift_up)
+        positionN(front_liftup)
+        time.sleep(2)
+        front_standup = list_combine(leg[2] + leg[5], standup_pos)
+        positionN(front_standup)
+        time.sleep(3)
+        rear_liftup = list_combine(leg[1] + leg[6],lift_up)
+        positionN(rear_liftup)
+        time.sleep(1)
+        rear_standup = list_combine(leg[1] + leg[6], standup_pos)
+        positionN(rear_standup)
+        time.sleep(3)
+        ee_xyz, servopos = K.doFkine(readPos())
+        return maxy - ee_xyz[1] 
+def correctRotation():
+    gamma, beta = K.get_orientation([1,5,6])
+    new_gamma = 23 - gamma
+    parallelGait(0,0,int(new_gamma),0,0,0)
+    time.sleep(3)
 def moveForward(x, y, z, alpha, beta, gamma, distance):
     
 
@@ -48,7 +82,7 @@ def moveForward(x, y, z, alpha, beta, gamma, distance):
     Push    =   [0, 0, 0]
 
     HalfForward =   [0.5*x, 0.5*y, z]
-    HalfUp      =   [0, 0, z]
+    HalfUp      =   [    0,     0, z]
     HalfDown    =   [0.5*x, 0.5*y, 0]
 
 
@@ -174,12 +208,12 @@ def walkUp(distanceToStair, x, stepSize, threshold, riser, alpha, beta, gamma):
 
                 
     Forward =   [x, stepSize, threshold]
-    Up      =   [0, 0, threshold]
-    Down    =   [x, stepSize, 0]
+    Up      =   [0,        0, threshold]
+    Down    =   [x, stepSize,         0]
     Push    =   [0, 0, 0]
 
-    UpForward       =   [x, stepSize, threshold+riser]
-    StepUp          =   [0, 0, threshold+riser]
+    UpForward       =  [x, stepSize, threshold+riser]
+    StepUp          =  [0, 0, threshold+riser]
     StepDownFirst   =  [x, stepSize, threshold/2+riser]
     StepDownSecond  =  [x, 0, threshold/2+riser]
 
@@ -860,12 +894,12 @@ time.sleep(1)
 threshold = 50
 stepSize = 50
 riser = 150
-thread = 260
+thread = 330
 error = 30
 
 
 ## Move forward to the first step on the stair. 700 = mm. Assuming the robot is placed at this distance 
-#distanceToStair = initialDistance(moveForward(0, stepSize, threshold, 0, 0, 0, 700))
+#distanceToStair = initialDistance(moveForward(0, stepSize, threshold, 0, 0, 0, 550))
 distanceToStair = 25.0, 25.0, 376.80185049724594, 376.02627441364115, 723.417427577023, 722.8063562905638
 
 ## Puts both front legs on the first step
@@ -906,6 +940,9 @@ distanceToStair = 25.0, 25.0, 376.80185049724594, 376.02627441364115, 723.417427
 
 
 #####Testing new stuff
+something = initConfig_legs(thread)
+time.sleep(1)
+#moveForward(0,stepSize,threshold,0,0,0,something+2*stepSize)
 parallelGait(0,0,0,0,0,riser/2)
 time.sleep(2)
 distanceToStair = 25.0, 25.0, 305.0, 305.0, 629.9592456137348, 629.7755305462598
@@ -924,6 +961,8 @@ walkUp(distanceToStair,0, stepSize*2, threshold, riser, 0,0,0)
 #time.sleep(2)
 #parallelGait(0,0,0,0,0,50)
 time.sleep(2)
+correctRotation()
+time.sleep(1)
 newdistance = updateDistance(distanceToStair, stepSize*2)
 print("new_Distance", newdistance)
 distance = min(newdistance) 
