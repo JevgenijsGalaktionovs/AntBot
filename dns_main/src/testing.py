@@ -3,7 +3,7 @@ import time
 from math import radians
 from service_router import *
 from locomotion     import *
-from math import asin, pi
+from math import asin, pi, atan2
 #, positionN, \
 #    velocityAll, accelerationAll, positionAll, readFSR
 from kinematics import Kinematics
@@ -68,9 +68,10 @@ def initConfig_legs(depth):
         time.sleep(3)
         ee_xyz, servopos = K.doFkine(readPos())
         return maxy - ee_xyz[1] 
-def correctRotation():
+def correctRotation(depth,riser):
+    slope = atan2(riser,depth)
     gamma, beta = K.get_orientation([1,5,6])
-    new_gamma = 23 - gamma
+    new_gamma = slope - gamma
     parallelGait(0,0,int(new_gamma),0,0,0)
     time.sleep(3)
 def moveForward(x, y, z, alpha, beta, gamma, distance):
@@ -961,7 +962,7 @@ walkUp(distanceToStair,0, stepSize*2, threshold, riser, 0,0,0)
 #time.sleep(2)
 #parallelGait(0,0,0,0,0,50)
 time.sleep(2)
-correctRotation()
+correctRotation(thread,riser)
 time.sleep(1)
 newdistance = updateDistance(distanceToStair, stepSize*2)
 print("new_Distance", newdistance)

@@ -32,7 +32,7 @@ positionN(rear_standup)
 time.sleep(1)
 positionN(middle_standup)
 time.sleep(3)
-# parallelGait(0,0,23,0,0,0)
+parallelGait(0,0,28,0,0,0)
 
 
 

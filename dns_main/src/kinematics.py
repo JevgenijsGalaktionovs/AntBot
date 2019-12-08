@@ -12,10 +12,10 @@ class LegConsts(object):
         self.z_off = z_off                # Z offset from body origin to first servo (mm)
         self.ang_off = ang_off            # Angular offset from body origin to first servo (mm)
         self.f_ang_off = radians(13.33)   # Angular offset of Femur
-        self.t_ang_off = radians(-23.90)  # Angular offset of Tibia
+        self.t_ang_off = radians(-25.90)  # Angular offset of Tibia
         self.c_len = 66.50                # Link length of Coxa  (mm)
         self.f_len = 144.40               # Link length of Femur (mm)
-        self.t_len = 236.5                # Link length of Tibia (mm)
+        self.t_len = 287#236.5                # Link length of Tibia (mm)
         self.leg_nr = leg_nr              # Leg Number
 
 
