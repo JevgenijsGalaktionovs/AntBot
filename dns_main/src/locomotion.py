@@ -735,7 +735,7 @@ def tripodGait_stairs(stairs, distance, depth, riser):
 def checkContactWithoutControlSystem():
 
 
-    for j in range(40):  # 20 equals to total 10cm distance that leg will go down.
+    for j in range(30):  # 20 equals to total 10cm distance that leg will go down.
         fsr = readFSR()
         print fsr
         [x, y, z] = [0, 0, -5]
