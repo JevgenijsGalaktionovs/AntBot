@@ -910,7 +910,7 @@ torque(0)
 pwm_list = [800]*18
 pwmAll(pwm_list)
 scaler_acc = [20] * 18
-scaler_vel = [30] * 18
+scaler_vel = [20] * 18
 velocityAll(scaler_vel)
 accelerationAll(scaler_acc)
 torque(1)
@@ -922,9 +922,7 @@ riser = 140
 thread = 340
 error = 30
 
-correctMiddleLegs(40)
 
-time.sleep(20)
 
 ## Move forward to the first step on the stair. 700 = mm. Assuming the robot is placed at this distance 
 #distanceToStair = initialDistance(moveForward(0, stepSize, threshold, 0, 0, 0, 550))
@@ -975,6 +973,7 @@ parallelGait(0,0,0,0,0,riser/2)
 time.sleep(2)
 distanceToStair = 25.0, 25.0, 305.0, 305.0, 629.9592456137348, 629.7755305462598
 walkUp(distanceToStair,0, stepSize*2, threshold, riser, 0,0,0)
+
 newdistance = updateDistance(distanceToStair, stepSize*2)
 print("new_Distance", newdistance)
 distance = min(newdistance) 
@@ -982,10 +981,11 @@ print(distance)
 distance = moveForwardOnStair(0, stepSize, threshold, 0, 0, 0, distance)
 print distance
 
-parallelGait(0,0,0,0,0,riser/2+20)
+parallelGait(0,0,0,0,0,riser/2+40)
 time.sleep(2)
 distanceToStair = 25.0, 25.0, 25.0, 25.0, 629.9592456137348, 629.7755305462598
 walkUp(distanceToStair,0, stepSize*2, threshold, riser, 0,0,0)
+correctMiddleLegs(20)
 #parallelGait(0,0,-20,0,0,0)
 #time.sleep(2)
 #parallelGait(0,0,0,0,0,50)
@@ -996,7 +996,7 @@ newdistance = updateDistance(distanceToStair, stepSize*2)
 print("new_Distance", newdistance)
 distance = min(newdistance) 
 print(distance)
-distance = moveForwardOnStair(0, stepSize, threshold, 0, 10, 0, distance)
+distance = moveForwardOnStair(0, stepSize, threshold, 0, 0, 0, riser+stepSize)
 print distance
 #parallelGait(0,0,0,0,0,50)
 #time.sleep(2)
@@ -1010,11 +1010,12 @@ parallelGait(0,0,0,0,50,30)
 time.sleep(3)
 correctRotation(thread,riser)
 time.sleep(1)
+correctMiddleLegs(20)
 newdistance = updateDistance(distanceToStair, stepSize*2)
 print("new_Distance", newdistance)
 distance = min(newdistance) 
 print(distance)
-distance = moveForwardOnStair(0, stepSize, threshold, 0, 10, 0, distance)
+distance = moveForwardOnStair(0, stepSize, threshold, 0, 0, 0, riser+stepSize)
 print distance
 #parallelGait(0,0,0,0,0,50)
 #time.sleep(2)
@@ -1028,11 +1029,12 @@ parallelGait(0,0,0,0,50,30)
 time.sleep(3)
 correctRotation(thread,riser)
 time.sleep(1)
+correctMiddleLegs(20)
 newdistance = updateDistance(distanceToStair, stepSize*2)
 print("new_Distance", newdistance)
 distance = min(newdistance) 
 print(distance)
-distance = moveForwardOnStair(0, stepSize, threshold, 0, 10, 0, distance)
+distance = moveForwardOnStair(0, stepSize, threshold, 0, 0, 0, riser+stepSize)
 print distance
 #parallelGait(0,0,0,0,0,50)
 #time.sleep(2)
