@@ -11,6 +11,15 @@ from kinematics import Kinematics
 from math_calc import vector_length
 K=Kinematics()
 
+def terminate():
+    ee_xyz, servopos = K.doFkine(readPos())
+    if abs(ee_xyz[2]-ee_xyz[5]) < 20:
+        if abs(ee_xyz[8]-ee_xyz[11]) < 20:
+            if abs(ee_xyz[8]-ee_xyz[2]) < 50:
+                print("yeay im on top of stairs")
+                return True
+    else:
+        return False
 
 def standUpForStairs():
     standup_pos = [2048, 2048, 1296, 2048, 2048, 1296,
@@ -35,7 +44,8 @@ def correctMiddleLegs(z):
     pos.extend(LiftUp[12:18])
     pos.extend(LiftUp[18:24])
     positionN(pos)
-    check_position_error(40, 50, pos)
+    leg_case = [3,4]
+    check_position_error_legs(80, 20, pos, leg_case)
     ServoCentering=[7,2048,10,2048]
     positionN(ServoCentering)
     time.sleep(1)
@@ -47,8 +57,8 @@ def correctMiddleLegs(z):
     pos1.extend(LiftDown[12:18])
     pos1.extend(LiftDown[18:24])
     positionN(pos1)
-    check_position_error(40, 50, pos1)
-
+    leg_case = [3,4]
+    check_position_error_legs(80, 20, pos1, leg_case)
 
 def initialDistance(distance):
     all_pos = readPos()
@@ -73,31 +83,36 @@ def initConfig_legs(depth):
         standup_pos = [ 1536 + int(phai), 2048, 1296, 2560 - int(phai), 2048, 1296,
                         2048            , 2048, 1296, 2048       , 2048, 1296,
                         2560 - int(phai), 2048, 1296, 1536 + int(phai), 2048, 1296]
-        lift_up = [2048, 2448,1296,2048,2448,1296,
-                   2048, 2448,1296,2048,2448,1296,
-                   2048, 2448,1296,2048,2448,1296]
+        # lift_up = [2048, 2448,1296,2048,2448,1296,
+        #            2048, 2448,1296,2048,2448,1296,
+        #            2048, 2448,1296,2048,2448,1296]
         #print(standup_pos)
-        front_liftup = list_combine(leg[2] + leg[5],lift_up)
-        positionN(front_liftup)
-        time.sleep(2)
-        front_standup = list_combine(leg[2] + leg[5], standup_pos)
+        # front_liftup = list_combine(leg[2] + leg[5],lift_up)
+        # positionN(front_liftup)
+        # time.sleep(2)
+        front_standup = list_combine(leg[1] + leg[2], standup_pos)
         positionN(front_standup)
-        time.sleep(3)
-        rear_liftup = list_combine(leg[1] + leg[6],lift_up)
-        positionN(rear_liftup)
         time.sleep(1)
-        rear_standup = list_combine(leg[1] + leg[6], standup_pos)
+        # rear_liftup = list_combine(leg[1] + leg[6],lift_up)
+        # positionN(rear_liftup)
+        # time.sleep(1)
+        rear_standup = list_combine(leg[3] + leg[4], standup_pos)
         positionN(rear_standup)
-        time.sleep(3)
+        time.sleep(1)
+        rear_standup = list_combine(leg[5] + leg[6], standup_pos)
+        positionN(rear_standup)
+        time.sleep(1)
         ee_xyz, servopos = K.doFkine(readPos())
         return maxy - ee_xyz[1] 
+
 def correctRotation(depth,riser):
     slope = atan2(riser,depth)*180/pi
     gamma, beta = K.get_orientation([1,5,6])
     new_gamma = slope - gamma
-    parallelGait(0,0,int(new_gamma-3),0,0,0)
+    parallelGait(0,0,int(new_gamma-4),0,0,0)
     time.sleep(3)
     print("Slope is:", new_gamma)
+
 def moveForward(x, y, z, alpha, beta, gamma, distance):
     
 
@@ -125,34 +140,28 @@ def moveForward(x, y, z, alpha, beta, gamma, distance):
     while distance > 0.75 * stepSize:
         if distance > 1.5 * stepSize:
             pos = list()
-            pos.extend(PushBackwards[0:6])
             pos.extend(LiftUp[6:12])
             pos.extend(LiftUp[12:18])
-            pos.extend(PushBackwards[18:24])
-            pos.extend(PushBackwards[24:30])
             pos.extend(LiftUp[30:36])
             positionN(pos)
-            check_position_error(80, 50, pos)
+            leg_case = [2,3,6]
+            check_position_error_legs(20, 30, pos, leg_case)
 
             pos1 = list()
-            pos1.extend(PushBackwards[0:6])
             pos1.extend(PutForward[6:12])
             pos1.extend(PutForward[12:18])
-            pos1.extend(PushBackwards[18:24])
-            pos1.extend(PushBackwards[24:30])
             pos1.extend(PutForward[30:36])
             positionN(pos1)
-            check_position_error(80, 50, pos1)
+            leg_case = [2,3,6]
+            check_position_error_legs(20, 30, pos1, leg_case)
 
             pos2 = list()
-            pos2.extend(PushBackwards[0:6])
             pos2.extend(LiftDown[6:12])
             pos2.extend(LiftDown[12:18])
-            pos2.extend(PushBackwards[18:24])
-            pos2.extend(PushBackwards[24:30])
             pos2.extend(LiftDown[30:36])
             positionN(pos2)
-            check_position_error(80, 50, pos2)
+            leg_case = [2,3,6]
+            check_position_error_legs(20, 30, pos2, leg_case)
 
             pos3 = list()
             pos3.extend(LiftUp[0:6])
@@ -162,48 +171,40 @@ def moveForward(x, y, z, alpha, beta, gamma, distance):
             pos3.extend(LiftUp[24:30])
             pos3.extend(PushBackwards[30:36])
             positionN(pos3)
-            check_position_error(80, 50, pos3)
+            check_position_error(40, 50, pos3)
 
             pos4 = list()
             pos4.extend(PushBackwards[0:6])
-            pos4.extend(PushBackwards[6:12])
-            pos4.extend(PushBackwards[12:18])
             pos4.extend(PushBackwards[18:24])
             pos4.extend(PushBackwards[24:30])
-            pos4.extend(PushBackwards[30:36])
             positionN(pos4)
-            check_position_error(80, 50, pos4)
+            leg_case = [1,4,5]
+            check_position_error_legs(20, 30, pos4, leg_case)
             distance = distance -  stepSize
         else:
             pos = list()
-            pos.extend(PushBackwards[0:6])
             pos.extend(HalfLiftUp[6:12])
             pos.extend(HalfLiftUp[12:18])
-            pos.extend(PushBackwards[18:24])
-            pos.extend(PushBackwards[24:30])
             pos.extend(HalfLiftUp[30:36])
             positionN(pos)
-            check_position_error(80, 50, pos)
+            leg_case = [2,3,6]
+            check_position_error_legs(20, 30, pos, leg_case)
 
             pos1 = list()
-            pos1.extend(PushBackwards[0:6])
             pos1.extend(HalfPutForward[6:12])
             pos1.extend(HalfPutForward[12:18])
-            pos1.extend(PushBackwards[18:24])
-            pos1.extend(PushBackwards[24:30])
             pos1.extend(HalfPutForward[30:36])
             positionN(pos1)
-            check_position_error(80, 50, pos1)
+            leg_case = [2,3,6]
+            check_position_error_legs(20, 30, pos1, leg_case)
 
             pos2 = list()
-            pos2.extend(PushBackwards[0:6])
             pos2.extend(HalfLiftDown[6:12])
             pos2.extend(HalfLiftDown[12:18])
-            pos2.extend(PushBackwards[18:24])
-            pos2.extend(PushBackwards[24:30])
             pos2.extend(HalfLiftDown[30:36])
             positionN(pos2)
-            check_position_error(80, 50, pos2)
+            leg_case = [2,3,6]
+            check_position_error_legs(20, 30, pos2, leg_case)
 
             pos3 = list()
             pos3.extend(HalfLiftUp[0:6])
@@ -217,13 +218,11 @@ def moveForward(x, y, z, alpha, beta, gamma, distance):
 
             pos4 = list()
             pos4.extend(PushBackwards[0:6])
-            pos4.extend(PushBackwards[6:12])
-            pos4.extend(PushBackwards[12:18])
             pos4.extend(PushBackwards[18:24])
             pos4.extend(PushBackwards[24:30])
-            pos4.extend(PushBackwards[30:36])
             positionN(pos4)
-            check_position_error(80, 50, pos4)
+            leg_case = [1,4,5]
+            check_position_error_legs(20, 30, pos4, leg_case)
             distance = distance -  (0.5 *stepSize)
     time.sleep(0.5)
     return distance   
@@ -258,78 +257,36 @@ def walkUp(distanceToStair, x, stepSize, threshold, riser, alpha, beta, gamma):
   
     ##Lift_Up_First_Leg
     for i in range(len(distanceToStair)):
-        if i == 0 :
+        if i == 0 or i == 3 or i == 4:
             if distanceToStair[i] < stepSize:
                 pos.extend(StepUpUp[i*6 : i*6+6])
             else:
                 pos.extend(LiftUp[i*6 : i*6+6]) 
-        elif i == 3:
-            if distanceToStair[i] < stepSize:
-                pos.extend(StepUpUp[i*6 : i*6+6])
-            else:
-                pos.extend(LiftUp[i*6 : i*6+6])
-        elif i == 4:
-            if distanceToStair[i] < stepSize:
-                pos.extend(StepUpUp[i*6 : i*6+6])
-            else:
-                pos.extend(LiftUp[i*6 : i*6+6])  
-        else:
-            if distanceToStair[i] < stepSize:
-                pos.extend(PushBackwards[i*6 : i*6+6])
-            else:
-                pos.extend(PushBackwards[i*6 : i*6+6])
     positionN(pos)
-    check_position_error(80, 50, pos)
+    leg_case = [1,4,5]
+    check_position_error_legs(120, 30, pos, leg_case)
     pos = []
     ##Put_Forward_First_Leg
     for i in range(len(distanceToStair)):
-        if i == 0:
+        if i == 0 or i == 3 or i == 4:
             if distanceToStair[i] < stepSize:
                 pos.extend(StepUpForward[i*6 : i*6+6])
             else:
                 pos.extend(PutForward[i*6 : i*6+6]) 
-        elif i == 3:
-            if distanceToStair[i] < stepSize:
-                pos.extend(StepUpForward[i*6 : i*6+6])
-            else:
-                pos.extend(PutForward[i*6 : i*6+6]) 
-        elif i == 4:
-            if distanceToStair[i] < stepSize:
-                pos.extend(StepUpForward[i*6 : i*6+6])
-            else:
-                pos.extend(PutForward[i*6 : i*6+6]) 
-        else:
-            if distanceToStair[i] < stepSize:
-                pos.extend(PushBackwards[i*6 : i*6+6])
-            else:
-                pos.extend(PushBackwards[i*6 : i*6+6])
     positionN(pos)
-    check_position_error(80, 50, pos)
+    leg_case = [1,4,5]
+    check_position_error_legs(120, 30, pos, leg_case)
     pos = []
     ##Step_Down_First_leg
     for i in range(len(distanceToStair)):
-        if i == 0:
+        if i == 0 or i == 3 or i == 4:
             if distanceToStair[i] < stepSize:
                 pos.extend(StepDownDownFirst[i*6 : i*6+6])
             else:
                 pos.extend(LiftDown[i*6 : i*6+6]) 
-        elif i == 3:
-            if distanceToStair[i] < stepSize:
-                pos.extend(StepDownDownFirst[i*6 : i*6+6])
-            else:
-                pos.extend(LiftDown[i*6 : i*6+6]) 
-        elif i == 4:
-            if distanceToStair[i] < stepSize:
-                pos.extend(StepDownDownFirst[i*6 : i*6+6])
-            else:
-                pos.extend(LiftDown[i*6 : i*6+6]) 
-        else:
-            if distanceToStair[i] < stepSize:
-                pos.extend(PushBackwards[i*6 : i*6+6])
-            else:
-                pos.extend(PushBackwards[i*6 : i*6+6])
     positionN(pos)
-    check_position_error(80, 50, pos)
+    leg_case = [1,4,5]
+    check_position_error_legs(120, 30, pos, leg_case)
     pos = []
     checkContactWithoutControlSystem()
     #########################################################################################################
@@ -339,81 +296,36 @@ def walkUp(distanceToStair, x, stepSize, threshold, riser, alpha, beta, gamma):
     StepUpPushBackwards = calc_motion(UpPushBackwards)
     ##Lift_Up_Second_Leg
     for i in range(len(distanceToStair)):
-        if i == 1:
+        if i == 1 or i == 2 or i == 5:
             if distanceToStair[i] < stepSize:
                 pos.extend(StepUpUp[i*6 : i*6+6])
             else:
                 pos.extend(LiftUp[i*6 : i*6+6])
-        elif i == 2:
-            if distanceToStair[i] < stepSize:
-                pos.extend(StepUpUp[i*6 : i*6+6])
-            else:
-                pos.extend(LiftUp[i*6 : i*6+6])
-        elif i == 5:
-            if distanceToStair[i] < stepSize:
-                pos.extend(StepUpUp[i*6 : i*6+6])
-            
-            else:
-                pos.extend(LiftUp[i*6 : i*6+6])
-        else:
-            if distanceToStair[i] < stepSize:
-                pos.extend(UpUpNothing[i*6 : i*6+6])
-            else:
-                pos.extend(UpUpNothing[i*6 : i*6+6]) 
-
     positionN(pos)
-    check_position_error(80, 50, pos)
+    leg_case = [2,3,6]
+    check_position_error_legs(120, 30, pos, leg_case)
     pos = []
     ##Put_Forward_Second_Leg
     for i in range(len(distanceToStair)):
-        if i == 1:
-            if distanceToStair[i] < stepSize:
-                pos.extend(StepUpUp[i*6 : i*6+6])
-            else:
-                pos.extend(LiftUp[i*6 : i*6+6])
-        elif i == 2:
-            if distanceToStair[i] < stepSize:
-                pos.extend(StepUpUp[i*6 : i*6+6])
-            else:
-                pos.extend(LiftUp[i*6 : i*6+6])
-        elif i == 5:
-            if distanceToStair[i] < stepSize:
-                pos.extend(StepUpUp[i*6 : i*6+6])
-            else:
-                pos.extend(LiftUp[i*6 : i*6+6])
-        else:
+        if i == 0 or i == 3 or i == 4:
             if distanceToStair[i] < stepSize:
                 pos.extend(StepUpPushBackwards[i*6 : i*6+6])
             else:
                 pos.extend(StepUpPushBackwards[i*6 : i*6+6]) 
-
     positionN(pos)
-    check_position_error(80, 50, pos)
+    leg_case = [1,4,5]
+    check_position_error_legs(120, 30, pos, leg_case)
     pos = []
     ##Step_Down_Second_leg
     for i in range(len(distanceToStair)):
-        if i ==1:
+        if i == 1 or i == 2 or i == 5:
             if distanceToStair[i] < stepSize:
                 pos.extend(StepDownDownSecond[i*6 : i*6+6])
             else:
                 pos.extend(PushBackwards[i*6 : i*6+6])
-        elif i ==2:
-            if distanceToStair[i] < stepSize:
-                pos.extend(StepDownDownSecond[i*6 : i*6+6])
-            else:
-                pos.extend(PushBackwards[i*6 : i*6+6])
-        elif i ==5:
-            if distanceToStair[i] < stepSize:
-                pos.extend(StepDownDownSecond[i*6 : i*6+6])
-            else:
-                pos.extend(PushBackwards[i*6 : i*6+6])
-        else:
-            if distanceToStair[i] < stepSize:
-                pos.extend(StepUpPushBackwards[i*6 : i*6+6])
-            else:
-                pos.extend(StepUpPushBackwards[i*6 : i*6+6]) 
     positionN(pos)
-    check_position_error(80, 50, pos)
+    leg_case = [2,3,6]
+    check_position_error_legs(120, 30, pos, leg_case)
     pos = []
     checkContactWithoutControlSystem()
     distanceToStair = [i - stepSize for i in distanceToStair]
@@ -434,7 +346,6 @@ def rotateAndTranslate(riser,climbed_stairs_front, climbed_stairs_rear):
     parallelGait(0, 0, 0, 0, a[1], a[0])
     time.sleep(2)
     return beta , gamma
-
 
 def moveForwardOnStair(x, y, z, alpha, beta, gamma, distance):
     initialDistance = distance
@@ -465,34 +376,28 @@ def moveForwardOnStair(x, y, z, alpha, beta, gamma, distance):
     while distance > 0.75 * stepSize:
         if distance > 1.5 * stepSize:
             pos = list()
-            pos.extend(PushBackwards[0:6])
             pos.extend(LiftUp[6:12])
             pos.extend(LiftUp[12:18])
-            pos.extend(PushBackwards[18:24])
-            pos.extend(PushBackwards[24:30])
             pos.extend(LiftUp[30:36])
             positionN(pos)
-            check_position_error(20, 50, pos)
+            leg_case = [2,3,6]
+            check_position_error_legs(20, 30, pos, leg_case)
 
             pos1 = list()
-            pos1.extend(PushBackwards[0:6])
             pos1.extend(PutForward[6:12])
             pos1.extend(PutForward[12:18])
-            pos1.extend(PushBackwards[18:24])
-            pos1.extend(PushBackwards[24:30])
             pos1.extend(PutForward[30:36])
             positionN(pos1)
-            check_position_error(20, 50, pos1)
+            leg_case = [2,3,6]
+            check_position_error_legs(20, 30, pos1, leg_case)
 
             pos2 = list()
-            pos2.extend(PushBackwards[0:6])
             pos2.extend(LiftDown[6:12])
             pos2.extend(LiftDown[12:18])
-            pos2.extend(PushBackwards[18:24])
-            pos2.extend(PushBackwards[24:30])
             pos2.extend(LiftDown[30:36])
             positionN(pos2)
-            check_position_error(20, 50, pos2)
+            leg_case = [2,3,6]
+            check_position_error_legs(20, 30, pos2, leg_case)
 
             pos3 = list()
             pos3.extend(LiftUp[0:6])
@@ -506,44 +411,36 @@ def moveForwardOnStair(x, y, z, alpha, beta, gamma, distance):
 
             pos4 = list()
             pos4.extend(PushBackwards[0:6])
-            pos4.extend(PushBackwards[6:12])
-            pos4.extend(PushBackwards[12:18])
             pos4.extend(PushBackwards[18:24])
             pos4.extend(PushBackwards[24:30])
-            pos4.extend(PushBackwards[30:36])
             positionN(pos4)
-            check_position_error(20, 50, pos4)
+            leg_case = [1,4,5]
+            check_position_error_legs(20, 30, pos4, leg_case)
             distance = distance -  stepSize
         else:
             pos = list()
-            pos.extend(PushBackwards[0:6])
             pos.extend(HalfLiftUp[6:12])
             pos.extend(HalfLiftUp[12:18])
-            pos.extend(PushBackwards[18:24])
-            pos.extend(PushBackwards[24:30])
             pos.extend(HalfLiftUp[30:36])
             positionN(pos)
-            check_position_error(20, 50, pos)
+            leg_case = [2,3,6]
+            check_position_error_legs(20, 30, pos, leg_case)
 
             pos1 = list()
-            pos1.extend(PushBackwards[0:6])
             pos1.extend(HalfPutForward[6:12])
             pos1.extend(HalfPutForward[12:18])
-            pos1.extend(PushBackwards[18:24])
-            pos1.extend(PushBackwards[24:30])
             pos1.extend(HalfPutForward[30:36])
             positionN(pos1)
-            check_position_error(20, 50, pos1)
+            leg_case = [2,3,6]
+            check_position_error_legs(20, 30, pos1, leg_case)
 
             pos2 = list()
-            pos2.extend(PushBackwards[0:6])
             pos2.extend(HalfLiftDown[6:12])
             pos2.extend(HalfLiftDown[12:18])
-            pos2.extend(PushBackwards[18:24])
-            pos2.extend(PushBackwards[24:30])
             pos2.extend(HalfLiftDown[30:36])
             positionN(pos2)
-            check_position_error(20, 50, pos2)
+            leg_case = [2,3,6]
+            check_position_error_legs(20, 30, pos2, leg_case)
 
             pos3 = list()
             pos3.extend(HalfLiftUp[0:6])
@@ -557,13 +454,11 @@ def moveForwardOnStair(x, y, z, alpha, beta, gamma, distance):
 
             pos4 = list()
             pos4.extend(PushBackwards[0:6])
-            pos4.extend(PushBackwards[6:12])
-            pos4.extend(PushBackwards[12:18])
             pos4.extend(PushBackwards[18:24])
             pos4.extend(PushBackwards[24:30])
-            pos4.extend(PushBackwards[30:36])
             positionN(pos4)
-            check_position_error(20, 50, pos4)
+            leg_case = [1,4,5]
+            check_position_error_legs(20, 30, pos4, leg_case)
             distance = distance -  (0.5 *stepSize)
     time.sleep(0.5)
     return distance
@@ -599,41 +494,26 @@ def walkUpAllLegs(distanceToStair, x, stepSize, threshold, riser, alpha, beta, g
     ##Lift_Up_First_Leg
     for i in range(len(distanceToStair)):
         if i == 4:
-            if distanceToStair[i] < stepSize:
-                pos.extend(StepUpUp[i*6 : i*6+6])
-        else:
-            if distanceToStair[i] < stepSize:
-                pos.extend(PushBackwards[i*6 : i*6+6])
-            else:
-                pos.extend(PushBackwards[i*6 : i*6+6])
+            pos.extend(StepUpUp[i*6 : i*6+6])
     positionN(pos)
-    check_position_error(80, 50, pos)
+    leg_case = [5]
+    check_position_error_legs(120, 20, pos, leg_case)
     pos = []
     ##Put_Forward_First_Leg
     for i in range(len(distanceToStair)):
         if i == 4:
-            if distanceToStair[i] < stepSize:
-                pos.extend(StepUpForward[i*6 : i*6+6])
-        else:
-            if distanceToStair[i] < stepSize:
-                pos.extend(PushBackwards[i*6 : i*6+6])
-            else:
-                pos.extend(PushBackwards[i*6 : i*6+6])
+            pos.extend(StepUpForward[i*6 : i*6+6])
     positionN(pos)
-    check_position_error(80, 50, pos)
+    leg_case = [5]
+    check_position_error_legs(120, 20, pos, leg_case)
     pos = []
     ##Step_Down_First_leg
     for i in range(len(distanceToStair)):
         if i == 4:
-            if distanceToStair[i] < stepSize:
-                pos.extend(StepDownDownFirst[i*6 : i*6+6])
-        else:
-            if distanceToStair[i] < stepSize:
-                pos.extend(PushBackwards[i*6 : i*6+6])
-            else:
-                pos.extend(PushBackwards[i*6 : i*6+6])
+            pos.extend(StepDownDownFirst[i*6 : i*6+6])
     positionN(pos)
-    check_position_error(80, 50, pos)
+    leg_case = [5]
+    check_position_error_legs(120, 20, pos, leg_case)
     pos = []
     checkContactWithoutControlSystem()
     UpNothing           = [0, 0, 0]
@@ -642,42 +522,26 @@ def walkUpAllLegs(distanceToStair, x, stepSize, threshold, riser, alpha, beta, g
     ##Lift_Up_Second_Leg
     for i in range(len(distanceToStair)):
         if i == 5:
-            if distanceToStair[i] < stepSize:
-                pos.extend(StepUpUp[i*6 : i*6+6])
-        else:
-            if distanceToStair[i] < stepSize:
-                pos.extend(UpUpNothing[i*6 : i*6+6])
-            else:
-                pos.extend(UpUpNothing[i*6 : i*6+6]) 
+            pos.extend(StepUpUp[i*6 : i*6+6])
     positionN(pos)
-    check_position_error(80, 50, pos)
+    leg_case = [6]
+    check_position_error_legs(120, 20, pos, leg_case)
     pos = []
     ##Put_Forward_Second_Leg
     for i in range(len(distanceToStair)):
         if i == 5:
-            if distanceToStair[i] < stepSize:
-                pos.extend(StepUpForward[i*6 : i*6+6])
-        else:
-            if distanceToStair[i] < stepSize:
-                pos.extend(UpUpNothing[i*6 : i*6+6])
-            else:
-                pos.extend(UpUpNothing[i*6 : i*6+6]) 
-
+            pos.extend(StepUpForward[i*6 : i*6+6])
     positionN(pos)
-    check_position_error(80, 50, pos)
+    leg_case = [6]
+    check_position_error_legs(120, 20, pos, leg_case)
     pos = []
     ##Step_Down_Second_leg
     for i in range(len(distanceToStair)):
         if i ==5:
-            if distanceToStair[i] < stepSize:
-                pos.extend(StepDownDownFirst[i*6 : i*6+6])
-        else:
-            if distanceToStair[i] < stepSize:
-                pos.extend(UpUpNothing[i*6 : i*6+6])
-            else:
-                pos.extend(UpUpNothing[i*6 : i*6+6]) 
+            pos.extend(StepDownDownFirst[i*6 : i*6+6])
     positionN(pos)
-    check_position_error(80, 50, pos)
+    leg_case = [6]
+    check_position_error_legs(120, 20, pos, leg_case)
     pos = []
     checkContactWithoutControlSystem()
     distanceToStair = [i - stepSize for i in distanceToStair]
@@ -709,41 +573,26 @@ def walkUpAllLegs(distanceToStair, x, stepSize, threshold, riser, alpha, beta, g
     ##Lift_Up_First_Leg
     for i in range(len(distanceToStair)):
         if i == 2:
-            if distanceToStair[i] < stepSize:
-                pos.extend(StepUpUp[i*6 : i*6+6])
-        else:
-            if distanceToStair[i] < stepSize:
-                pos.extend(UpUpNothing[i*6 : i*6+6])
-            else:
-                pos.extend(UpUpNothing[i*6 : i*6+6])
+            pos.extend(StepUpUp[i*6 : i*6+6])
     positionN(pos)
-    check_position_error(80, 50, pos)
+    leg_case = [3]
+    check_position_error_legs(120, 20, pos, leg_case)
     pos = []
     ##Put_Forward_First_Leg
     for i in range(len(distanceToStair)):
         if i == 2:
-            if distanceToStair[i] < stepSize:
-                pos.extend(StepUpForward[i*6 : i*6+6])
-        else:
-            if distanceToStair[i] < stepSize:
-                pos.extend(UpUpNothing[i*6 : i*6+6])
-            else:
-                pos.extend(UpUpNothing[i*6 : i*6+6])
+            pos.extend(StepUpForward[i*6 : i*6+6])
     positionN(pos)
-    check_position_error(80, 50, pos)
+    leg_case = [3]
+    check_position_error_legs(120, 20, pos, leg_case)
     pos = []
     ##Step_Down_First_leg
     for i in range(len(distanceToStair)):
         if i == 2:
-            if distanceToStair[i] < stepSize:
-                pos.extend(StepDownDownFirst[i*6 : i*6+6])
-        else:
-            if distanceToStair[i] < stepSize:
-                pos.extend(UpUpNothing[i*6 : i*6+6])
-            else:
-                pos.extend(UpUpNothing[i*6 : i*6+6])
+            pos.extend(StepDownDownFirst[i*6 : i*6+6])
     positionN(pos)
-    check_position_error(80, 50, pos)
+    leg_case = [3]
+    check_position_error_legs(120, 20, pos, leg_case)
     pos = []
     checkContactWithoutControlSystem()
     UpNothing           = [0, 0, 0]
@@ -752,43 +601,28 @@ def walkUpAllLegs(distanceToStair, x, stepSize, threshold, riser, alpha, beta, g
     ##Lift_Up_Second_Leg
     for i in range(len(distanceToStair)):
         if i == 3:
-            if distanceToStair[i] < stepSize:
-                pos.extend(StepUpUp[i*6 : i*6+6])
-        else:
-            if distanceToStair[i] < stepSize:
-                pos.extend(UpUpNothing[i*6 : i*6+6])
-            else:
-                pos.extend(UpUpNothing[i*6 : i*6+6]) 
+            pos.extend(StepUpUp[i*6 : i*6+6])
     positionN(pos)
-    check_position_error(80, 50, pos)
+    leg_case = [4]
+    check_position_error_legs(120, 20, pos, leg_case)
     pos = []
     ##Put_Forward_Second_Leg
     for i in range(len(distanceToStair)):
         if i == 3:
-            if distanceToStair[i] < stepSize:
-                pos.extend(StepUpForward[i*6 : i*6+6])
-        else:
-            if distanceToStair[i] < stepSize:
-                pos.extend(UpUpNothing[i*6 : i*6+6])
-            else:
-                pos.extend(UpUpNothing[i*6 : i*6+6]) 
+            pos.extend(StepUpForward[i*6 : i*6+6])
     UpNothing           = [0, 0, 0]
     UpUpNothing         = calc_motion(UpNothing)
     positionN(pos)
-    check_position_error(80, 50, pos)
+    leg_case = [4]
+    check_position_error_legs(120, 20, pos, leg_case)
     pos = []
     ##Step_Down_Second_leg
     for i in range(len(distanceToStair)):
         if i ==3:
-            if distanceToStair[i] < stepSize:
-                pos.extend(StepDownDownFirst[i*6 : i*6+6])
-        else:
-            if distanceToStair[i] < stepSize:
-                pos.extend(UpUpNothing[i*6 : i*6+6])
-            else:
-                pos.extend(UpUpNothing[i*6 : i*6+6]) 
+            pos.extend(StepDownDownFirst[i*6 : i*6+6])
     positionN(pos)
-    check_position_error(80, 50, pos)
+    leg_case = [4]
+    check_position_error_legs(120, 20, pos, leg_case)
     pos = []
     checkContactWithoutControlSystem()
     distanceToStair = [i - stepSize for i in distanceToStair]
@@ -816,45 +650,34 @@ def walkUpAllLegs(distanceToStair, x, stepSize, threshold, riser, alpha, beta, g
     StepUpUp             = calc_motion(StepUp,orientation)
     StepDownDownFirst    = calc_motion(StepDownFirst,orientation)
     StepDownDownSecond   = calc_motion(StepDownSecond,orientation)
+    
+
+
         ###########################################################################
         ##Lift_Up_First_Leg
     for i in range(len(distanceToStair)):
         if i == 0:
-            if distanceToStair[i] < stepSize:
-                pos.extend(StepUpUp[i*6 : i*6+6])
-        else:
-            if distanceToStair[i] < stepSize:
-                pos.extend(UpUpNothing[i*6 : i*6+6])
-            else:
-                pos.extend(UpUpNothing[i*6 : i*6+6])
+            pos.extend(StepUpUp[i*6 : i*6+6])
     positionN(pos)
-    check_position_error(80, 50, pos)
+    leg_case = [1]
+    check_position_error_legs(120, 20, pos, leg_case)
     pos = []
     ##Put_Forward_First_Leg
     for i in range(len(distanceToStair)):
         if i == 0:
-            if distanceToStair[i] < stepSize:
-                pos.extend(StepUpForward[i*6 : i*6+6])
-        else:
-            if distanceToStair[i] < stepSize:
-                pos.extend(UpUpNothing[i*6 : i*6+6])
-            else:
-                pos.extend(UpUpNothing[i*6 : i*6+6])
+            pos.extend(StepUpForward[i*6 : i*6+6])
     positionN(pos)
-    check_position_error(80, 50, pos)
+    leg_case = [1]
+    check_position_error_legs(120, 20, pos, leg_case)
     pos = []
     ##Step_Down_First_leg
     for i in range(len(distanceToStair)):
         if i == 0:
-            if distanceToStair[i] < stepSize:
-                pos.extend(StepDownDownFirst[i*6 : i*6+6])
-        else:
-            if distanceToStair[i] < stepSize:
-                pos.extend(UpUpNothing[i*6 : i*6+6])
-            else:
-                pos.extend(UpUpNothing[i*6 : i*6+6])
+            pos.extend(StepDownDownFirst[i*6 : i*6+6])
+
     positionN(pos)
-    check_position_error(80, 50, pos)
+    leg_case = [1]
+    check_position_error_legs(120, 20, pos, leg_case)
     pos = []
     checkContactWithoutControlSystem()
     UpNothing           = [0, 0, 0]
@@ -863,46 +686,127 @@ def walkUpAllLegs(distanceToStair, x, stepSize, threshold, riser, alpha, beta, g
     ##Lift_Up_Second_Leg
     for i in range(len(distanceToStair)):
         if i == 1:
-            if distanceToStair[i] < stepSize:
-                pos.extend(StepUpUp[i*6 : i*6+6])
-        else:
-            if distanceToStair[i] < stepSize:
-                pos.extend(UpUpNothing[i*6 : i*6+6])
-            else:
-                pos.extend(UpUpNothing[i*6 : i*6+6]) 
+            pos.extend(StepUpUp[i*6 : i*6+6])
     positionN(pos)
-    check_position_error(80, 50, pos)
+    leg_case = [2]
+    check_position_error_legs(120, 20, pos, leg_case)
     pos = []
     ##Put_Forward_Second_Leg
     for i in range(len(distanceToStair)):
         if i == 1:
-            if distanceToStair[i] < stepSize:
-                pos.extend(StepUpForward[i*6 : i*6+6])
-        else:
-            if distanceToStair[i] < stepSize:
-                pos.extend(UpUpNothing[i*6 : i*6+6])
-            else:
-                pos.extend(UpUpNothing[i*6 : i*6+6]) 
-
+            pos.extend(StepUpForward[i*6 : i*6+6])
     positionN(pos)
-    check_position_error(80, 50, pos)
+    leg_case = [2]
+    check_position_error_legs(120, 20, pos, leg_case)
     pos = []
     ##Step_Down_Second_leg
     for i in range(len(distanceToStair)):
         if i ==1:
-            if distanceToStair[i] < stepSize:
-                pos.extend(StepDownDownFirst[i*6 : i*6+6])
-        else:
-            if distanceToStair[i] < stepSize:
-                pos.extend(UpUpNothing[i*6 : i*6+6])
-            else:
-                pos.extend(UpUpNothing[i*6 : i*6+6]) 
+            pos.extend(StepDownDownFirst[i*6 : i*6+6])
     positionN(pos)
-    check_position_error(80, 50, pos)
+    leg_case = [2]
+    check_position_error_legs(120, 20, pos, leg_case)
     pos = []
     checkContactWithoutControlSystem()
     distanceToStair = [i - stepSize for i in distanceToStair]
+    timeToTerminate = terminate()
+    if timeToTerminate == True: 
+        timeToContinue = True
+        return timeToContinue
 
+def moveUpOnlyLastLegs(distanceToStair, x, stepSize, threshold, riser, alpha, beta, gamma):
+    orientation = [alpha,beta,gamma]
+
+                
+    Forward =   [x, stepSize, threshold]
+    Up      =   [0, 0, threshold]
+    Down    =   [x, stepSize, 0]
+    Push    =   [0, 0, 0]
+
+    UpForward       =   [x, stepSize, threshold+riser]
+    StepUp          =   [0, 0, threshold+riser]
+    StepDownFirst   =  [x, stepSize, threshold/2+riser]
+    StepDownSecond  =  [x, 0, threshold/2+riser]
+
+    PushBackwards = calc_motion(Push,orientation)
+    LiftUp        = calc_motion(Up,orientation)
+    LiftDown      = calc_motion(Down,orientation)
+    PutForward    = calc_motion(Forward,orientation)
+
+  
+    StepUpForward        = calc_motion(UpForward,orientation)
+    StepUpUp             = calc_motion(StepUp,orientation)
+    StepDownDownFirst    = calc_motion(StepDownFirst,orientation)
+    StepDownDownSecond   = calc_motion(StepDownSecond,orientation)
+
+    pos = []
+
+  
+    ##Lift_Up_First_Leg
+    for i in range(len(distanceToStair)):
+        if i == 4:
+            pos.extend(StepUpUp[i*6 : i*6+6])
+    positionN(pos)
+    leg_case = [5]
+    check_position_error_legs(80, 20, pos, leg_case)
+    pos = []
+    ##Put_Forward_First_Leg
+    for i in range(len(distanceToStair)):
+        if i == 4:
+            pos.extend(StepUpForward[i*6 : i*6+6])
+    positionN(pos)
+    leg_case = [5]
+    check_position_error_legs(80, 20, pos, leg_case)
+    pos = []
+    ##Step_Down_First_leg
+    for i in range(len(distanceToStair)):
+        if i == 4:
+            pos.extend(StepDownDownFirst[i*6 : i*6+6])
+    positionN(pos)
+    leg_case = [5]
+    check_position_error_legs(80, 20, pos, leg_case)
+    pos = []
+    checkContactWithoutControlSystem()
+    UpNothing           = [0, 0, 0]
+    UpUpNothing         = calc_motion(UpNothing)
+    #########################################################################################################
+    ##Lift_Up_Second_Leg
+    for i in range(len(distanceToStair)):
+        if i == 5:
+            pos.extend(StepUpUp[i*6 : i*6+6])
+    positionN(pos)
+    leg_case = [6]
+    check_position_error_legs(80, 20, pos, leg_case)
+    pos = []
+    ##Put_Forward_Second_Leg
+    for i in range(len(distanceToStair)):
+        if i == 5:
+            pos.extend(StepUpForward[i*6 : i*6+6])
+    positionN(pos)
+    leg_case = [6]
+    check_position_error_legs(80, 20, pos, leg_case)
+    pos = []
+    ##Step_Down_Second_leg
+    for i in range(len(distanceToStair)):
+        if i ==5:
+            pos.extend(StepDownDownFirst[i*6 : i*6+6])
+    positionN(pos)
+    leg_case = [6]
+    check_position_error_legs(80, 20, pos, leg_case)
+    pos = []
+    checkContactWithoutControlSystem()
+    distanceToStair = [i - stepSize for i in distanceToStair]
+    parallelGait(0,0,0,0,0,riser/2)
+    time.sleep(2)
+
+def translateAboveRiser():
+    ee_xyz, servopos = K.doFkine(readPos())
+    legZPlancement = abs(ee_xyz[8]+ee_xyz[11])/2
+    print("first leg placement in z is" , legZPlancement)
+    if legZPlancement-riser < 70: 
+        translationZ = riser + 70 - legZPlancement
+        parallelGait(0,0,0,0,0,translationZ)
+        time.sleep(3)
 
 
 
@@ -914,139 +818,87 @@ scaler_vel = [20] * 18
 velocityAll(scaler_vel)
 accelerationAll(scaler_acc)
 torque(1)
-standUpForStairs()
-time.sleep(1)
 threshold = 50
 stepSize = 50
-riser = 140
-thread = 340
-error = 30
-
+riser = 160
+thread = 280
+initConfig_legs(thread)
+time.sleep(3)
 
 
 ## Move forward to the first step on the stair. 700 = mm. Assuming the robot is placed at this distance 
 #distanceToStair = initialDistance(moveForward(0, stepSize, threshold, 0, 0, 0, 550))
 distanceToStair = 25.0, 25.0, 376.80185049724594, 376.02627441364115, 723.417427577023, 722.8063562905638
 
-## Puts both front legs on the first step
-#parallelGait(0,0,0,0,0,100)
-#time.sleep(3)
-#beta, gamma = rotateAndTranslate(riser, 1, 0)
-#walkUp(distanceToStair,0, stepSize*2, threshold, riser, 0,0,0)
-#newdistance = updateDistance(distanceToStair, stepSize*2)
-#distance = min(newdistance) 
-#print(distance)
-
-## Move forward on stairs
-#distance = moveForwardOnStair(0, stepSize, threshold, 0, -beta, 0, distance)
-#print("this is the evaluated distance", distance)
-
-
-## Walking up next stair 
-#walkUp(distanceToStair,0, stepSize*2, threshold, riser, 0,-beta,0)
-#beta, gamma = rotateAndTranslate(riser, 2, 0)
-#parallelGait(0,beta,0,0,0,50)
-#time.sleep(3)
-#newdistance = updateDistance(distanceToStair, stepSize*2)
-#print("new_Distance", newdistance)
-#distance = min(newdistance) 
-#print(distance)
-
-
-#distanceToStair = 185.0, 185.0, 27.4003589943, 27, 627.7887313219506, 632.1407038810671
-#walkUp(distanceToStair,0, stepSize*2, threshold, riser,0,-beta,0)
-#beta = rotateAndTranslate(riser, 2, 0)
-#distance = 80
-#moveForwardOnStair(0, stepSize, threshold, 0, beta, 0, distance)
-#parallelGait(0,beta,0,0,0,50)
-#time.sleep(3)
-#distanceToStair = 25.0, 25.0, 127.4003589943, 127, 627.7887313219506, 632.1407038810671
-#walkUp(distanceToStair,0, stepSize*2, threshold, riser,0,beta,0)
-#beta = rotateAndTranslate(riser, 2, 0)
-
-
 #####Testing new stuff
-something = initConfig_legs(thread)
+
 time.sleep(1)
-#moveForward(0,stepSize,threshold,0,0,0,something+2*stepSize)
-parallelGait(0,0,0,0,0,riser/2)
+parallelGait(0,0,0,0,0,riser/2+20)
 time.sleep(2)
 distanceToStair = 25.0, 25.0, 305.0, 305.0, 629.9592456137348, 629.7755305462598
 walkUp(distanceToStair,0, stepSize*2, threshold, riser, 0,0,0)
-
-newdistance = updateDistance(distanceToStair, stepSize*2)
-print("new_Distance", newdistance)
-distance = min(newdistance) 
-print(distance)
-distance = moveForwardOnStair(0, stepSize, threshold, 0, 0, 0, distance)
-print distance
-
-parallelGait(0,0,0,0,0,riser/2+40)
+distance = moveForwardOnStair(0, stepSize, threshold, 0, 0, 0, thread/2+stepSize)
+parallelGait(0,0,0,0,0,riser/2)
 time.sleep(2)
 distanceToStair = 25.0, 25.0, 25.0, 25.0, 629.9592456137348, 629.7755305462598
 walkUp(distanceToStair,0, stepSize*2, threshold, riser, 0,0,0)
-correctMiddleLegs(20)
-#parallelGait(0,0,-20,0,0,0)
-#time.sleep(2)
-#parallelGait(0,0,0,0,0,50)
-time.sleep(2)
-correctRotation(thread,riser)
-time.sleep(1)
-newdistance = updateDistance(distanceToStair, stepSize*2)
-print("new_Distance", newdistance)
-distance = min(newdistance) 
-print(distance)
-distance = moveForwardOnStair(0, stepSize, threshold, 0, 0, 0, riser+stepSize)
-print distance
-#parallelGait(0,0,0,0,0,50)
-#time.sleep(2)
-distanceToStair = 25.0, 25.0, 25.0, 25.0, 25.9592456137348, 25.7755305462598
-walkUpAllLegs(distanceToStair,0, stepSize*2, threshold, riser, 0,0,0)
-correctRotation(thread,riser)
-time.sleep(1)
-parallelGait(0,0,0,0,50,30)
-time.sleep(3)
-parallelGait(0,0,0,0,50,30)
-time.sleep(3)
-correctRotation(thread,riser)
-time.sleep(1)
-correctMiddleLegs(20)
-newdistance = updateDistance(distanceToStair, stepSize*2)
-print("new_Distance", newdistance)
-distance = min(newdistance) 
-print(distance)
-distance = moveForwardOnStair(0, stepSize, threshold, 0, 0, 0, riser+stepSize)
-print distance
-#parallelGait(0,0,0,0,0,50)
-#time.sleep(2)
-distanceToStair = 25.0, 25.0, 25.0, 25.0, 25.9592456137348, 25.7755305462598
-walkUpAllLegs(distanceToStair,0, stepSize*2, threshold, riser, 0,0,0)
-correctRotation(thread,riser)
-time.sleep(1)
-parallelGait(0,0,0,0,50,30)
-time.sleep(3)
-parallelGait(0,0,0,0,50,30)
-time.sleep(3)
-correctRotation(thread,riser)
-time.sleep(1)
-correctMiddleLegs(20)
-newdistance = updateDistance(distanceToStair, stepSize*2)
-print("new_Distance", newdistance)
-distance = min(newdistance) 
-print(distance)
-distance = moveForwardOnStair(0, stepSize, threshold, 0, 0, 0, riser+stepSize)
-print distance
-#parallelGait(0,0,0,0,0,50)
-#time.sleep(2)
-distanceToStair = 25.0, 25.0, 25.0, 25.0, 25.9592456137348, 25.7755305462598
-walkUpAllLegs(distanceToStair,0, stepSize*2, threshold, riser, 0,0,0)
-correctRotation(thread,riser)
-time.sleep(1)
-parallelGait(0,0,0,0,50,30)
-time.sleep(3)
-parallelGait(0,0,0,0,50,30)
-time.sleep(3)
-correctRotation(thread,riser)
-time.sleep(1)
+translateAboveRiser()
 
+stairs = True
+
+
+while stairs is True:
+    correctRotation(thread,riser)
+    time.sleep(2)
+    correctMiddleLegs(20)
+    distance = moveForwardOnStair(0, stepSize, threshold, 0, 0, 0, riser+stepSize)
+    distanceToStair = 25.0, 25.0, 25.0, 25.0, 25.9592456137348, 25.7755305462598
+    checkForTermination = walkUpAllLegs(distanceToStair,0, stepSize*2, threshold, riser, 0,0,0)
+    correctRotation(thread,riser)
+    time.sleep(1)
+    parallelGait(0,0,0,0,50,0)
+    time.sleep(2)
+    parallelGait(0,0,0,0,50,0)
+    time.sleep(2)
+    translateAboveRiser()
+    if checkForTermination == True:
+        break
+
+
+
+time.sleep(2)
+parallelGait(0,0,0,0,50,0)
+time.sleep(2)
+parallelGait(0,0,0,0,50,0)
+time.sleep(2)
+moveForwardOnStair(0, stepSize, threshold, 0, 0, 0, riser+stepSize)
+distanceToStair = 25.0, 25.0, 25.0, 25.0, 25.0, 25.0
+moveUpOnlyLastLegs(distanceToStair,0,stepSize,threshold,riser,0,0,0)
+moveForward(0, stepSize, threshold, 0, 0, 0, 550)
+
+#correctRotation(thread,riser)
+#time.sleep(2)
+#correctMiddleLegs(20)
+#distance = moveForwardOnStair(0, stepSize, threshold, 0, 0, 0, riser+stepSize)
+#distanceToStair = 25.0, 25.0, 25.0, 25.0, 25.9592456137348, 25.7755305462598
+#walkUpAllLegs(distanceToStair,0, stepSize*2, threshold, riser, 0,0,0)
+#correctRotation(thread,riser)
+#time.sleep(1)
+#parallelGait(0,0,0,0,50,0)
+#time.sleep(2)
+#parallelGait(0,0,0,0,50,0)
+#time.sleep(2)
+
+#correctRotation(thread,riser)
+#time.sleep(2)
+#correctMiddleLegs(20)
+#distance = moveForwardOnStair(0, stepSize, threshold, 0, 0, 0, riser+stepSize)
+#distanceToStair = 25.0, 25.0, 25.0, 25.0, 25.9592456137348, 25.7755305462598
+#walkUpAllLegs(distanceToStair,0, stepSize*2, threshold, riser, 0,0,0)
+#correctRotation(thread,riser)
+#time.sleep(1)
+#parallelGait(0,0,0,0,50,0)
+#time.sleep(2)
+#parallelGait(0,0,0,0,50,0)
+#time.sleep(2)
 

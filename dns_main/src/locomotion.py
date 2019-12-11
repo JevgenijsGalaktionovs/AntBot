@@ -763,3 +763,21 @@ def checkContactWithoutControlSystem():
             new_pos.append(current_pos[3 * leg + 1])
             new_pos.append(current_pos[3 * leg + 2])
         goal_pos = [int(next_pos) for next_pos in new_pos]
+
+
+def check_position_error_legs(iter, allowed_error, desired_pos, leg_case):    
+    err_pos = [0] * len(leg_case)*3
+    des_pos = list((desired_pos[i + 1] for i in xrange(0, len(desired_pos), 2)))
+    for x in range(iter):
+        pos = readPos()
+        cur_pos = []
+        for i in range (len(leg_case)):
+            cur_pos.extend(pos[(leg_case[i]-1)*3 : (leg_case[i]-1)*3+3])
+        abs_err_pos = 0
+        for i in range(len(des_pos)):
+            err_pos[i] = abs(cur_pos[i] - des_pos[i])
+        for j in range(len(leg_case)):
+            abs_err_pos += (err_pos[j * 3] + err_pos[(j * 3) + 1] + err_pos[(j * 3) + 2]) / 3
+        if abs_err_pos < allowed_error:
+            break
+
