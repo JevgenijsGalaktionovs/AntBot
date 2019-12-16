@@ -109,7 +109,7 @@ def correctRotation(depth,riser):
     slope = atan2(riser,depth)*180/pi
     gamma, beta = K.get_orientation([1,5,6])
     new_gamma = slope - gamma
-    parallelGait(0,0,int(new_gamma-4),0,0,0)
+    parallelGait(0,0,int(new_gamma-3),0,0,0) #-3 should be 0  but seems to help to keep the robot parallel
     time.sleep(3)
     print("Slope is:", new_gamma)
 
@@ -255,7 +255,7 @@ def walkUp(distanceToStair, x, stepSize, threshold, riser, alpha, beta, gamma):
     pos = []
 
   
-    ##Lift_Up_First_Leg
+    ##Lift_Up_First_Leg_group
     for i in range(len(distanceToStair)):
         if i == 0 or i == 3 or i == 4:
             if distanceToStair[i] < stepSize:
@@ -266,7 +266,7 @@ def walkUp(distanceToStair, x, stepSize, threshold, riser, alpha, beta, gamma):
     leg_case = [1,4,5]
     check_position_error_legs(120, 30, pos, leg_case)
     pos = []
-    ##Put_Forward_First_Leg
+    ##Put_Forward_First_Leg_group
     for i in range(len(distanceToStair)):
         if i == 0 or i == 3 or i == 4:
             if distanceToStair[i] < stepSize:
@@ -277,7 +277,7 @@ def walkUp(distanceToStair, x, stepSize, threshold, riser, alpha, beta, gamma):
     leg_case = [1,4,5]
     check_position_error_legs(120, 30, pos, leg_case)
     pos = []
-    ##Step_Down_First_leg
+    ##Step_Down_First_leg_group
     for i in range(len(distanceToStair)):
         if i == 0 or i == 3 or i == 4:
             if distanceToStair[i] < stepSize:
@@ -294,7 +294,7 @@ def walkUp(distanceToStair, x, stepSize, threshold, riser, alpha, beta, gamma):
     UpUpNothing         = calc_motion(UpNothing)
     UpPushBackwards     = [0, -stepSize, 0]
     StepUpPushBackwards = calc_motion(UpPushBackwards)
-    ##Lift_Up_Second_Leg
+    ##Lift_Up_Second_Leg_group
     for i in range(len(distanceToStair)):
         if i == 1 or i == 2 or i == 5:
             if distanceToStair[i] < stepSize:
@@ -305,7 +305,7 @@ def walkUp(distanceToStair, x, stepSize, threshold, riser, alpha, beta, gamma):
     leg_case = [2,3,6]
     check_position_error_legs(120, 30, pos, leg_case)
     pos = []
-    ##Put_Forward_Second_Leg
+    ##Put_Forward_Second_Leg_group
     for i in range(len(distanceToStair)):
         if i == 0 or i == 3 or i == 4:
             if distanceToStair[i] < stepSize:
@@ -316,7 +316,7 @@ def walkUp(distanceToStair, x, stepSize, threshold, riser, alpha, beta, gamma):
     leg_case = [1,4,5]
     check_position_error_legs(120, 30, pos, leg_case)
     pos = []
-    ##Step_Down_Second_leg
+    ##Step_Down_Second_leg_group
     for i in range(len(distanceToStair)):
         if i == 1 or i == 2 or i == 5:
             if distanceToStair[i] < stepSize:
@@ -491,7 +491,7 @@ def walkUpAllLegs(distanceToStair, x, stepSize, threshold, riser, alpha, beta, g
     pos = []
 
   
-    ##Lift_Up_First_Leg
+    ##Lift_Up_Fifth_Leg
     for i in range(len(distanceToStair)):
         if i == 4:
             pos.extend(StepUpUp[i*6 : i*6+6])
@@ -499,7 +499,7 @@ def walkUpAllLegs(distanceToStair, x, stepSize, threshold, riser, alpha, beta, g
     leg_case = [5]
     check_position_error_legs(120, 20, pos, leg_case)
     pos = []
-    ##Put_Forward_First_Leg
+    ##Put_Forward_Fifth_Leg
     for i in range(len(distanceToStair)):
         if i == 4:
             pos.extend(StepUpForward[i*6 : i*6+6])
@@ -507,7 +507,7 @@ def walkUpAllLegs(distanceToStair, x, stepSize, threshold, riser, alpha, beta, g
     leg_case = [5]
     check_position_error_legs(120, 20, pos, leg_case)
     pos = []
-    ##Step_Down_First_leg
+    ##Step_Down_Fifth_leg
     for i in range(len(distanceToStair)):
         if i == 4:
             pos.extend(StepDownDownFirst[i*6 : i*6+6])
@@ -519,7 +519,7 @@ def walkUpAllLegs(distanceToStair, x, stepSize, threshold, riser, alpha, beta, g
     UpNothing           = [0, 0, 0]
     UpUpNothing         = calc_motion(UpNothing)
     #########################################################################################################
-    ##Lift_Up_Second_Leg
+    ##Lift_Up_Sixth_Leg
     for i in range(len(distanceToStair)):
         if i == 5:
             pos.extend(StepUpUp[i*6 : i*6+6])
@@ -527,7 +527,7 @@ def walkUpAllLegs(distanceToStair, x, stepSize, threshold, riser, alpha, beta, g
     leg_case = [6]
     check_position_error_legs(120, 20, pos, leg_case)
     pos = []
-    ##Put_Forward_Second_Leg
+    ##Put_Forward_Sixth_Leg
     for i in range(len(distanceToStair)):
         if i == 5:
             pos.extend(StepUpForward[i*6 : i*6+6])
@@ -535,7 +535,7 @@ def walkUpAllLegs(distanceToStair, x, stepSize, threshold, riser, alpha, beta, g
     leg_case = [6]
     check_position_error_legs(120, 20, pos, leg_case)
     pos = []
-    ##Step_Down_Second_leg
+    ##Step_Down_Sixth_leg
     for i in range(len(distanceToStair)):
         if i ==5:
             pos.extend(StepDownDownFirst[i*6 : i*6+6])
@@ -570,7 +570,7 @@ def walkUpAllLegs(distanceToStair, x, stepSize, threshold, riser, alpha, beta, g
     StepDownDownFirst    = calc_motion(StepDownFirst,orientation)
     StepDownDownSecond   = calc_motion(StepDownSecond,orientation)
     ###########################################################################
-    ##Lift_Up_First_Leg
+    ##Lift_Up_Third_Leg
     for i in range(len(distanceToStair)):
         if i == 2:
             pos.extend(StepUpUp[i*6 : i*6+6])
@@ -578,7 +578,7 @@ def walkUpAllLegs(distanceToStair, x, stepSize, threshold, riser, alpha, beta, g
     leg_case = [3]
     check_position_error_legs(120, 20, pos, leg_case)
     pos = []
-    ##Put_Forward_First_Leg
+    ##Put_Forward_Third_Leg
     for i in range(len(distanceToStair)):
         if i == 2:
             pos.extend(StepUpForward[i*6 : i*6+6])
@@ -586,7 +586,7 @@ def walkUpAllLegs(distanceToStair, x, stepSize, threshold, riser, alpha, beta, g
     leg_case = [3]
     check_position_error_legs(120, 20, pos, leg_case)
     pos = []
-    ##Step_Down_First_leg
+    ##Step_Down_Third_leg
     for i in range(len(distanceToStair)):
         if i == 2:
             pos.extend(StepDownDownFirst[i*6 : i*6+6])
@@ -598,7 +598,7 @@ def walkUpAllLegs(distanceToStair, x, stepSize, threshold, riser, alpha, beta, g
     UpNothing           = [0, 0, 0]
     UpUpNothing         = calc_motion(UpNothing)
     #########################################################################################################
-    ##Lift_Up_Second_Leg
+    ##Lift_Up_Forth_Leg
     for i in range(len(distanceToStair)):
         if i == 3:
             pos.extend(StepUpUp[i*6 : i*6+6])
@@ -606,7 +606,7 @@ def walkUpAllLegs(distanceToStair, x, stepSize, threshold, riser, alpha, beta, g
     leg_case = [4]
     check_position_error_legs(120, 20, pos, leg_case)
     pos = []
-    ##Put_Forward_Second_Leg
+    ##Put_Forward_Forth_Leg
     for i in range(len(distanceToStair)):
         if i == 3:
             pos.extend(StepUpForward[i*6 : i*6+6])
@@ -616,7 +616,7 @@ def walkUpAllLegs(distanceToStair, x, stepSize, threshold, riser, alpha, beta, g
     leg_case = [4]
     check_position_error_legs(120, 20, pos, leg_case)
     pos = []
-    ##Step_Down_Second_leg
+    ##Step_Down_Forth_leg
     for i in range(len(distanceToStair)):
         if i ==3:
             pos.extend(StepDownDownFirst[i*6 : i*6+6])
@@ -742,7 +742,7 @@ def moveUpOnlyLastLegs(distanceToStair, x, stepSize, threshold, riser, alpha, be
     pos = []
 
   
-    ##Lift_Up_First_Leg
+    ##Lift_Up_Fifth_Leg
     for i in range(len(distanceToStair)):
         if i == 4:
             pos.extend(StepUpUp[i*6 : i*6+6])
@@ -750,7 +750,7 @@ def moveUpOnlyLastLegs(distanceToStair, x, stepSize, threshold, riser, alpha, be
     leg_case = [5]
     check_position_error_legs(120, 20, pos, leg_case)
     pos = []
-    ##Put_Forward_First_Leg
+    ##Put_Forward_Fifth_Leg
     for i in range(len(distanceToStair)):
         if i == 4:
             pos.extend(StepUpForward[i*6 : i*6+6])
@@ -758,7 +758,7 @@ def moveUpOnlyLastLegs(distanceToStair, x, stepSize, threshold, riser, alpha, be
     leg_case = [5]
     check_position_error_legs(120, 20, pos, leg_case)
     pos = []
-    ##Step_Down_First_leg
+    ##Step_Down_Fifth_leg
     for i in range(len(distanceToStair)):
         if i == 4:
             pos.extend(StepDownDownFirst[i*6 : i*6+6])
@@ -770,7 +770,7 @@ def moveUpOnlyLastLegs(distanceToStair, x, stepSize, threshold, riser, alpha, be
     UpNothing           = [0, 0, 0]
     UpUpNothing         = calc_motion(UpNothing)
     #########################################################################################################
-    ##Lift_Up_Second_Leg
+    ##Lift_Up_Sixth_Leg
     for i in range(len(distanceToStair)):
         if i == 5:
             pos.extend(StepUpUp[i*6 : i*6+6])
@@ -778,7 +778,7 @@ def moveUpOnlyLastLegs(distanceToStair, x, stepSize, threshold, riser, alpha, be
     leg_case = [6]
     check_position_error_legs(120, 20, pos, leg_case)
     pos = []
-    ##Put_Forward_Second_Leg
+    ##Put_Forward_Sixth_Leg
     for i in range(len(distanceToStair)):
         if i == 5:
             pos.extend(StepUpForward[i*6 : i*6+6])
@@ -786,7 +786,7 @@ def moveUpOnlyLastLegs(distanceToStair, x, stepSize, threshold, riser, alpha, be
     leg_case = [6]
     check_position_error_legs(120, 20, pos, leg_case)
     pos = []
-    ##Step_Down_Second_leg
+    ##Step_Down_Sixth_leg
     for i in range(len(distanceToStair)):
         if i ==5:
             pos.extend(StepDownDownFirst[i*6 : i*6+6])
@@ -823,56 +823,72 @@ stepSize = 50               # Set Step Size
 riser = 163                 # Enter your riser height or obtain by camera
 thread = 284                # Enter your thread depth or obtain by camera
 
-initConfig_legs(thread)
+initConfig_legs(thread)     # Rotates the coxa servos to cause the displacement of a thread depth between the leg pairs
 time.sleep(3)
 
 
 ## Move forward to the first step on the stair. 700 = mm. Assuming the robot is placed at this distance 
-#distanceToStair = initialDistance(moveForward(0, stepSize, threshold, 0, 0, 0, 550))
+#distanceToStairInitial = initialDistance(moveForward(0, stepSize, threshold, 0, 0, 0, 550))
 ##For testing put the first legs next to the riser with the distance of approx 25mm
 distance = 25
-distanceToStairInitial = initialDistance(distance)
-#####Testing new stuff
+distanceToStairInitial = initialDistance(distance)  # Gets the y value of each legs with respect to the first leg
 
-parallelGait(0,0,0,0,0,riser/2)
+parallelGait(0,0,0,0,0,riser/2)                     # Translate the body by half of the riser
 time.sleep(2)
-walkUp(distanceToStairInitial,0, stepSize*2, threshold, riser, 0,0,0)
-distance = moveForwardOnStair(0, stepSize, threshold, 0, 0, 0, thread/2+stepSize)
-parallelGait(0,0,0,0,0,riser/2)
+walkUp(distanceToStairInitial,0, stepSize*2, threshold, riser, 0,0,0)   # Walks up with the leg within the step size (leg 1,2)of a riser by tripod
+moveForwardOnStair(0, stepSize, threshold, 0, 0, 0, thread)             # Moves forward on the stairs by the riser depth
+parallelGait(0,0,0,0,0,riser/2)                                 
 time.sleep(2)
-distanceToStairs = distanceToStairInitial[0],distanceToStairInitial[1], distanceToStairInitial[2]-thread, distanceToStairInitial[3]-thread, distanceToStairInitial[4]-thread,distanceToStairInitial[5]-thread   
-walkUp(distanceToStair,0, stepSize*2, threshold, riser, 0,0,0)
-translateAboveRiser()
+# Update distances by substracting the riser to 2nd and 3rd legpair
+distanceToStairs = distanceToStairInitial[0], distanceToStairInitial[1], distanceToStairInitial[2]-thread, distanceToStairInitial[3]-thread, distanceToStairInitial[4]-thread,distanceToStairInitial[5]-thread   
+walkUp(distanceToStair,0, stepSize*2, threshold, riser, 0,0,0)          # Walks up with the leg within the step size (leg 1,2,3,4 )of a riser by tripod
+translateAboveRiser()     # Body is translated above the riser, unless the body is already above
 
-stairs = True
-
+stairs = True   
+# Update distances by substracting the riser to the 3rd legpair
+distanceToStairs = distanceToStairs[0], distanceToStairs[1], distanceToStairs[2], distanceToStairs[3], distanceToStairs[4]-thread, distanceToStairs[5]-thread
 
 while stairs is True:
-    correctRotation(thread,riser)
+    stepSize = 50
+    correctRotation(thread,riser) # Correcting the rotation by the negative slope of the stairs to keep the body horizontal
     time.sleep(2)
-    correctMiddleLegs(20)
-    distance = moveForwardOnStair(0, stepSize, threshold, 0, 0, 0, riser+stepSize)
-    checkForTermination = walkUpAllLegs(distanceToStair,0, stepSize*2, threshold, riser, 0,0,0)
-    if checkForTermination == True:
-        break
-    correctRotation(thread,riser)
-    time.sleep(1)
-    parallelGait(0,0,0,0,50,0)
-    time.sleep(2)
-    parallelGait(0,0,0,0,50,0)
-    time.sleep(2)
-    translateAboveRiser()
+    correctMiddleLegs(20)         # Corrects possible errors that tend to affect the coxa joint
+    moveForwardOnStair(0, stepSize, threshold, 0, 0, 0, riser+stepSize)
+    stability_margin, stability_bool = check_stabilty()   # Checking for stability
+    if stability_margin > stepSize:
+        checkForTermination = walkUpAllLegs(distanceToStair,0, stepSize*2, threshold, riser, 0,0,0) #Walking up with all legs by wave gait and check if the robot is ontop of the stairs
+        if checkForTermination == True:
+            break    #If the robot is ontop then go out of while loop
+        correctRotation(thread,riser)  
+        time.sleep(1)
+        parallelGait(0,0,0,0,50,0) #translate the body forward
+        time.sleep(2)
+        parallelGait(0,0,0,0,50,0)
+        time.sleep(2)
+        translateAboveRiser()
+    else:
+        stepSize = stability_margin
+        checkForTermination = walkUpAllLegs(distanceToStair,0, stepSize*2, threshold, riser, 0,0,0
+        if checkForTermination == True:
+            break   
+        correctRotation(thread,riser)  
+        time.sleep(1)
+        parallelGait(0,0,0,0,50,0) 
+        time.sleep(2)
+        parallelGait(0,0,0,0,50,0)
+        time.sleep(2)
+        translateAboveRiser()
 
 
-
+# This part is executed if the algorith is terminated by checking if the front legs dosnt change level when it tries to get to next level
 
 time.sleep(2)
 parallelGait(0,0,0,0,50,0)
 time.sleep(2)
 parallelGait(0,0,0,0,50,0)
 time.sleep(2)
-moveForwardOnStair(0, stepSize, threshold, 0, 0, 0, riser+stepSize)
-distanceToStair = 25.0, 25.0, 25.0, 25.0, 25.0, 25.0
-moveUpOnlyLastLegs(distanceToStair,0,stepSize,threshold,riser,0,0,0)
-moveForward(0, stepSize, threshold, 0, 0, 0, 550)
+moveForwardOnStair(0, stepSize, threshold, 0, 0, 0, riser)
+moveUpOnlyLastLegs(distanceToStair,0,stepSize,threshold,riser,0,0,0) # Only lifts the rear legs by wave gait above the last riser
+moveForward(0, stepSize, threshold, 0, 0, 0, 550)  # Move forward 
+
 
