@@ -1,3 +1,0 @@
-from math import atan2
-q=atan2(150/330)
-print(q)
