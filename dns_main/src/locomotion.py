@@ -6,7 +6,7 @@ from service_router import readPos, positionN, \
     velocityAll, accelerationAll, positionAll, readFSR
 from kinematics import Kinematics
 
-from math_calc import vector_length
+from math_calc import *
 
 
 leg = {
@@ -281,6 +281,8 @@ def clear_view_stairs():
     do_motion(motion4, leg_case=2)
     time.sleep(delay)
     do_motion(motion5, leg_case=[1, 2])
+    time.sleep(delay)
+    parallelGait(0, 0, 0, 0, 0, -100)
     time.sleep(delay)
 # Gaits end --------------------------------------------
 

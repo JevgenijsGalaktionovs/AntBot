@@ -7,7 +7,7 @@ from math import asin, pi, atan2
 #, positionN, \
 #    velocityAll, accelerationAll, positionAll, readFSR
 from kinematics import Kinematics
-from math_calc import vector_length
+# from math_calc import vector_length
 
 class _Getch:
     """Gets a single character from standard input.  Does not echo to the
@@ -48,6 +48,7 @@ class _GetchWindows:
 
 getch = _Getch()
 
+
 def Stand_up(): 
     torque(0)
     pwm_list = [800]*18         #Setting PWM to "high" max is 885
@@ -70,6 +71,7 @@ def Stand_up():
     time.sleep(1)
     positionN(middle_standup)
     time.sleep(1)
+
 
 def move(PushBackwards, LiftUp, LiftDown, PutForward):
 
@@ -115,6 +117,7 @@ def move(PushBackwards, LiftUp, LiftDown, PutForward):
     leg_case = [1,4,5]
     check_position_error_legs(20, 60, pos4, leg_case)
 
+
 def TactileCheck(LiftUp):
     pos5 = list()
     pos5.extend(LiftUp[0:6])
@@ -138,6 +141,7 @@ def ChangeVelocity(x):
     positionAll(standup_pos)
     time.sleep(0.10)
     return x
+
 
 def Demo():
     stairs = True
@@ -252,10 +256,6 @@ def KeyboardControll():
     print("	|_________________________________________________|")
 
 
-
-
-
-
 def parallelGaitCalc(alpha, beta, gamma, dist_x, dist_y, dist_z):
     alpha_rad = radians(alpha)
     beta_rad = radians(beta)
@@ -268,8 +268,9 @@ def parallelGaitCalc(alpha, beta, gamma, dist_x, dist_y, dist_z):
 def CameraDemo():
     clear_view_stairs()
     time.sleep(1)
-    a=getAllStairsInfo()
-    print(a)
+    stair_dimensions=getAllStairsInfo()
+    print(stair_dimensions)
+    Stand_up()
 
 def DanceStar():
     
@@ -351,10 +352,6 @@ def DanceStar():
     positionAll(R4)
     time.sleep(4*t)
     positionAll(U0)
-
-
-
-
 
 
 Stand_up()
