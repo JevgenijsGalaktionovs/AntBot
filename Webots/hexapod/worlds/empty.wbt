@@ -10,7 +10,7 @@ RectangleArena {
   wallHeight 0.2
 }
 Robot {
-  translation 0 0.12 0
+  translation 0 1 0
   rotation 1 0 0 -1.5707996938995747
   children [
     DEF BODY Solid {
@@ -380,7 +380,7 @@ Robot {
                                                                 }
                                                                 geometry Cylinder {
                                                                   height 0.005
-                                                                  radius 0.02
+                                                                  radius 0.01
                                                                 }
                                                               }
                                                             ]
@@ -1288,10 +1288,10 @@ Robot {
   supervisor TRUE
 }
 StraightStairs {
-  translation -0.855808 0 0.505649
-  rotation 0 1 0 -2.6179943071795866
-  stepSize 0.279 0.19 1
-  stepRise 0.178
+  translation 0 0 0.29
+  rotation 0 1 0 1.5707959999999999
+  stepSize 0.267 0.03 1
+  stepRise 0.157
   nSteps 7
   leftRail []
   rightRail []
