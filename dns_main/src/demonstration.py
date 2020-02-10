@@ -8,7 +8,6 @@ from math import asin, pi, atan2
 #    velocityAll, accelerationAll, positionAll, readFSR
 from kinematics import Kinematics
 
-from math_calc import vector_length
 K=Kinematics()
 
 def terminate():
@@ -814,88 +813,88 @@ def translateAboveRiser():
 def rememberRemember():
     ee_xyz, servopos = K.doFkine(readPos())
     return servopos
-
-torque(0)
-pwm_list = [800]*18
-pwmAll(pwm_list)
-scaler_acc = [20] * 18
-scaler_vel = [20] * 18
-velocityAll(scaler_vel)
-accelerationAll(scaler_acc)
-torque(1)
 threshold = 30
 stepSize = 50
 riser = 163
 thread = 266
-standUpForStairs()
+def StairClimbingDemo():
+    torque(0)
+    pwm_list = [800]*18
+    pwmAll(pwm_list)
+    scaler_acc = [20] * 18
+    scaler_vel = [20] * 18
+    velocityAll(scaler_vel)
+    accelerationAll(scaler_acc)
+    torque(1)
+
+    standUpForStairs()
+    print(stepSize)
 
 
+    ## Move forward to the first step on the stair. 700 = mm. Assuming the robot is placed at this distance 
+    raw_input("Press something to move forward")
+    distanceToStair = initialDistance(moveForward(0, stepSize, threshold, 0, 0, 0, 250))
+    #distanceToStair = 25.0, 25.0, 376.80185049724594, 376.02627441364115, 723.417427577023, 722.8063562905638
 
-## Move forward to the first step on the stair. 700 = mm. Assuming the robot is placed at this distance 
-raw_input("Press something to move forward")
-distanceToStair = initialDistance(moveForward(0, stepSize, threshold, 0, 0, 0, 250))
-#distanceToStair = 25.0, 25.0, 376.80185049724594, 376.02627441364115, 723.417427577023, 722.8063562905638
+    raw_input("Rotate coxas to get by thread distance")
+    initConfig_legs(thread)
+    time.sleep(3)
+    #####Testing new stuff
 
-raw_input("Rotate coxas to get by thread distance")
-initConfig_legs(thread)
-time.sleep(3)
-#####Testing new stuff
-
-raw_input("Translate by half of the riser")
-parallelGait(0,0,0,0,0,riser/2+20)
-time.sleep(2)
-raw_input("Start climbing up")
-distanceToStair = 25.0, 25.0, 305.0, 305.0, 629.9592456137348, 629.7755305462598
-walkUp(distanceToStair,0, stepSize*2, threshold, riser, 0,0,0)
-raw_input("Move Forward on stairs")
-distance = moveForwardOnStair(0, stepSize, threshold, 0, 0, 0, thread/2+stepSize)
-raw_input("Translate by half of the riser")
-parallelGait(0,0,0,0,0,riser/2)
-time.sleep(2)
-distanceToStair = 25.0, 25.0, 25.0, 25.0, 629.9592456137348, 629.7755305462598
-raw_input("Again climb up")
-walkUp(distanceToStair,0, stepSize*2, threshold, riser, 0,0,0)
-raw_input("If needed translate above the riser and adjust the rotation")
-translateAboveRiser()
-
-
-
-stairs = True
-#rememberState = True
-#storedPosition = []
-while stairs is True:
-    correctRotation(thread,riser)
+    raw_input("Translate by half of the riser")
+    parallelGait(0,0,0,0,0,riser/2+20)
     time.sleep(2)
-    raw_input("Correcting middle legs")
-    correctMiddleLegs(20)
-    raw_input("Move forwards on stairs")
-    distance = moveForwardOnStair(0, stepSize, threshold, 0, 0, 0, riser+stepSize)
-    distanceToStair = 25.0, 25.0, 25.0, 25.0, 25.9592456137348, 25.7755305462598
-    raw_input("Walk up all legs")
-    checkForTermination = walkUpAllLegs(distanceToStair,0, stepSize*2, threshold, riser, 0,0,0)
-    correctRotation(thread,riser)
-    time.sleep(1)
-    parallelGait(0,0,0,0,50,0)
+    raw_input("Start climbing up")
+    distanceToStair = 25.0, 25.0, 305.0, 305.0, 629.9592456137348, 629.7755305462598
+    walkUp(distanceToStair,0, stepSize*2, threshold, riser, 0,0,0)
+    raw_input("Move Forward on stairs")
+    distance = moveForwardOnStair(0, stepSize, threshold, 0, 0, 0, thread/2+stepSize)
+    raw_input("Translate by half of the riser")
+    parallelGait(0,0,0,0,0,riser/2)
     time.sleep(2)
-    parallelGait(0,0,0,0,50,0)
-    time.sleep(2)
+    distanceToStair = 25.0, 25.0, 25.0, 25.0, 629.9592456137348, 629.7755305462598
+    raw_input("Again climb up")
+    walkUp(distanceToStair,0, stepSize*2, threshold, riser, 0,0,0)
+    raw_input("If needed translate above the riser and adjust the rotation")
     translateAboveRiser()
-    raw_input("Exit program")
-    if checkForTermination == True:
-        break
 
 
- 
 
-time.sleep(2)
-parallelGait(0,0,0,0,50,0)
-time.sleep(2)
-parallelGait(0,0,0,0,50,0)
-time.sleep(2)
-moveForwardOnStair(0, stepSize, threshold, 0, 0, 0, riser+stepSize)
-distanceToStair = 25.0, 25.0, 25.0, 25.0, 25.0, 25.0
-moveUpOnlyLastLegs(distanceToStair,0,stepSize,threshold,riser,0,0,0)
-moveForward(0, stepSize, threshold, 0, 0, 0, 550)
+    stairs = True
+    #rememberState = True
+    #storedPosition = []
+    while stairs is True:
+        correctRotation(thread,riser)
+        time.sleep(2)
+        raw_input("Correcting middle legs")
+        correctMiddleLegs(20)
+        raw_input("Move forwards on stairs")
+        distance = moveForwardOnStair(0, stepSize, threshold, 0, 0, 0, riser+stepSize)
+        distanceToStair = 25.0, 25.0, 25.0, 25.0, 25.9592456137348, 25.7755305462598
+        raw_input("Walk up all legs")
+        checkForTermination = walkUpAllLegs(distanceToStair,0, stepSize*2, threshold, riser, 0,0,0)
+        correctRotation(thread,riser)
+        time.sleep(1)
+        parallelGait(0,0,0,0,50,0)
+        time.sleep(2)
+        parallelGait(0,0,0,0,50,0)
+        time.sleep(2)
+        translateAboveRiser()
+        raw_input("Exit program")
+        if checkForTermination == True:
+            break
 
 
-a
+    
+
+    time.sleep(2)
+    parallelGait(0,0,0,0,50,0)
+    time.sleep(2)
+    parallelGait(0,0,0,0,50,0)
+    time.sleep(2)
+    moveForwardOnStair(0, stepSize, threshold, 0, 0, 0, riser+stepSize)
+    distanceToStair = 25.0, 25.0, 25.0, 25.0, 25.0, 25.0
+    moveUpOnlyLastLegs(distanceToStair,0,stepSize,threshold,riser,0,0,0)
+    moveForward(0, stepSize, threshold, 0, 0, 0, 550)
+
+

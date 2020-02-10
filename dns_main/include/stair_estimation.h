@@ -5,11 +5,11 @@
 #include <string>
 #include <tuple>
 #include <sys/stat.h> // For checkFileExists method
-
 #include <ros/ros.h>
 #include <ros/package.h>
 #include <librealsense2/rs.hpp>
 
+#include <pcl/search/impl/search.hpp>
 #include <pcl/common/common_headers.h>
 #include <pcl/io/pcd_io.h>
 #include <pcl/segmentation/organized_multi_plane_segmentation.h>

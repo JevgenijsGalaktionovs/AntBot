@@ -7,6 +7,7 @@ from math import asin, pi, atan2
 #, positionN, \
 #    velocityAll, accelerationAll, positionAll, readFSR
 from kinematics import Kinematics
+from demonstration import*
 # from math_calc import vector_length
 
 class _Getch:
@@ -118,12 +119,12 @@ def move(PushBackwards, LiftUp, LiftDown, PutForward):
     check_position_error_legs(20, 60, pos4, leg_case)
 
 
-def TactileCheck(LiftUp):
+def TactileCheck(LiftTactile):
     pos5 = list()
-    pos5.extend(LiftUp[0:6])
+    pos5.extend(LiftTactile[0:6])
     positionN(pos5)
     leg_case = [1]
-    check_position_error_legs(20, 20, pos5, leg_case)
+    check_position_error_legs(40, 20, pos5, leg_case)
     checkContactWithoutControlSystem()
 
 
@@ -146,7 +147,7 @@ def ChangeVelocity(x):
 def Demo():
     stairs = True
     x = 20
-    PushF, LiftF, DownF, ForwardF, LiftBW, DownBW, ForwardBW, LiftLE, DownLE, ForwardLE, LiftRI, DownRI, ForwardRI = CalculationMotions()
+    PushF, LiftF, DownF, ForwardF, LiftBW, DownBW, ForwardBW, LiftLE, DownLE, ForwardLE, LiftRI, DownRI, ForwardRI, LiftTactile = CalculationMotions()
     while stairs is True: 
         KeyboardControll() 
         getch = _Getch()
@@ -183,10 +184,19 @@ def Demo():
             DanceStar()
         elif choice == "b":
             print("Tactile")
-            TactileCheck(LiftF)
+            TactileCheck(LiftTactile)
         elif choice == "c":
             print("CameraDemo")
             CameraDemo()
+        elif choice == "m":
+            print("StairClimbingDemo")
+            StairClimbingDemo()
+        elif choice == "z":
+            print("Torque on")
+            torque(1)
+        elif choice == "x":
+            print("Torque off")
+            torque(0)
         else:
             print("")
             print("   	 Enter number from 0 to 4!")
@@ -229,7 +239,11 @@ def CalculationMotions():
     LiftRI       = calc_motion(UpR)
     DownRI       = calc_motion(DownR)
     ForwardRI    = calc_motion(ForwardR)
-    return PushF, LiftF, DownF, ForwardF, LiftBW, DownBW, ForwardBW, LiftLE, DownLE, ForwardLE, LiftRI, DownRI, ForwardRI
+
+    UpTac          =   [0, 0, 120]
+    LiftTactile  = calc_motion(UpTac)
+
+    return PushF, LiftF, DownF, ForwardF, LiftBW, DownBW, ForwardBW, LiftLE, DownLE, ForwardLE, LiftRI, DownRI, ForwardRI, LiftTactile
  
 
 def KeyboardControll(): 
@@ -248,11 +262,11 @@ def KeyboardControll():
     print("	|        Rotate clockwise/counterclockwise          |")
     print("	|                                                   |")
     print("	|                       t/y                         |")
-    print("	|                                                   |")
+    print("	|                   Torque(z/x)                     |")
     print("	|                   Dance(v)                        |")
-    print("	|    				CameraDemo(c)                   |")
-    print("	|    		         Tactile(b)                     |")
-    print("	|    				                                |")
+    print("	|                   CameraDemo(c)                   |")
+    print("	|                   Tactile(b)                      |")
+    print("	|                   StairClimbingDemo(m)            |")
     print("	|_________________________________________________|")
 
 
@@ -270,7 +284,7 @@ def CameraDemo():
     time.sleep(1)
     stair_dimensions=getAllStairsInfo()
     print(stair_dimensions)
-    Stand_up()
+    
 
 def DanceStar():
     
@@ -353,6 +367,15 @@ def DanceStar():
     time.sleep(4*t)
     positionAll(U0)
 
-
-Stand_up()
+torque(0)
+pwm_list = [800]*18
+pwmAll(pwm_list)
+scaler_acc = [3] * 18
+scaler_vel = [3] * 18
+velocityAll(scaler_vel)
+accelerationAll(scaler_acc)
+#time.sleep(1)
+torque(1)
+standUpForStairs()
+time.sleep(4)
 Demo()
