@@ -283,7 +283,8 @@ def clear_view_stairs():
     do_motion(motion5, leg_case=[1, 2])
     time.sleep(delay)
     parallelGait(0, 0, 0, 0, 0, -100)
-    time.sleep(delay)
+    time.sleep(delay*2)
+
 # Gaits end --------------------------------------------
 
 
