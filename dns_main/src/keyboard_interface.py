@@ -2,24 +2,20 @@
 import time
 from math import radians
 from service_router import *
-from locomotion     import *
-from math import asin, pi, atan2
-#, positionN, \
-#    velocityAll, accelerationAll, positionAll, readFSR
-from kinematics import Kinematics
-from demonstration import*
-# from math_calc import vector_length
+from locomotion import *
+from demonstration import *
+
 
 class _Getch:
-    """Gets a single character from standard input.  Does not echo to the
-screen."""
+    """Gets a single character from standard input.  Does not echo to the screen."""
     def __init__(self):
         try:
             self.impl = _GetchWindows()
         except ImportError:
             self.impl = _GetchUnix()
 
-    def __call__(self): return self.impl()
+    def __call__(self):
+        return self.impl()
 
 
 class _GetchUnix:
@@ -50,12 +46,12 @@ class _GetchWindows:
 getch = _Getch()
 
 
-def Stand_up(): 
+def Stand_up():
     torque(0)
-    pwm_list = [800]*18         #Setting PWM to "high" max is 885
+    pwm_list = [800] * 18  # Setting PWM to "high" max is 885
     pwmAll(pwm_list)
-    scaler_acc = [20] * 18      #Setting Acceleration to "low"
-    scaler_vel = [20] * 18      #Setting Velocity to "low"
+    scaler_acc = [20] * 18  # Setting Acceleration to "low"
+    scaler_vel = [20] * 18  # Setting Velocity to "low"
     velocityAll(scaler_vel)
     accelerationAll(scaler_acc)
     torque(1)
@@ -148,26 +144,26 @@ def Demo():
     stairs = True
     x = 20
     PushF, LiftF, DownF, ForwardF, LiftBW, DownBW, ForwardBW, LiftLE, DownLE, ForwardLE, LiftRI, DownRI, ForwardRI, LiftTactile = CalculationMotions()
-    while stairs is True: 
-        KeyboardControll() 
+    while stairs is True:
+        KeyboardControl()
         getch = _Getch()
         print ("Please enter something: ")
         choice = getch()
-        if  choice == "i":
+        if choice == "i":
             print("Increase speed")
             x += 10
             x = ChangeVelocity(x)
         elif choice == "k":
             print("Decrease speed")
-            x -=10
+            x -= 10
             x = ChangeVelocity(x)
         elif choice == "w":
-            move(PushF, LiftF,DownF,ForwardF)
+            move(PushF, LiftF, DownF, ForwardF)
             print("Move Forward")
         elif choice == "a":
             print("Move Left")
-            move(PushF, LiftLE, DownLE,ForwardLE)
-        elif choice == "s": 
+            move(PushF, LiftLE, DownLE, ForwardLE)
+        elif choice == "s":
             print("Move backwards")
             move(PushF, LiftBW, DownBW, ForwardBW)
         elif choice == "d":
@@ -246,7 +242,7 @@ def CalculationMotions():
     return PushF, LiftF, DownF, ForwardF, LiftBW, DownBW, ForwardBW, LiftLE, DownLE, ForwardLE, LiftRI, DownRI, ForwardRI, LiftTactile
  
 
-def KeyboardControll(): 
+def KeyboardControl(): 
     
     print("	 _________________________________________________ ")
     print("	|               Keyboard Control:                   |")

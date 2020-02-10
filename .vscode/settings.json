@@ -1,5 +1,5 @@
 {
-    "python.linting.flake8Args": ["--ignore=E501"],
+    "python.linting.flake8Args": ["--ignore=E501, F403,F405"],
     "files.associations": {
         "cctype": "cpp",
         "clocale": "cpp",
