@@ -15,7 +15,7 @@ class LegConsts(object):
         self.t_ang_off = radians(-25.90)  # Angular offset of Tibia
         self.c_len = 66.50                # Link length of Coxa  (mm)
         self.f_len = 144.40               # Link length of Femur (mm)
-        self.t_len = 287#236.5                # Link length of Tibia (mm)
+        self.t_len = 287                  # Link length of Tibia (mm)
         self.leg_nr = leg_nr              # Leg Number
 
 
@@ -42,7 +42,6 @@ class Kinematics(object):
                        servoPos: servo positions in radians
         '''
         servoPos = self.step_to_rad(all_positions)
-        #print("step 2 rad:", servoPos)
         ee_xyz = []
         j = 0
         for i in xrange(0, 16, 3):
@@ -241,10 +240,8 @@ class Kinematics(object):
             xyz_polygon.extend((newEe_xyz[j * 3:j * 3 + 3]))
         return xyz_polygon
 
-    def make_polygonLines(self,leg_list,ee_xyz):
-        #ee_xy""z, servoPos = self.doFkine(readPos())
+    def make_polygonLines(self, leg_list, ee_xyz):
         print("leglistLins", leg_list)
-        polygon_points = self.make_poligonCorners(ee_xyz,leg_list)
         line = []
         for i in range(len(ee_xyz / 3)):
             j = i - 1
@@ -252,56 +249,55 @@ class Kinematics(object):
                            ee_xyz[3 * j + 4] - ee_xyz[3 * j + 1],
                            ee_xyz[3 * j + 5] - ee_xyz[3 * j + 2]]
         return line
-    def check_stabilty(self,t_poly = None):
+
+    def check_stabilty(self, t_poly=None):
         ee_xyz, servoPos = self.doFkine(readPos())
-        #tac = readFSR()
         tac = [False, True, False, True, True, False]
-        #tac = [False, True, True, False, False, True]
         leg_list = []
         for i in range(len(tac)):
             if tac[i] is True:
-                leg_list.extend([i+1])
-        poly_lines,poly_points = self.make_polygonLines(leg_list,ee_xyz)
-        print("lines",poly_lines)
+                leg_list.extend([i + 1])
+        poly_lines, poly_points = self.make_polygonLines(leg_list, ee_xyz)
+        print("lines", poly_lines)
         if tac[1] is True and tac[2] is True and tac[5]is True:
-            #gamma, beta = 10,20 #self.get_orientation(tac)
-            #n = [0,-sin(beta),cos(beta)]
+            # gamma, beta = 10,20 #self.get_orientation(tac)
+            # n = [0,-sin(beta),cos(beta)]
             print("im not here")
-            P1 = [ee_xyz[3],ee_xyz[4],1]
-            P2 = [ee_xyz[6],ee_xyz[7],1]
-            P3 = [ee_xyz[15],ee_xyz[16],1]
-            print(P1,P2,P3)
+            P1 = [ee_xyz[3], ee_xyz[4], 1]
+            P2 = [ee_xyz[6], ee_xyz[7], 1]
+            P3 = [ee_xyz[15], ee_xyz[16], 1]
+            print(P1, P2, P3)
         elif tac[0] is True and tac[3] is True and tac[4] is True:
             print("im here")
-            P1 = [ee_xyz[0],ee_xyz[1],1]
-            P3 = [ee_xyz[9],ee_xyz[10],1]
-            P2 = [ee_xyz[12],ee_xyz[13],1]
-            print(P1,P2,P3)
-        k = 1 #dotProduct(n,P1)
+            P1 = [ee_xyz[0], ee_xyz[1], 1]
+            P3 = [ee_xyz[9], ee_xyz[10], 1]
+            P2 = [ee_xyz[12], ee_xyz[13], 1]
+            print(P1, P2, P3)
+        k = 1  # dotProduct(n,P1)
         x = 0
-        y = 1 
+        y = 1
         z = 2
-        lambda_1 = ((P2[x]*P3[y] - P2[y]*P3[x])*k)/(P1[x]*P2[y]*P3[z] - P1[x]*P2[z]*P3[y] - P1[y]*P2[x]*P3[z] + P1[y]*P2[z]*P3[x] + P1[z]*P2[x]*P3[y] - P1[z]*P2[y]*P3[x])
-        lambda_2 = -((P1[x]*P3[y] - P1[y]*P3[x])*k)/(P1[x]*P2[y]*P3[z] - P1[x]*P2[z]*P3[y] - P1[y]*P2[x]*P3[z] + P1[y]*P2[z]*P3[x] + P1[z]*P2[x]*P3[y] - P1[z]*P2[y]*P3[x])
-        lambda_3 = ((P1[x]*P2[y] - P1[y]*P2[x])*k)/(P1[x]*P2[y]*P3[z] - P1[x]*P2[z]*P3[y] - P1[y]*P2[x]*P3[z] + P1[y]*P2[z]*P3[x] + P1[z]*P2[x]*P3[y] - P1[z]*P2[y]*P3[x])
+        lambda_1 = ((P2[x] * P3[y] - P2[y] * P3[x]) * k) / (P1[x] * P2[y] * P3[z] - P1[x] * P2[z] * P3[y] - P1[y] * P2[x] * P3[z] + P1[y] * P2[z] * P3[x] + P1[z] * P2[x] * P3[y] - P1[z] * P2[y] * P3[x])
+        lambda_2 = -((P1[x] * P3[y] - P1[y] * P3[x]) * k) / (P1[x] * P2[y] * P3[z] - P1[x] * P2[z] * P3[y] - P1[y] * P2[x] * P3[z] + P1[y] * P2[z] * P3[x] + P1[z] * P2[x] * P3[y] - P1[z] * P2[y] * P3[x])
+        lambda_3 = ((P1[x] * P2[y] - P1[y] * P2[x]) * k) / (P1[x] * P2[y] * P3[z] - P1[x] * P2[z] * P3[y] - P1[y] * P2[x] * P3[z] + P1[y] * P2[z] * P3[x] + P1[z] * P2[x] * P3[y] - P1[z] * P2[y] * P3[x])
         if lambda_1 > 0.1 and lambda_2 > 0.1 and lambda_3 > 0.1 and lambda_3 > 0.1:
             if lambda_1 < 0.9 and lambda_2 < 0.9 and lambda_3 < 0.9:
                 if lambda_1 + lambda_2 + lambda_3 == 1:
                     inside = True
-        side1 = subtract(P1,P2)
-        side2 = subtract(P3,P2)
-        side3 = subtract(P1,P3)
-        G = [0,0,1]
-        P2_G = subtract(G,P2)
-        P3_G = subtract(G,P3)
-        margin_s1 = sqrt(pow(dotProduct(P2_G,unit_vec(side1)),2)+dotProduct(P2_G,P2_G))
-        margin_s2 = sqrt(pow(dotProduct(P2_G,unit_vec(side2)),2)+dotProduct(P2_G,P2_G))
-        margin_s3 = sqrt(pow(dotProduct(P3_G,unit_vec(side3)),2)+dotProduct(P3_G,P3_G))
-        aa = min(margin_s1,margin_s2,margin_s3)
-        print(aa, inside)
-        return aa, inside
+        side1 = subtract(P1, P2)
+        side2 = subtract(P3, P2)
+        side3 = subtract(P1, P3)
+        G = [0, 0, 1]
+        P2_G = subtract(G, P2)
+        P3_G = subtract(G, P3)
+        margin_s1 = sqrt(pow(dotProduct(P2_G, unit_vec(side1)), 2) + dotProduct(P2_G, P2_G))
+        margin_s2 = sqrt(pow(dotProduct(P2_G, unit_vec(side2)), 2) + dotProduct(P2_G, P2_G))
+        margin_s3 = sqrt(pow(dotProduct(P3_G, unit_vec(side3)), 2) + dotProduct(P3_G, P3_G))
+        stability_margin = min(margin_s1, margin_s2, margin_s3)
+        print(stability_margin, inside)
+        return stability_margin, inside
 
-    def get_orientation(self,leg_list):
+    def get_orientation(self, leg_list):
         ee_xyz, servoPos = self.doFkine(readPos())
         p1 = ee_xyz[3 * (leg_list[0] - 1):3 * (leg_list[0] - 1) + 3]
         p2 = ee_xyz[3 * (leg_list[1] - 1):3 * (leg_list[1] - 1) + 3]
@@ -313,37 +309,24 @@ class Kinematics(object):
         gamma = -atan2(normz[1], normz[2]) * 180 / pi
         return gamma, beta
 
-
-    def calc_translationStairs(self,riser,climbed_stairs_front, climbed_stairs_rear):
-        #gamma, beta = self.get_orientation([1,5,6])
-        ee_xyz,servopos = self.doFkine(readPos())
-        dist_y = abs(ee_xyz[1]-ee_xyz[13])
-        riser_diff = (climbed_stairs_front - climbed_stairs_rear)*riser
-        #print("riser", riser_diff)
-        omega = asin(riser_diff/dist_y)*180/pi
-        #print("omega", omega)
+    def calc_translationStairs(self, riser, climbed_stairs_front, climbed_stairs_rear):
+        # gamma, beta = self.get_orientation([1,5,6])
+        ee_xyz, servopos = self.doFkine(readPos())
+        dist_y = abs(ee_xyz[1] - ee_xyz[13])
+        riser_diff = (climbed_stairs_front - climbed_stairs_rear) * riser
+        omega = asin(riser_diff / dist_y) * 180 / pi
         AB = -ee_xyz[14] + 30
-        #print("z",-ee_xyz[14])
-        #print("AB",AB)
-        AC = AB/cos(omega*pi/180)
-        #print("AC",AC)
-        BC = AC * sin(omega*pi/180)
-        BE = sqrt(pow(ee_xyz[12],2)+pow(ee_xyz[11],2))-141.33
+        AC = AB / cos(omega * pi / 180)
+        BC = AC * sin(omega * pi / 180)
+        BE = sqrt(pow(ee_xyz[12], 2) + pow(ee_xyz[11], 2)) - 141.33
         CE = BE - BC
-        CD = BC*CE/AC
-        #print("CD",CD)
-        #print(AC+CD)
+        CD = BC * CE / AC
 
-        if AC+CD <= riser_diff:
+        if AC + CD <= riser_diff:
             trans_z_g = riser_diff - AC - CD + 10
-            #print("tans_Z_G",trans_z_g)
-            # r = z6/cos(beta*pi/180)
-            # difference = riser + r + 20
-            translation_z = trans_z_g * cos(omega * pi/180)
-            translation_y = trans_z_g * sin(omega * pi/180)
+            translation_z = trans_z_g * cos(omega * pi / 180)
+            translation_y = trans_z_g * sin(omega * pi / 180)
         else:
             translation_z = 0
             translation_y = 0
-        #print("last",translation_z,translation_y)
         return [translation_z, translation_y]
-

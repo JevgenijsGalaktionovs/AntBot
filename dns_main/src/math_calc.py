@@ -7,7 +7,6 @@ def dotProduct(a, b):
     return c
 
 
-
 def abs_dotProduct(c):
     if c < 0:
         return -c
@@ -46,11 +45,14 @@ def make_polygon(ee_xyz):
                        ee_xyz[3 * i + 4] - ee_xyz[3 * i + 1],
                        ee_xyz[3 * i + 5] - ee_xyz[3 * i + 2]]
     return line
-def scale_vec(a,b):
+
+
+def scale_vec(a, b):
     length_b = vector_length(b)
-    scale_vec = [a[0]/length_b, a[1]/length_b, a[2]/length_b]   
+    scale_vec = [a[0] / length_b, a[1] / length_b, a[2] / length_b]
     return scale_vec
 
-def scale_scale(a,t):
-    scale_scale = [a[0]*t,a[1]*t,a[2]*t]
+
+def scale_scale(a, t):
+    scale_scale = [a[0] * t, a[1] * t, a[2] * t]
     return scale_scale

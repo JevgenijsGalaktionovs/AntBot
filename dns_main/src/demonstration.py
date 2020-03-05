@@ -10,6 +10,11 @@ from kinematics import Kinematics
 
 K=Kinematics()
 
+threshold = 30
+stepSize = 50
+riser = 163
+thread = 266
+
 def terminate():
     ee_xyz, servopos = K.doFkine(readPos())
     if abs(ee_xyz[2]-ee_xyz[5]) < 20:
@@ -287,7 +292,7 @@ def walkUp(distanceToStair, x, stepSize, threshold, riser, alpha, beta, gamma):
     leg_case = [1,4,5]
     check_position_error_legs(140, 30, pos, leg_case)
     pos = []
-    checkContactWithoutControlSystem()
+    check_contact()
     #########################################################################################################
     UpNothing           = [0, 0, 0]
     UpUpNothing         = calc_motion(UpNothing)
@@ -326,7 +331,7 @@ def walkUp(distanceToStair, x, stepSize, threshold, riser, alpha, beta, gamma):
     leg_case = [2,3,6]
     check_position_error_legs(120, 30, pos, leg_case)
     pos = []
-    checkContactWithoutControlSystem()
+    check_contact()
     distanceToStair = [i - stepSize for i in distanceToStair]
 
 def updateDistance(distanceToStair, stepSize):
@@ -514,7 +519,7 @@ def walkUpAllLegs(distanceToStair, x, stepSize, threshold, riser, alpha, beta, g
     leg_case = [5]
     check_position_error_legs(120, 20, pos, leg_case)
     pos = []
-    checkContactWithoutControlSystem()
+    check_contact()
     UpNothing           = [0, 0, 0]
     UpUpNothing         = calc_motion(UpNothing)
     #########################################################################################################
@@ -542,7 +547,7 @@ def walkUpAllLegs(distanceToStair, x, stepSize, threshold, riser, alpha, beta, g
     leg_case = [6]
     check_position_error_legs(120, 20, pos, leg_case)
     pos = []
-    checkContactWithoutControlSystem()
+    check_contact()
     distanceToStair = [i - stepSize for i in distanceToStair]
     parallelGait(0,0,0,0,0,riser/2)
     time.sleep(2)
@@ -593,7 +598,7 @@ def walkUpAllLegs(distanceToStair, x, stepSize, threshold, riser, alpha, beta, g
     leg_case = [3]
     check_position_error_legs(120, 20, pos, leg_case)
     pos = []
-    checkContactWithoutControlSystem()
+    check_contact()
     UpNothing           = [0, 0, 0]
     UpUpNothing         = calc_motion(UpNothing)
     #########################################################################################################
@@ -623,7 +628,7 @@ def walkUpAllLegs(distanceToStair, x, stepSize, threshold, riser, alpha, beta, g
     leg_case = [4]
     check_position_error_legs(120, 20, pos, leg_case)
     pos = []
-    checkContactWithoutControlSystem()
+    check_contact()
     distanceToStair = [i - stepSize for i in distanceToStair]
     parallelGait(0,0,0,0,0,riser/2)
     time.sleep(2)
@@ -680,7 +685,7 @@ def walkUpAllLegs(distanceToStair, x, stepSize, threshold, riser, alpha, beta, g
     leg_case = [1]
     check_position_error_legs(120, 20, pos, leg_case)
     pos = []
-    checkContactWithoutControlSystem()
+    check_contact()
     UpNothing           = [0, 0, 0]
     UpUpNothing         = calc_motion(UpNothing)
     #########################################################################################################
@@ -708,7 +713,7 @@ def walkUpAllLegs(distanceToStair, x, stepSize, threshold, riser, alpha, beta, g
     leg_case = [2]
     check_position_error_legs(120, 20, pos, leg_case)
     pos = []
-    checkContactWithoutControlSystem()
+    check_contact()
     distanceToStair = [i - stepSize for i in distanceToStair]
     timeToTerminate = terminate()
     if timeToTerminate == True: 
@@ -768,7 +773,7 @@ def moveUpOnlyLastLegs(distanceToStair, x, stepSize, threshold, riser, alpha, be
     leg_case = [5]
     check_position_error_legs(80, 20, pos, leg_case)
     pos = []
-    checkContactWithoutControlSystem()
+    check_contact()
     UpNothing           = [0, 0, 0]
     UpUpNothing         = calc_motion(UpNothing)
     #########################################################################################################
@@ -796,7 +801,7 @@ def moveUpOnlyLastLegs(distanceToStair, x, stepSize, threshold, riser, alpha, be
     leg_case = [6]
     check_position_error_legs(80, 20, pos, leg_case)
     pos = []
-    checkContactWithoutControlSystem()
+    check_contact()
     distanceToStair = [i - stepSize for i in distanceToStair]
     parallelGait(0,0,0,0,0,riser/2)
     time.sleep(2)
@@ -813,11 +818,12 @@ def translateAboveRiser():
 def rememberRemember():
     ee_xyz, servopos = K.doFkine(readPos())
     return servopos
-threshold = 30
-stepSize = 50
-riser = 163
-thread = 266
+
+
 def StairClimbingDemo():
+
+
+
     torque(0)
     pwm_list = [800]*18
     pwmAll(pwm_list)
@@ -898,3 +904,4 @@ def StairClimbingDemo():
     moveForward(0, stepSize, threshold, 0, 0, 0, 550)
 
 
+StairClimbingDemo()
