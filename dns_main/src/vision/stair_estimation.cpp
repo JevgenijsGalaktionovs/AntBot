@@ -405,11 +405,11 @@ int St::computeStairDimensions(std::vector<std::vector<float>> &saved_pl_Normals
   dist_x_to_1step = (saved_pl_Centroids[0].x) * 1000;  
 
   if (suppress_prints != true){
-    std::cout << "Step Depth  is " << step_depth_withEq << "cm. With Equation.\n";
-    std::cout << "Step Depth  is " << step_depth_noEq   << "cm. Without Equation.\n";
-    std::cout << "Step Height is " << step_height       << "cm. \n";
-    std::cout << "Z Distance to first step is " << dist_z_to_1step   << "cm.\n";
-    std::cout << "X Distance to first step is " << dist_x_to_1step   << "cm.\n";
+    // std::cout << "Step Depth  is " << step_depth_withEq << "mm. With Equation.\n";
+    std::cout << "Step Depth  is " << step_depth_noEq   << "mm.\n";
+    std::cout << "Step Height is " << step_height       << "mm. \n";
+    std::cout << "Z Distance to first step is " << dist_z_to_1step   << "mm.\n";
+    std::cout << "X Distance to first step is " << dist_x_to_1step   << "mm.\n";
   }
   return EXIT_SUCCESS;
 }

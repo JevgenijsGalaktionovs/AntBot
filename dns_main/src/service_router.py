@@ -1,7 +1,7 @@
 ﻿#!/usr/bin/env python2
 import rospy
 
-from dns.srv import pos_key, list_key, bool_key #,stairs_key
+from dns.srv import pos_key, stairs_key, list_key, bool_key
 
 
 # Wrappers (for user convenience)

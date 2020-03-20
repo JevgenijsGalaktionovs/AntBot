@@ -2,12 +2,11 @@
 import time
 from math import radians
 
-from service_router import *
-#, positionN, \
-#    velocityAll, accelerationAll, positionAll, readFSR
+from service_router import readPos, positionN, \
+    velocityAll, accelerationAll, positionAll, readFSR
 from kinematics import Kinematics
 
-from math_calc import vector_length
+from math_calc import *
 
 
 leg = {
@@ -283,9 +282,10 @@ def clear_view_stairs():
     time.sleep(delay)
     do_motion(motion5, leg_case=[1, 2])
     time.sleep(delay)
+    parallelGait(0, 0, 0, 0, 0, -100)
+    time.sleep(delay*2)
+
 # Gaits end --------------------------------------------
-
-
 
 
 def list_combine(id_list, value_list):

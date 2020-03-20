@@ -1,12 +1,25 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(dns)
 
+add_compile_options(-std=c++11)
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
+
 find_package(catkin REQUIRED COMPONENTS
   message_generation
   roscpp
   rospy
   std_msgs
+  roslib
 )
+
+find_package( PCL REQUIRED )
+link_directories(${PCL_LIBRARY_DIRS})
+add_definitions(${PCL_DEFINITIONS})
+
+find_package( realsense2 REQUIRED )
+link_directories(${realsense2_LIBRARY_DIRS})
+add_definitions(${realsense2_DEFINITIONS})
 
 
 ## Generate messages in the 'msg' folder
@@ -20,6 +33,7 @@ find_package(catkin REQUIRED COMPONENTS
    bool_key.srv
    list_key.srv
    pos_key.srv
+   stairs_key.srv
  )
 
 ## Generate actions in the 'action' folder
@@ -58,14 +72,13 @@ CATKIN_DEPENDS message_generation roscpp rospy std_msgs
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 include_directories(
-# include
+  include
   ${catkin_INCLUDE_DIRS}
+  ${PCL_INCLUDE_DIRS}
 )
 
 ## Declare a C++ library
-# add_library(${PROJECT_NAME}
-#   src/${PROJECT_NAME}/antbot_test.cpp
-# )
+add_library(${PROJECT_NAME} src/vision/stair_estimation.cpp)
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
@@ -75,7 +88,12 @@ include_directories(
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
-# add_executable(${PROJECT_NAME}_node src/antbot_test_node.cpp)
+
+add_executable(pcd_visualise src/vision/pcd_visualise.cpp)
+target_link_libraries(pcd_visualise ${catkin_LIBRARIES} ${PCL_LIBRARIES})
+
+add_executable(stair_node src/vision/stair_node.cpp src/vision/stair_estimation.cpp)
+target_link_libraries(stair_node ${catkin_LIBRARIES} ${PCL_LIBRARIES} ${realsense2_LIBRARY})
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
