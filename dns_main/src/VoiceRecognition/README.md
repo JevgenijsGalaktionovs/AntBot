@@ -15,54 +15,33 @@ Instalation:
 
 #### Make sure we have up-to-date versions of pip, setuptools and wheel ####
 python2 -m pip install --upgrade pip setuptools wheel
-
 python3 -m pip install --upgrade pip setuptools wheel
 
 The main program is using several libraries which shall be installed before usage:
 
-
 For gTTS (Google Text-to-Speech):
-
 For Python2
-
 python2 -m pip install gTTS
-
 For Python3
-
 python3 -m pip install gTTS
-
 Quick Install
-
 pip install gTTS
 
 
 For speech_recognition (Library for several speach recognition engines and APIs, both online and offline):
-
 For Python2
-
 python2 -m pip install SpeechRecognition
-
 For Python3
-
 python3 -m pip install SpeechRecognition
-
 Quick Install
-
 pip install SpeechRecognition
 
-
 For googletrans (API for translating texts from one language to another):
-
 For Python2
-
 python2 -m pip install googletrans
-
 For Python3
-
 python3 -m pip install googletrans
-
 Quick Install
-
 pip install googletrans
 
 For PyAudio (Across-platform audio input/output stream library):
@@ -73,7 +52,7 @@ python3 -m pip install PyAudio
 Quick Install
 pip install PyAudio
 
-For mpyg321 (Allows you to easily play mp3 sounds in python):
+For mpyg321 (Allows you to easily play mp3 sounds in python,):
 apt-get install mpg321
 
 ##### For checking internet ######
