@@ -15,7 +15,7 @@ Instalation:
 
 #### Make sure we have up-to-date versions of pip, setuptools and wheel ####
 python2 -m pip install --upgrade pip setuptools wheel
-python3 -m pip install --upgrade pip setuptools wheel
+python2 -m pip install --upgrade pip setuptools wheel
 
 The main program is using several libraries which shall be installed before usage:
 
@@ -53,7 +53,7 @@ Quick Install
 pip install PyAudio
 
 For mpyg321 (Allows you to easily play mp3 sounds in python,):
-apt-get install mpg321
+sudo apt-get install mpg321
 
 ##### For checking internet ######
 
