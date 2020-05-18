@@ -10,6 +10,7 @@ from googletrans import Translator
 from OfflineVoice import *
 import random
 from collections import Counter
+import logging
 
 def recognize_speech_from_mic(recognizer, microphone, lang):
 
@@ -90,6 +91,16 @@ def Test_speech(lang, name):
                     FailedDetection=Counter(failures)
                     print("Sucsess ", SucsessfullDetection)
                     print("Failure ",FailedDetection)
+                    path = os.path.dirname(os.path.abspath(__file__))
+                    local_path = "tests/test_log.log"
+                    full_path = os.path.join(path, local_path)
+                    logging.basicConfig(filename = full_path,level=logging.DEBUG,format='%(asctime)s :: %(message)s')
+                    logging.info('Number of attempts:')
+                    logging.info(counter)
+                    logging.info('Sucsess:')
+                    logging.info(SucsessfullDetection)
+                    logging.info('Failure:')
+                    logging.info(FailedDetection)
                     exit()
                 print (counter)
                 theRandomWord = (random.choice(randomword))
@@ -123,9 +134,9 @@ def Test_speech(lang, name):
             message = guess["transcription"].lower()                
             if theRandomWord in message: 
                 sucsesses.extend([theRandomWord])
-                print('Successfully Detected The Words', sucsesses)
+                #print('Successfully Detected The Words', sucsesses)
             else:
-                print('Wrongly Detected The Word', theRandomWord)
+                #print('Wrongly Detected The Word', theRandomWord)
                 failures.extend([theRandomWord])
 
 
@@ -134,9 +145,5 @@ def count_number(word, sentence):
     
 if __name__ == "__main__":
 
-    Test_speech('ru', 'Hugo')
-
-
-
-     
+    Test_speech('sv', 'Hugo')
 
