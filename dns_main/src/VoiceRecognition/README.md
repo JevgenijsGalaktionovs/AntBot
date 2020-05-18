@@ -1,4 +1,5 @@
-This readme goes step by step through what you need for using the speachrecognition software for DNS
+This readme goes step by step through what you need for using the speachrec
+ognition software for DNS
 
 The program consist of 3 modules:
 1. The main "VoiceRecognition" program which is executed once the voice recognition should be initialized.
@@ -9,7 +10,7 @@ If the program is assumed to sorely run online, module 2-3 can be dissregarded a
 
 Setting up mic and speakers: 
 follow:
-https://developers.google.com/assistant/sdk/guides/library/python/embed/audio
+https://developers.google.com/assistant/sdk/guides/library/python/audio/embed
 
 Instalation:
 
