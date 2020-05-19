@@ -288,7 +288,7 @@ def verbal_response(lang, name, day, accident, place):
                     if guess["transcription"]:
                         message = guess["transcription"].lower()
                         if wordDay[0] in message:
-                            guess = repeat_three('What natural dister happend to you just a few minuts ago?', lang)
+                            guess = repeat_three('What natural dister happened to you just a few minuts ago?', lang)
                             if guess["transcription"]:
                                 message = guess["transcription"].lower()
                                 if wordAccident[0] in message:
@@ -308,7 +308,7 @@ def verbal_response(lang, name, day, accident, place):
                     if guess["transcription"]:
                         message = guess["transcription"].lower()
                         if day in message:
-                            guess = repeat_three('What natural dister happend to you just a few minuts ago?', lang)
+                            guess = repeat_three('What natural dister happened to you just a few minuts ago?', lang)
                             if guess["transcription"]:
                                 message = guess["transcription"].lower()
                                 if accident in message:
