@@ -166,7 +166,7 @@ def eye_opening(lang, name, day, accident, place ):
                     if guess["transcription"]:
                         message = guess["transcription"].lower()
                 if wordYes[0] in message:
-                    guess = repeat_three('Please try to answer the following questions as concise as you can. Can you open your and see your surroundings?', lang)
+                    guess = repeat_three('Please try to answer the following questions as concisely as you can. Can you open your eyes and see your surroundings?', lang)
                     if guess["transcription"]:
                         message = guess["transcription"].lower()
                         if wordYes[0] in message:
@@ -234,7 +234,7 @@ def eye_opening(lang, name, day, accident, place ):
                             if guess["transcription"]:
                                 message = guess["transcription"].lower()
                         if wordYes[0] in message:
-                            guess = repeat_three('Please try to answer the following questions as concise as you can. Can you open your eyes and see your surroundings?', lang)
+                            guess = repeat_three('Please try to answer the following questions as concisely as you can. Can you open your eyes and see your surroundings?', lang)
                             if guess["transcription"]:
                                 message = guess["transcription"].lower()
                                 if wordYes[0] in message:
@@ -288,7 +288,7 @@ def verbal_response(lang, name, day, accident, place):
                     if guess["transcription"]:
                         message = guess["transcription"].lower()
                         if wordDay[0] in message:
-                            guess = repeat_three('What natural dister happened to you just a few minuts ago?', lang)
+                            guess = repeat_three('What natural disaster happened to you just a few minutes ago?', lang)
                             if guess["transcription"]:
                                 message = guess["transcription"].lower()
                                 if wordAccident[0] in message:
@@ -308,7 +308,7 @@ def verbal_response(lang, name, day, accident, place):
                     if guess["transcription"]:
                         message = guess["transcription"].lower()
                         if day in message:
-                            guess = repeat_three('What natural dister happened to you just a few minuts ago?', lang)
+                            guess = repeat_three('What natural disaster happened to you just a few minutes ago?', lang)
                             if guess["transcription"]:
                                 message = guess["transcription"].lower()
                                 if accident in message:
