@@ -400,8 +400,6 @@ def evaluation(lang, name):
                             message = guess["transcription"].lower()
                             if wordYes[0] in message:
                                 text_feel = 'and ' + '' + gender + 'does not feel it.'
-                            elif wordNo[0] in message:
-                                text_feelelif name is not None: = 'but' + '' + gender + 'can feel it.'
                             
         guess = repeat_three('Are you bleeding?', lang)
         if guess["transcription"]:
