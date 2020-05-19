@@ -40,6 +40,7 @@ def recorde(lang):
     recognizer = sr.Recognizer()
     microphone = sr.Microphone()
     print("Recording Message")
+
     if lang == 'da':
         guess = recognize_speech_from_mic(recognizer, microphone, 'da-DK')
     elif lang == 'sv':
@@ -56,7 +57,7 @@ def repete_three(phrase,fName,lang):
     translator = Translator()
     for x in range(0,3):
         x = x+1
-        if Connection[0] == True: 
+        if Connection == True: 
             print(Connection, "Connected")
             translated = translator.translate('' + phrase, dest=lang)
             mytext = translated.text 
@@ -82,10 +83,10 @@ def repete_three(phrase,fName,lang):
 
 def eye_opening(lang, name, day, accident, place ):
     total = 0
-    translator = Translator()
     Connection = CheckingConnectionToGoogle()
-
-    if Connection[0] == True:
+    translator = Translator()
+    if Connection == True:
+        print(Connection, "Connected")
         translated_yes = translator.translate('Yes' , dest=lang)
         wordYes =[translated_yes.text.lower()]
         translated_no = translator.translate('No' , dest=lang)
@@ -107,16 +108,17 @@ def eye_opening(lang, name, day, accident, place ):
         else:
             mothertongue = wordEnglish[0]
 
+
     e_score = 0
     v_score = 0
     m_score = 0
     
-    if Connection[0] == True: 
+    if Connection == True: 
         print(Connection, "Connected")
     elif Connection == False:
         print("Connection lost")
 
-    guess = repete_three('Hello, I am here to help you. Can you hear me?', 'Hello.mp3',lang)
+    guess = repete_three('Hello, I am here to help you. Can you hear me?', 'hello.mp3',lang)
     if guess["transcription"]:
         guess = repete_three('Please avoid moving your head. This can cause spinal cord injuries. Do you understand me?','understand.mp3',lang)
         if guess["transcription"]:
@@ -138,7 +140,7 @@ def eye_opening(lang, name, day, accident, place ):
                             elif wordRussian[0] in message:
                                 lang = 'ru'
                             else:
-                                translated = translator.translate('Sorry, I can not continue the oral communication. I will report your location and continue my mission. Do not worry my teammates will assist you as soon as poosible','sorry.mp3', lang)
+                                translated = translator.translate('Sorry, I can not continue the oral communication. I will report your location and continue my mission. My teammates will assist you as soon as poosible.','sorry.mp3', lang)
                                 mytext = translated.text 
                                 language = lang
                                 myobj = gTTS(text=mytext, lang=language, slow=False) 
@@ -165,11 +167,11 @@ def eye_opening(lang, name, day, accident, place ):
 
                             
             
-            guess = repete_three('Do not worry. I am a member of the search and rescue team. I here to evaluate your condition and report it to my teammates. I am going to ask you a few questions. Are you ready?', 'ready.mp3', lang)
+            guess = repete_three('I am a member of the search and rescue team. I here to evaluate your condition and report it to my teammates. I am going to ask you a few questions. Are you ready?', 'ready.mp3', lang)
             if guess["transcription"]:
                 message = guess["transcription"].lower()
                 if wordYes[0] not in message:
-                    guess = repete_three('Do not worry. I am here to help you. I will report your location and condition to my teammates. They will find you as soon as possible. Do you think that you are ready now?', 'readynow.mp3', lang)
+                    guess = repete_three('I am here to help you. I will report your location and condition to my teammates. They will find you as soon as possible. Do you think that you are ready now?', 'readynow.mp3', lang)
                     if guess["transcription"]:
                         message = guess["transcription"].lower()
                 if wordYes[0] in message:
@@ -233,11 +235,11 @@ def eye_opening(lang, name, day, accident, place ):
 
 
                     if wordYes[0] in message:
-                        guess = repete_three('Do not worry. I am a member of the search and rescue team. I here to evaluate your condition and report it to my teammates. I am going to ask you a few questions. Are you ready?', 'ready.mp3', lang)
+                        guess = repete_three('I am a member of the search and rescue team. I here to evaluate your condition and report it to my teammates. I am going to ask you a few questions. Are you ready?', 'ready.mp3', lang)
                         if guess["transcription"]:
                             message = guess["transcription"].lower
                             if wordYes[0] not in message:
-                                guess = repete_three('Do not worry. I am here to help you. I will report your location and condition to my teammates. They will find you as soon as possible. Do you think that you are ready now?', 'readynow.mp3', lang)
+                                guess = repete_three('I am here to help you. I will report your location and condition to my teammates. They will find you as soon as possible. Do you think that you are ready now?', 'readynow.mp3', lang)
                                 if guess["transcription"]:
                                     message = guess["transcription"].lower()
                             if wordYes[0] in message:
@@ -299,7 +301,7 @@ def verbal_response(lang, name, day, accident, place):
                             if guess["transcription"]:
                                 message = guess["transcription"].lower()
                                 if wordAccident[0] in message:
-                                    guess = repete_three('where are we right now?', lang)
+                                    guess = repete_three('where are we right now?', None,lang)
                                     if guess["transcription"]:
                                         message = guess["transcription"].lower() 
                                         if wordPlace[0] in message:
@@ -389,7 +391,7 @@ def evaluation(lang, name):
         message = guess["transcription"].lower()
         if wordYes[0] in message:
             print('Victim is trapped.')
-            text_trapped = 'I have found Dariush. He is trapped.'
+            text_trapped = 'I have found ' + '' + name + ' ' + gender + 'is trapped.'
         elif wordNo[0] in message:
             print('Victim is free.')
             text_trapped = 'I have found ' + '' + name + '' + gender +' is not trapped'
