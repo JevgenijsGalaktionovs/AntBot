@@ -138,7 +138,7 @@ def Test_speech(lang, name):
             if guess["error"]:
                 print("ERROR: {}".format(guess["error"]))
                 break
-            print("You said: {}".format(guess["transcription"]))
+            #print("You said: {}".format(guess["transcription"]))
         
             message = guess["transcription"].lower()                
             if theRandomWord in message: 
