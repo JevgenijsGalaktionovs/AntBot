@@ -32,7 +32,8 @@ def recognize_speech_from_mic(recognizer, microphone, lang):
     }
 
     try:
-        response["transcription"] = recognizer.recognize_google(audio, language=lang)
+        response["transcription"] = recognizer.recognize_google(audio, language=lang) #show_all=True = gives all possibilities
+ 
 
 
     except sr.RequestError:
@@ -75,11 +76,12 @@ def Test_speech(lang, name):
     i = 0
     sucsesses = []
     failures = []
+    no_detection = []
     while(1): 
         while (1):
             while (1):
                 counter += 1
-                if counter == 101:
+                if counter == 11:
                     translator = Translator()
                     translated = translator.translate('Tack för idag, det var allt jag har at bjuda på', dest=lang)
                     mytext = translated.text  
@@ -89,8 +91,10 @@ def Test_speech(lang, name):
                     os.system("mpg321 -q welcome.mp3")  
                     SucsessfullDetection=Counter(sucsesses)
                     FailedDetection=Counter(failures)
+                    NoDetection=Counter(no_detection)
                     print("Sucsess ", SucsessfullDetection)
-                    print("Failure ",FailedDetection)
+                    print("Failure ", FailedDetection)
+                    print("No detection ", NoDetection)
                     path = os.path.dirname(os.path.abspath(__file__))
                     local_path = "tests/test_log.log"
                     full_path = os.path.join(path, local_path)
@@ -101,6 +105,8 @@ def Test_speech(lang, name):
                     logging.info(SucsessfullDetection)
                     logging.info('Failure:')
                     logging.info(FailedDetection)
+                    logging.info('No detection:')
+                    logging.info(NoDetection)
                     exit()
                 print (counter)
                 theRandomWord = (random.choice(randomword))
@@ -124,6 +130,9 @@ def Test_speech(lang, name):
                     break
                 if not guess["success"]:
                     break
+                no_detection.extend([theRandomWord])
+                
+                
                 print("I didn't catch that. What did you say?\n")
 
             if guess["error"]:
@@ -145,5 +154,5 @@ def count_number(word, sentence):
     
 if __name__ == "__main__":
 
-    Test_speech('sv', 'Hugo')
+    Test_speech('en', 'Hugo')
 
