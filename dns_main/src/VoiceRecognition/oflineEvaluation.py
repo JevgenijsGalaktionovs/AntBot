@@ -53,11 +53,14 @@ def recorde(lang):
 
 def repete_three(phrase,fName,lang):
     Connection = CheckingConnectionToGoogle()
+    if isinstance(Connection,tuple):
+        Connection = Connection[0]
     reb_errore()
     translator = Translator()
+    
     for x in range(0,3):
         x = x+1
-        if Connection == True: 
+        if Connection == True:
             print(Connection, "Connected")
             translated = translator.translate('' + phrase, dest=lang)
             mytext = translated.text 
@@ -65,8 +68,8 @@ def repete_three(phrase,fName,lang):
             myobj = gTTS(text=mytext, lang=language, slow=False) 
             myobj.save("welcome.mp3") 
             os.system("mpg321 -q welcome.mp3")
-        if Connection == False:
-            print("Connection lost")
+        elif Connection == False:
+            print(Connection,"Connection lost")
             if fName is not None:
                 os.system("mpg321 -q {}".format(fName))
         guess = recorde(lang)
@@ -84,6 +87,10 @@ def repete_three(phrase,fName,lang):
 def eye_opening(lang, name, day, accident, place ):
     total = 0
     Connection = CheckingConnectionToGoogle()
+    if isinstance(Connection,tuple):
+        Connection = Connection[0]
+        #print(Connection, "I knew this")
+
     translator = Translator()
     if Connection == True:
         print(Connection, "Connected")
@@ -107,6 +114,12 @@ def eye_opening(lang, name, day, accident, place ):
             mothertongue = wordRussian[0]
         else:
             mothertongue = wordEnglish[0]
+    else:
+        wordYes =['Yes']
+        wordNo =['No']
+
+
+
 
 
     e_score = 0
@@ -167,24 +180,33 @@ def eye_opening(lang, name, day, accident, place ):
 
                             
             
-            guess = repete_three('I am a member of the search and rescue team. I here to evaluate your condition and report it to my teammates. I am going to ask you a few questions. Are you ready?', 'ready.mp3', lang)
+            # guess = repete_three('I am a member of the search and rescue team. I am here to evaluate your condition and report it to my teammates. I am going to ask you a few questions. Are you ready?', 'ready.mp3', lang)
+            # if guess["transcription"]:
+            #     message = guess["transcription"].lower()
+            #     if wordYes[0] not in message:
+            #         guess = repete_three('I am here to help you. I will report your location and condition to my teammates. They will find you as soon as possible. Do you think that you are ready now?', 'readynow.mp3', lang)
+            #         if guess["transcription"]:
+            #             message = guess["transcription"].lower()
+            #     if wordYes[0] in message:
+            #         guess = repete_three('Please try to answer the following questions as concise as you can. Can you open your eyes and see your surroundings?','eyes.mp3', lang)
+            #         if guess["transcription"]:
+            #             message = guess["transcription"].lower()
+            #             if wordYes[0] in message:
+            #                 e_score = 4
+            #             v_score = verbal_response(lang, name, day, accident, place)
+            #             m_score = motor_response(lang, name)
+            #             evaluation(lang, name)
+            guess = repete_three('Please try to answer the following questions as concise as you can. Can you open your eyes and see your surroundings?','eyes.mp3', lang)
             if guess["transcription"]:
                 message = guess["transcription"].lower()
-                if wordYes[0] not in message:
-                    guess = repete_three('I am here to help you. I will report your location and condition to my teammates. They will find you as soon as possible. Do you think that you are ready now?', 'readynow.mp3', lang)
-                    if guess["transcription"]:
-                        message = guess["transcription"].lower()
-                if wordYes[0] in message:
-                    guess = repete_three('Please try to answer the following questions as concise as you can. Can you open your eyes and see your surroundings?','eyes.mp3', lang)
-                    if guess["transcription"]:
-                        message = guess["transcription"].lower()
-                        if wordYes[0] in message:
-                            e_score = 4
-                        v_score = verbal_response(lang, name, day, accident, place)
-                        m_score = motor_response(lang, name)
-                        evaluation(lang, name)
-                else:
-                    guess = repete_three('Please try to answer the following questions as concisely as you can. Can you open your eyes and see your surroundings?','eyes.mp3', lang) 
+                if wordYes[0] in message:                            
+                    e_score = 4
+
+                v_score = verbal_response(lang, name, day, accident, place)
+                m_score = motor_response(lang, name)
+                evaluation(lang, name)
+                #else:
+                #    guess = repete_three('Please try to answer the following questions as concisely as you can. Can you open your eyes and see your surroundings?','eyes.mp3', lang) 
 
 
 
@@ -235,36 +257,45 @@ def eye_opening(lang, name, day, accident, place ):
 
 
                     if wordYes[0] in message:
-                        guess = repete_three('I am a member of the search and rescue team. I here to evaluate your condition and report it to my teammates. I am going to ask you a few questions. Are you ready?', 'ready.mp3', lang)
+                        # guess = repete_three('I am a member of the search and rescue team. I here to evaluate your condition and report it to my teammates. I am going to ask you a few questions. Are you ready?', 'ready.mp3', lang)
+                        # if guess["transcription"]:
+                        #     message = guess["transcription"].lower
+                        #     if wordYes[0] not in message:
+                        #         guess = repete_three('I am here to help you. I will report your location and condition to my teammates. They will find you as soon as possible. Do you think that you are ready now?', 'readynow.mp3', lang)
+                        #         if guess["transcription"]:
+                        #             message = guess["transcription"].lower()
+                        #     if wordYes[0] in message:
+                        #         guess = repete_three('Please try to answer the following questions as concisely as you can. Can you open your eyes and see your surroundings?','eyes.mp3', lang)
+                        #         if guess["transcription"]:
+                        #             message = guess["transcription"].lower()
+                        #             if wordYes[0] in message:
+                        #                 e_score = 3
+                        #             v_score = verbal_response(lang,name, day, accident, place)
+                        #             m_score = motor_response(lang,name)
+                        #             total = e_score + v_score + m_score
+                        #             evaluation(lang,name)
+                        guess = repete_three('Please try to answer the following questions as concisely as you can. Can you open your eyes and see your surroundings?','eyes.mp3', lang)
                         if guess["transcription"]:
-                            message = guess["transcription"].lower
-                            if wordYes[0] not in message:
-                                guess = repete_three('I am here to help you. I will report your location and condition to my teammates. They will find you as soon as possible. Do you think that you are ready now?', 'readynow.mp3', lang)
-                                if guess["transcription"]:
-                                    message = guess["transcription"].lower()
+                            message = guess["transcription"].lower()
                             if wordYes[0] in message:
-                                guess = repete_three('Please try to answer the following questions as concisely as you can. Can you open your eyes and see your surroundings?','eyes.mp3', lang)
-                                if guess["transcription"]:
-                                    message = guess["transcription"].lower()
-                                    if wordYes[0] in message:
-                                        e_score = 3
-                                    v_score = verbal_response(lang,name, day, accident, place)
-                                    m_score = motor_response(lang,name)
-                                    total = e_score + v_score + m_score
-                                    evaluation(lang,name)
+                                e_score = 3
+                            v_score = verbal_response(lang,name, day, accident, place)
+                            m_score = motor_response(lang,name)
+                            total = e_score + v_score + m_score
+                            evaluation(lang,name)
 
-                            else:
-                                guess = repete_three('Sorry I can not provide more assistance. I will now send a report to my teammates and continue scouting for the others.','sorry2.mp3', lang) 
+                            #else:
+                            #    guess = repete_three('Sorry I can not provide more assistance. I will now send a report to my teammates and continue scouting for the others.','sorry2.mp3', lang) 
 
         if not guess["success"]:
             print("ERROR: {}".format(guess["error"]))
-        print("v_score: {}".format(v_score))
-        print("e_score: {}".format(e_score))
-        print("m_score: {}".format(m_score))
-        print("Total score:{}".format(total))
         
+    print("v_score: {}".format(v_score))
+    print("e_score: {}".format(e_score))
+    print("m_score: {}".format(m_score))
+    print("Total score:{}".format(total))
+    return [e_score, v_score]
 
-        return [e_score, v_score]
 
 def verbal_response(lang, name, day, accident, place):
     translator = Translator() 
@@ -281,7 +312,7 @@ def verbal_response(lang, name, day, accident, place):
     score = 3
     translator = Translator()
     Connection = CheckingConnectionToGoogle()
-    if Connection[0] == True: 
+    if Connection == True:
         print(Connection, "Connected")
     elif Connection == False:
         print("Connection lost")
@@ -372,7 +403,7 @@ def evaluation(lang, name):
         gender = 'He'
         gender_2 = 'his'
 
-    text_trapped = ''
+    text_trapped = 'Arm'
     text_pain = ''
     text_limb = ''
     text_limbsmoving = ''
@@ -431,27 +462,35 @@ def evaluation(lang, name):
                         print("victim's arm is bleeding")
             elif wordNo[0]:
                 text_bleed = '' + name + 'is not bleeding externally.'
-        guess = repete_three('Do you feel sever pain?', lang)
+        guess = repete_three('Do you feel sever pain?','bleed.mp3', lang)
         if guess["transcription"]:
             message = guess["transcription"].lower()
             if wordYes[0] in message:
-                guess = repete_three('Where is the source of pain?', lang)
+                guess = repete_three('Where is the source of pain?', None ,lang)
                 if guess["transcription"]:
                     message = guess["transcription"].lower()
-                    if wordHead[0] is message:
+                    if wordHead[0] in message:
                         print("Victim has pain on the head.")
-                        text_pain = '' + gender + 'feels sever pain in the head.'
+                        text_pain = '' + gender + ' feels sever pain in the head.'
                     elif wordAbdomen[0] or wordStomach[0] in message:
                         print("Victim has pain on abdominal area.")
-                        text_pain = '' + gender + '' + 'feels sever abdominal pain.'
+                        text_pain = '' + gender + '' + ' feels sever abdominal pain.'
                     elif wordArm[0] in message:
                         print("victim's arm is painfull.")
-                        text_pain = '' + gender + 'feels sever pain in' + '' + gender_2 + 'arm.'
+                        text_pain = '' + gender + ' feels sever pain in' + '' + gender_2 + 'arm.'
             elif wordNo[0] in message:
                 print("Victim doesn't feel sever pain.")
-                text_pain = '' + gender + 'does not feel sever pain.'
+                text_pain = '' + gender + ' does not feel sever pain.'
     oral_report = '' + text_trapped + '' + text_limbsmoving + '' + text_limb + '' + text_feel + '' + text_bleed + '' + text_pain
     print(oral_report)
-    guess = repete_three('' + oral_report + 'Do you confirm?', lang)
+    guess = repete_three('' + oral_report + 'Do you confirm?',None, lang)
+    if guess["transcription"]:
+        message = guess["transcription"].lower()
+        if wordHead[0] in message:
+            print("The victim confirmed above")
+
+    return 
+
+
 if __name__ == "__main__":                                   
-    eye_opening('en','Dariush', 'Sunday', 'earthquake', 'home')
+    eye_opening('en','Rebecca', 'Sunday', 'earthquake', 'home')

@@ -459,4 +459,4 @@ def evaluation(lang, name):
     print(oral_report)
     guess = repeat_three('' + oral_report + 'Do you confirm?', lang)
 if __name__ == "__main__":                                   
-    eye_opening('sv','Hugo', 'Sunday', 'earthquake', 'home')
+    eye_opening('en','Rebecca', 'Sunday', 'earthquake', 'home')

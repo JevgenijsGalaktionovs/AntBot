@@ -58,12 +58,12 @@ def recognize_speech_from_mic(recognizer, microphone, lang):
         response["error"] = "API unavailable"
         if response["error"] == "API unavailable":
             print("Oh Shit")
-            time.sleep(4)
+            time.sleep(1)
             Offline = True
-            while Offline == True: 
-                OfflineVoice()
-                print("Something funny")
-            
+            if Offline == True: 
+                response["transcription"] = OfflineVoice()
+                #print("Something funny")
+                
 
     except sr.UnknownValueError:
         # speech was unintelligible

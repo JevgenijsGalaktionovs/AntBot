@@ -17,4 +17,3 @@ def OfflineVoice():
         print("Sphinx error; {0}".format(e))
     
 
-
