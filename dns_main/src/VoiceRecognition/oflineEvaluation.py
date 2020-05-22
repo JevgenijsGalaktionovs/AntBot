@@ -151,7 +151,7 @@ def eye_opening(lang, name, day, accident, place ):
     recieve = repete_three('Hello, I am here to help you. Can you hear me?', lang, ('yes', 'no'), 'hello.mp3')
     guess = recieve[0]
     if guess["transcription"]:
-        recieve = repete_three('Please avoid moving your head. This can cause spinal cord injuries. Do you understand me?', lang , ('yes','no'),'understand.mp3')
+        recieve = repete_three('Do you understand me?', lang , ('yes','no'),'understand.mp3')
         if recieve[2] == True:
             recieve = repete_three('Do you speak'+ '' + mothertongue, lang,('yes','no'), None)
             if recieve[2] == True:
@@ -174,7 +174,7 @@ def eye_opening(lang, name, day, accident, place ):
                             return 'I have found ' + '' + name + ' The victim is awake and responding. But can not communicate.'
             # guess = repete_three('I am a member of the search and rescue team. I am here to evaluate your condition and report it 
                     
-        recieve = repete_three('Please try to answer the following questions as concisely as you can. Can you open your eyes and see your surroundings?',lang,('yes','no'),'eyes.mp3')
+        recieve = repete_three('Please avoid moving your head. This can cause spinal cord injuries. Please try to answer the following questions as concisely as you can. Can you open your eyes and see your surroundings?',lang,('yes','no'),'eyes.mp3')
         if recieve[1] == True:                         
             e_score = 4
 
@@ -188,7 +188,7 @@ def eye_opening(lang, name, day, accident, place ):
         recieve = repete_three('' + name + ' wake up. Can you hear me?', lang, ('yes','no'),'wakeup.mp3',)
         guess = recieve[0]
         if guess["transcription"]:
-            recieve = repete_three('Please avoid moving your head. This can cause spinal cord injuries. Do you understand me?', lang , ('yes','no'),'understand.mp3')
+            recieve = repete_three('Do you understand me?', lang , ('yes','no'),'understand.mp3')
             if recieve[2] == True:
                 recieve = repete_three('Do you speak'+ '' + mothertongue, lang,('yes','no'), None)
                 if recieve[2] == True:
@@ -210,7 +210,7 @@ def eye_opening(lang, name, day, accident, place ):
                                 os.system("mpg321 -q sorry2.mp3")
                                 return 'I have found ' + '' + name + ' The victim is awake and responding. But can not communicate.'
             
-            recieve = repete_three('Please try to answer the following questions as concisely as you can. Can you open your eyes and see your surroundings?',lang,('yes','no'),'eyes.mp3')
+            recieve = repete_three('Please avoid moving your head. This can cause spinal cord injuries. Please try to answer the following questions as concisely as you can. Can you open your eyes and see your surroundings?',lang,('yes','no'),'eyes.mp3')
             if recieve[1] == True:                         
                 e_score = 3
 
@@ -225,7 +225,7 @@ def eye_opening(lang, name, day, accident, place ):
     print("e_score: {}".format(e_score))
     print("m_score: {}".format(m_score))
     print("Total score:{}".format(total))
-    return [e_score, v_score, m_score, report]
+    return [v_score, e_score, m_score,total, report]
 
 
 def verbal_response(lang, name, day, accident, place):
@@ -270,14 +270,21 @@ def motor_response(lang,name):
     return score
 
 def evaluation(lang, name):
+
     if name == '':
-        name == 'Unknow victim'
+        name == translate('Unknow victim', lang)
     if name == 'rebecca':
-        gender = 'She'
-        gender_2 = 'her'
+        gender = translate('She',lang)
+        gender_2 = translate('her',lang)
     else:
-        gender = 'He'
-        gender_2 = 'his'
+        gender = translate('He',lang)
+        gender_2 = translate('his',lang)
+
+    Connection = CheckingConnectionToGoogle()
+    if isinstance(Connection,tuple):
+        Connection = Connection[0]
+    if Connection == True:
+
 
     text_limb = ''
     text_trapped = ''

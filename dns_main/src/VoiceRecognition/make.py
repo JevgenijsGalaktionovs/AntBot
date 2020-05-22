@@ -51,4 +51,4 @@ def repete_three(phrase,fName):
     if Connection == False:
         print("Connection lost")
 
-repete_three('Where is the source of pain?','painsource.mp3')
+repete_three('Please avoid moving your head. This can cause spinal cord injuries. Please try to answer the following questions as concisely as you can. Can you open your eyes and see your surroundings?','eyes.mp3')
