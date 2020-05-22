@@ -36,8 +36,9 @@ def reb_errore():
         p = pyaudio.PyAudio()
         stream = p.open(format=pyaudio.paFloat32, channels=1, rate=44100, output=1)
 
-def repete_three(phrase,fName,lang):
+def repete_three(phrase,fName):
     translator = Translator()
+    lang = 'en'
     translated = translator.translate('' + phrase, dest=lang)
     mytext = translated.text 
     language = lang
@@ -50,4 +51,4 @@ def repete_three(phrase,fName,lang):
     if Connection == False:
         print("Connection lost")
 
-repete_three('Are you bleeding??', 'bleed.mp3','en')
+repete_three('Where is the source of pain?','painsource.mp3')
