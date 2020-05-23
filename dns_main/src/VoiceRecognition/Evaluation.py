@@ -171,7 +171,7 @@ def eye_opening(lang, name, day, accident, place ):
                             lang = 'ru'
                         else:
                             os.system("mpg321 -q sorry2.mp3")  
-                            return 'I have found ' + '' + name + ' The victim is awake and responding. But can not communicate.'
+                            return 'I have found ' + '' + name + '. The victim is awake and responding. But can not communicate.'
             elif recieve[1] == True:
                     lang = 'en'
             # guess = repete_three('I am a member of the search and rescue team. I am here to evaluate your condition and report it 
@@ -210,7 +210,7 @@ def eye_opening(lang, name, day, accident, place ):
                                 lang = 'ru'
                             else:
                                 os.system("mpg321 -q sorry2.mp3")
-                                return 'I have found ' + '' + name + ' The victim is awake and responding. But can not communicate.'
+                                return 'I have found ' + '' + name + '. The victim is awake and responding. But can not communicate.'
                 elif recieve[1] == True:
                     lang = 'en'
                     
@@ -221,6 +221,8 @@ def eye_opening(lang, name, day, accident, place ):
             v_score = verbal_response(lang, name, day, accident, place)
             m_score = motor_response(lang, name)
             report = evaluation(lang, name)
+        else:
+            return 'I have found ' + '' + name + '. The victim is not awake and responding.'
 
     if not guess["success"]:
         print("ERROR: {}".format(guess["error"]))
