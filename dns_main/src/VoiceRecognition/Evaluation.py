@@ -358,15 +358,19 @@ def evaluation(lang, name):
         recive = repete_three('Which is the limb that you can not move it?', lang,('arm','leg'),'limb.mp3')
         conversation.extend([recieve[3]])
         if recieve[1] == True or recive[2] == True:
-            if recieve[1] == True:
+            if recieve[1] == True and recieve[2] == False:
                 text_limb = '' + gender + ' is not able to move ' + '' + gender_2 + ' arm.'
-            if recive[2] == True:
+            elif recieve[2] == True and recieve[1] == False:
                 text_limb = '' + gender + ' is not able to move ' + '' + gender_2 + ' leg.'
+            elif recieve[1] == True and recieve[2] == True:
+                text_limb = '' + gender + ' is not able to move any of the limbs.'
             recieve = repete_three('Can you still feel it?', lang,('yes','no'),'feel.mp3') 
-            if recieve[1] == True:
+            if recieve[1] == True and recieve[2] == False:
                         text_feel = 'But ' + '' + gender + ' can still feel it.'
-            if recieve[2] == True:
+            elif recieve[2] == True and recieve[1] == False:
                         text_feel = 'And ' + '' + gender + ' can not feel it.'
+            elif recieve[1] == True and recieve[2] == True:
+                text_feel = 'And ' + '' + gender + ' can not feel both.'
             else:
                 text_feel = 'And I do not know if' + '' + gender + ' can feel it or not.'  
     else:
