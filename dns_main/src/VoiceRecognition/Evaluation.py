@@ -218,7 +218,7 @@ def eye_opening(lang, name, day, accident, place ):
                 conversation.extend([recieve[3]])
                 if recieve[1] is not True:
                     if Connection == True:
-                        recieve = repete_three('Please choose between the following languages: English, Danish, Swedish and Russian', lang, ('',''), None)
+                        recieve = repete_three('Please choose between the following languages: English, Danish, Swedish and Russian', 'en', ('',''), None)
                         conversation.extend([recieve[3]])
                         guess = recieve[0]
                         if guess["transcription"]:
