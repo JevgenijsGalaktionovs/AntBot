@@ -152,9 +152,9 @@ def eye_opening(lang, name, day, accident, place ):
     guess = recieve[0]
     if guess["transcription"]:
         recieve = repete_three('Do you understand me?', lang , ('yes','no'),'understand.mp3')
-        if recieve[2] == True:
-            recieve = repete_three('Do you speak'+ '' + mothertongue, lang,('yes','no'), None)
-            if recieve[2] == True:
+        if recieve[1] is not True:
+            recieve = repete_three('Do you speakEnlish?', 'en',('yes','no'), None)
+            if recieve[1] is not True:
                 if Connection == True:
                     recieve = repete_three('Please choose between the following languages: English, Danish, Swedish and Russian', lang, ('',''), None)
                     guess = recieve[0]
@@ -172,6 +172,8 @@ def eye_opening(lang, name, day, accident, place ):
                         else:
                             os.system("mpg321 -q sorry2.mp3")  
                             return 'I have found ' + '' + name + ' The victim is awake and responding. But can not communicate.'
+            elif recieve[1] == True:
+                    lang = 'en'
             # guess = repete_three('I am a member of the search and rescue team. I am here to evaluate your condition and report it 
                     
         recieve = repete_three('Please avoid moving your head. This can cause spinal cord injuries. Please try to answer the following questions as concisely as you can. Can you open your eyes and see your surroundings?',lang,('yes','no'),'eyes.mp3')
@@ -189,9 +191,9 @@ def eye_opening(lang, name, day, accident, place ):
         guess = recieve[0]
         if guess["transcription"]:
             recieve = repete_three('Do you understand me?', lang , ('yes','no'),'understand.mp3')
-            if recieve[2] == True:
-                recieve = repete_three('Do you speak'+ '' + mothertongue, lang,('yes','no'), None)
-                if recieve[2] == True:
+            if recieve[1] is not True:
+                recieve = repete_three('Do you speak English?','en',('yes','no'), 'english.mp3')
+                if recieve[1] is not True:
                     if Connection == True:
                         recieve = repete_three('Please choose between the following languages: English, Danish, Swedish and Russian', lang, ('',''), None)
                         guess = recieve[0]
@@ -209,7 +211,9 @@ def eye_opening(lang, name, day, accident, place ):
                             else:
                                 os.system("mpg321 -q sorry2.mp3")
                                 return 'I have found ' + '' + name + ' The victim is awake and responding. But can not communicate.'
-            
+                elif recieve[1] == True:
+                    lang = 'en'
+                    
             recieve = repete_three('Please avoid moving your head. This can cause spinal cord injuries. Please try to answer the following questions as concisely as you can. Can you open your eyes and see your surroundings?',lang,('yes','no'),'eyes.mp3')
             if recieve[1] == True:                         
                 e_score = 3
@@ -279,11 +283,6 @@ def evaluation(lang, name):
     else:
         gender = translate('He',lang)
         gender_2 = translate('his',lang)
-
-    Connection = CheckingConnectionToGoogle()
-    if isinstance(Connection,tuple):
-        Connection = Connection[0]
-    if Connection == True:
 
 
     text_limb = ''

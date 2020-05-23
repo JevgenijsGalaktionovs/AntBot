@@ -71,7 +71,7 @@ def Test_speech(lang, name):
     elif lang == 'ru':
         randomword = [ "евгений","дом","школа","офис", "среда", "пятница", "суббота", "землетрясение","да", "нет", "голова", "рука", "желудок", "живот", "грудь"] #"евгений" = Jevgenijs
     else:
-        randomword = [ "NAME","home","school","office", "wednesday", "friday", "saturday", "earthquake","yes", "no", "head", "hand", "stomach", "abdomen", "chest"]
+        randomword = [ "Rebecca","home","school","office", "wednesday", "friday", "saturday", "earthquake","yes", "no", "head", "hand", "stomach", "abdomen", "chest"]
     counter = 0
     i = 0
     sucsesses = []
@@ -154,5 +154,5 @@ def count_number(word, sentence):
     
 if __name__ == "__main__":
 
-    Test_speech('en', 'Hugo')
+    Test_speech('en', 'Rebecca')
 
