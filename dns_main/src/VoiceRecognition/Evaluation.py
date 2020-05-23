@@ -147,6 +147,7 @@ def eye_opening(lang, name, day, accident, place ):
     e_score = 0
     v_score = 0
     m_score = 0
+    report = ''
 
     recieve = repete_three('Hello, I am here to help you. Can you hear me?', lang, ('yes', 'no'), 'hello.mp3')
     guess = recieve[0]
