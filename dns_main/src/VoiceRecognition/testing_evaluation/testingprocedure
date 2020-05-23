@@ -1,0 +1,29 @@
+1- pull from the latest version of hugo’s branch.
+2-make sure that you have done hugo’s test(VoiceRecognition test) because then you have all the libraries and settings you need here.-try to do it somewhere quiet.
+3- navigate to DNS/dns_main/src/VoiceRecognition and then 
+python3 Evaluation.py  
+4- change the last line according to your name, language and and etc. you can choose whatever you want, i suggest(school, office, home for place and earthquake for accident and saturday, wednesday and friday for day) 
+5-choose a proposed scenario and try to remember it. Then run the program and answer the questions based on the scenario you have chosen. Then take a screenshot and save it as the scenario number and send it to me.
+6- If you have chosen to be unknown, start with english and change the name like this example:
+a= eye_opening(‘en’, ‘ ’ , ‘ friday’, ‘earthquake’, ‘ office’ )
+For the line 413: dont forget to change the file name according to the scenario you are trying to simulate,	
+example: local_path = “testing_evaluation/csenarion_1.log”
+
+ all start with small letters not capital. Even your names.then when the system asks you if you understand? You say something but not “yes”. Then it asks you: do you speak english? You say no,(anything but yes), then it asks you to choose between these languages and you choose native language.
+7- I have made these scenarios with a random generator so if the system didn't ask you the questions that i have put an answer to, don't worry. Just continue.
+
+
+P.s: for online give the system 1or 2 sec after you saw this: Recording Message.
+For offline you start 1 or 2 sec after seeing : oh shit say something.
+P.s2: if for offline turn off your wifi whenever you want. Doesn't really matter. You can also turn it back again if you want to.
+P.s2:
+P.s3 : Make short sentences and try to put the key words in the middle.:)
+
+
+Dont forget to give me log files.(testing_evaluation) files
+
+
+
+If there was any problem just call me. I am writing so i might not be available on messenger.
+Thank you advanced for your help.:)
+
