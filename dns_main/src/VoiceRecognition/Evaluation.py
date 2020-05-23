@@ -285,7 +285,8 @@ def verbal_response(lang, name, day, accident, place):
     if recieve[1] == True:
         recieve = repete_three('What is your name?',lang,(name,name), None)
         conversation.extend([recieve[3]])
-        if recieve[1] == True:
+        guess = recieve[0]
+        if guess["transcription"]:
             recieve = repete_three('What day of the week is today?',lang, (day,day),'day.mp3')
             conversation.extend([recieve[3]])
             if recieve[1] == True:
@@ -301,9 +302,8 @@ def verbal_response(lang, name, day, accident, place):
                 else:
                     score = 4
             else:
-                score = 4
-        else:
-            score = 4
+                score = 4        
+        
 
                       
     return score, conversation
@@ -388,7 +388,7 @@ def evaluation(lang, name):
     recieve = repete_three('Do you feel severe pain?',lang,('yes','no'),'pain.mp3')
     conversation.extend([recieve[3]])
     if recieve[1] == True:
-        text_pain = '' + gender + ' feels sever pain'
+        text_pain = '' + gender + ' feels sever pain.'
         recieve = repete_three('Where is the source of pain?',lang,('head','stomach'), 'painsource.mp3')
         conversation.extend([recieve[3]])
         if recieve[1] == True:
@@ -402,7 +402,7 @@ def evaluation(lang, name):
         text_pain = '' + gender + ' does not feel severe pain.'
     oral_report = '' + text_trapped + '' + text_limb + '' + text_limbsmoving + '' + text_feel + '' + text_bleed + '' + text_pain
     print(oral_report)
-    recieve = repete_three('' + oral_report + 'Do you confirm?',lang,('yes','no'),None)
+    recieve = repete_three('' + oral_report + ' Do you confirm?',lang,('yes','no'),None)
     conversation.extend([recieve[3]])
     if recieve is not None:
         if recieve[1] == True:

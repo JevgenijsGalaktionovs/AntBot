@@ -65,13 +65,13 @@ def Test_speech(lang, name):
     myobj.save("welcome.mp3") 
     os.system("mpg321 -q welcome.mp3")    
     if lang == 'sv':
-        randomword = [ "NAMN","hem","skola","kontor", "onsdag", "fredag", "lördag", "jordbävning","ja", "nej", "huvud", "hand", "mage", "buk", "bröst"]
+        randomword = [ "rebecka","hem","skola","kontor", "onsdag", "fredag", "lördag", "jordbävning","ja", "nej", "huvud", "hand", "mage", "buk", "bröst"]
     elif lang == 'da': 
-        randomword = [ "NAVN","hjem","skole","kontor", "onsdag", "fredag", "lørdag", "jordskælv","ja", "nej", "hoved", "hånd", "mave", "underliv", "brøst"]
+        randomword = [ "dariush","hjem","skole","kontor", "onsdag", "fredag", "lørdag", "jordskælv","ja", "nej", "hoved", "hånd", "mave", "underliv", "brøst"]
     elif lang == 'ru':
         randomword = [ "евгений","дом","школа","офис", "среда", "пятница", "суббота", "землетрясение","да", "нет", "голова", "рука", "желудок", "живот", "грудь"] #"евгений" = Jevgenijs
     else:
-        randomword = [ "Rebecca","home","school","office", "wednesday", "friday", "saturday", "earthquake","yes", "no", "head", "hand", "stomach", "abdomen", "chest"]
+        randomword = [ "rebecca","home","school","office", "wednesday", "friday", "saturday", "earthquake","yes", "no", "head", "hand", "stomach", "abdomen", "chest"]
     counter = 0
     i = 0
     sucsesses = []
@@ -154,5 +154,5 @@ def count_number(word, sentence):
     
 if __name__ == "__main__":
 
-    Test_speech('sv', 'Rebecka')
+    Test_speech('da', 'dariush')
 
