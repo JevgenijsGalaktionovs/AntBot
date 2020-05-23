@@ -154,5 +154,5 @@ def count_number(word, sentence):
     
 if __name__ == "__main__":
 
-    Test_speech('en', 'Rebecca')
+    Test_speech('sv', 'Rebecka')
 
