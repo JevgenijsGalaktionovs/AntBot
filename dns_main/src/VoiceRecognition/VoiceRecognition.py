@@ -10,6 +10,7 @@ from InternetTest import *
 from googletrans import Translator
 from OfflineVoice import *
 
+
 def recognize_speech_from_mic(recognizer, microphone, lang):
 
     """Transcribe speech from recorded from `microphone`.

@@ -1,24 +1,26 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import time
-from gtts import gTTS 
-import os 
-import speech_recognition as sr
-import time
-from InternetTest import *
-#from keyboardControll import *
-from googletrans import Translator
-from OfflineVoice import *
-from VoiceRecognition import *
-#from ctypes import *
-#from contextlib import contextmanager
-import pyaudio
-import logging
-#import example
 
+import os
+import logging
+
+from gtts import gTTS
+import speech_recognition as sr
+from googletrans import Translator
+
+
+from InternetTest import CheckingConnectionToGoogle
+from VoiceRecognition import recognize_speech_from_mic
+
+# import time
+# from keyboardControll import *
+# from OfflineVoice import OfflineVoice
+# from contextlib import contextmanager
+# from ctypes import *
+# import pyaudio
 
 # ######for my errors###
-# def reb_errore():
+# def reb_error():
 #     ERROR_HANDLER_FUNC = CFUNCTYPE(None, c_char_p, c_int, c_char_p, c_int, c_char_p)
 
 #     def py_error_handler(filename, line, function, err, fmt):
@@ -37,7 +39,8 @@ import logging
 #         p = pyaudio.PyAudio()
 #         stream = p.open(format=pyaudio.paFloat32, channels=1, rate=44100, output=1)
 
-def recorde(lang):
+
+def record(lang):
     recognizer = sr.Recognizer()
     microphone = sr.Microphone()
     print("Recording Message")
@@ -48,84 +51,81 @@ def recorde(lang):
         guess = recognize_speech_from_mic(recognizer, microphone, 'sv-SE')
     elif lang == 'bs':
         guess = recognize_speech_from_mic(recognizer, microphone, 'ru-Ru')
-    else :
+    else:
         guess = recognize_speech_from_mic(recognizer, microphone, 'en-UK')
     return guess
 
-def repete_three(phrase,lang,keyWord,fName=None):
+
+def repeat_three(phrase, lang, keyWord, fName=None):
     output_1 = False
     output_2 = False
-    keyWord_1 = translate(keyWord[0],lang)
-    keyWord_2 = translate(keyWord[1],lang)
+    keyWord_1 = translate(keyWord[0], lang)
+    keyWord_2 = translate(keyWord[1], lang)
 
-    
     Connection = CheckingConnectionToGoogle()
-    if isinstance(Connection,tuple):
+    if isinstance(Connection, tuple):
         Connection = Connection[0]
-    #reb_errore()
+    # reb_error()
     translator = Translator()
-    if Connection == False and fName is None:
+    if Connection is False and fName is None:
         return
     else:
-        for x in range(0,3):
-            x = x+1
-            if Connection == True:
-                #print(Connection, "Connected")
+        for x in range(3):
+            x += 1
+            if Connection is True:
+                # print(Connection, "Connected")
                 translated = translator.translate('' + phrase, dest=lang)
-                mytext = translated.text 
+                mytext = translated.text
                 language = lang
-                myobj = gTTS(text=mytext, lang=language, slow=False) 
-                myobj.save("welcome.mp3") 
+                myobj = gTTS(text=mytext, lang=language, slow=False)
+                myobj.save("welcome.mp3")
                 os.system("mpg321 -q welcome.mp3")
-            elif Connection == False:
-                #print(Connection,"Connection lost")
+            elif Connection is False:
+                # print(Connection,"Connection lost")
                 if fName is not None:
                     os.system("mpg321 -q {}".format(fName))
 
-            guess = recorde(lang)
+            guess = record(lang)
             if guess["transcription"]:
-                message =  guess["transcription"].lower()
+                message = guess["transcription"].lower()
                 if keyWord_1 in message:
                     output_1 = True
                 if keyWord_2 in message:
                     output_2 = True
-                
-                if (output_1 == True) or (output_2 == True):
+                if (output_1 is True) or (output_2 is True):
                     break
-        
+
         print('Try number: {}'.format(x))
         if guess["transcription"]:
             conversation = 'Question:'+'' + phrase + 'Answer:' + '' + guess["transcription"]
         elif guess["error"]:
             conversation = 'Question:'+'' + phrase + 'Answer:' + '' + guess["error"]
         out = (guess, output_1, output_2, conversation)
-        return out    
+        return out
 
 
-
-def translate(keyWord,lang):
+def translate(keyWord, lang):
     translator = Translator()
     Connection = CheckingConnectionToGoogle()
-    if isinstance(Connection,tuple):
+    if isinstance(Connection, tuple):
         Connection = Connection[0]
-    if Connection == True:
+    if Connection is True:
         lang = lang
-        translated_keyWord = translator.translate(keyWord , dest=lang)
-        keyWord =translated_keyWord.text.lower()
+        translated_keyWord = translator.translate(keyWord, dest=lang)
+        keyWord = translated_keyWord.text.lower()
     return keyWord
 
 
-
-def eye_opening(lang, name, day, accident, place ):
+def eye_opening(lang, name, day, accident, place):
     total = 0
     Connection = CheckingConnectionToGoogle()
     conversation = ['']
-    if isinstance(Connection,tuple):
+    if isinstance(Connection, tuple):
         Connection = Connection[0]
-        #print(Connection, "I knew this")
+        # print(Connection, "I knew this")
     # if isinstance(Connection,tuple):
     #     Connection = Connection[0]
-    # if Connection == True:
+    # if Connection is True:
     #     print(Connection, "Connected")
     #     translated_yes = translator.translate('Yes' , dest=lang)
     #     wordYes =[translated_yes.text.lower()]
@@ -155,20 +155,18 @@ def eye_opening(lang, name, day, accident, place ):
     m_score = 0
     report = ''
 
-
-
-    recieve = repete_three('Hello, I am here to help you. Can you hear me?', lang, ('yes', 'no'), 'hello.mp3')
+    recieve = repeat_three('Hello, I am here to help you. Can you hear me?', lang, ('yes', 'no'), 'hello.mp3')
     conversation.extend([recieve[3]])
     guess = recieve[0]
     if guess["transcription"]:
-        recieve = repete_three('Do you understand me?', lang , ('yes','no'),'understand.mp3')
+        recieve = repeat_three('Do you understand me?', lang, ('yes', 'no'), 'understand.mp3')
         conversation.extend([recieve[3]])
-        if recieve[1] == True:
-            # recieve = repete_three('Do you speakEnlish?', 'en',('yes','no'), None)
+        if recieve[1] is True:
+            # recieve = repeat_three('Do you speakEnlish?', 'en',('yes','no'), None)
             # conversation.extend([recieve[3]])
             # if recieve[1] is not True:
-            #     if Connection == True:
-            #         recieve = repete_three('Please choose between the following languages: English, Danish, Swedish and Russian', lang, ('',''), None)
+            #     if Connection is True:
+            #         recieve = repeat_three('Please choose between the following languages: English, Danish, Swedish and Russian', lang, ('',''), None)
             #         conversation.extend([recieve[3]])
             #         guess = recieve[0]
             #         if guess["transcription"]:
@@ -185,15 +183,17 @@ def eye_opening(lang, name, day, accident, place ):
             #             else:
             #                 os.system("mpg321 -q sorry2.mp3")  
             #                 return 'I have found ' + '' + name + '. The victim is awake and responding. But can not communicate.'
-             #elif recieve[1] == True:
+             #elif recieve[1] is True:
             #        lang = 'en'
 
-            # guess = repete_three('I am a member of the search and rescue team. I am here to evaluate your condition and report it 
-            v_score = 3           
-            recieve = repete_three('Please avoid moving your head. This can cause spinal cord injuries. Please try to answer the following questions as concisely as you can. Can you open your eyes and see your surroundings?',lang,('yes','no'),'eyes.mp3')
-            if recieve[1] == True:                         
+            # guess = repeat_three('I am a member of the search and rescue team. I am here to evaluate your condition and report it 
+            v_score = 3
+            very_long_str = 'Please avoid moving your head. This can cause spinal cord injuries.\
+                             Please try to answer the following questions as concisely as you can.\
+                             Can you open your eyes and see your surroundings?'
+            recieve = repeat_three(very_long_str, lang, ('yes', 'no'), 'eyes.mp3')
+            if recieve[1] is True:
                 e_score = 4
-        
 
             v_score = verbal_response(lang, name, day, accident, place)
             conversation.extend([v_score[1]])
@@ -205,22 +205,24 @@ def eye_opening(lang, name, day, accident, place ):
             conversation.extend([report[1]])
             report = report[0]
         else:
-            return 'I have found ' + '' + name + ' The victim is awake and responding. But can not communicate.'
+            out_str = 'I have found {}. The victim is awake and responding. But cannot communicate.'.format(name)
+            return out_str
 
-
-    else:    
-        recieve = repete_three('' + name + ' wake up. Can you hear me?', lang, ('yes','no'),'wakeup.mp3',)
+    else:
+        wakeup_str = '{}, wake up! Can you hear me?'.format(name)
+        recieve = repeat_three(wakeup_str, lang, ('yes', 'no'), 'wakeup.mp3')
         conversation.extend([recieve[3]])
         guess = recieve[0]
         if guess["transcription"]:
-            recieve = repete_three('Do you understand me?', lang , ('yes','no'),'understand.mp3')
+            understand_str = 'Do you understand me?'
+            recieve = repeat_three(understand_str, lang, ('yes', 'no'), 'understand.mp3')
             conversation.extend([recieve[3]])
-            if recieve[1] == True:
-                # recieve = repete_three('Do you speak English?','en',('yes','no'), 'english.mp3')
+            if recieve[1] is True:
+                # recieve = repeat_three('Do you speak English?','en',('yes','no'), 'english.mp3')
                 # conversation.extend([recieve[3]])
-                # if recieve[1] == True:
-                    # if Connection == True:
-                    #     recieve = repete_three('Please choose between the following languages: English, Danish, Swedish and Russian', 'en', ('',''), None)
+                # if recieve[1] is True:
+                    # if Connection is True:
+                    #     recieve = repeat_three('Please choose between the following languages: English, Danish, Swedish and Russian', 'en', ('',''), None)
                     #     conversation.extend([recieve[3]])
                     #     guess = recieve[0]
                     #     if guess["transcription"]:
@@ -237,16 +239,17 @@ def eye_opening(lang, name, day, accident, place ):
                     #         else:
                     #             os.system("mpg321 -q sorry2.mp3")
                     #             return 'I have found ' + '' + name + '. The victim is awake and responding. But can not communicate.'
-                #elif recieve[1] == True:
+                #elif recieve[1] is True:
                 #    lang = 'en'
 
-            
-                v_score = 3        
-                recieve = repete_three('Please avoid moving your head. This can cause spinal cord injuries. Please try to answer the following questions as concisely as you can. Can you open your eyes and see your surroundings?',lang,('yes','no'),'eyes.mp3')
+                v_score = 3
+                very_long_str = 'Please avoid moving your head. This can cause spinal cord injuries.\
+                    Please try to answer the following questions as concisely as you can.\
+                    Can you open your eyes and see your surroundings?'
+                recieve = repeat_three(very_long_str, lang, ('yes', 'no'), 'eyes.mp3')
                 conversation.extend([recieve[3]])
-                if recieve[1] == True:                         
+                if recieve[1] is True:
                     e_score = 3
-
 
                 v_score = verbal_response(lang, name, day, accident, place)
                 conversation.extend([v_score[1]])
@@ -258,80 +261,79 @@ def eye_opening(lang, name, day, accident, place ):
                 conversation.extend([report[1]])
                 report = report[0]
             else:
-                return 'I have found ' + '' + name + '. The victim is not awake and responding.'
+                out_str = 'I have found {}. The victim is not awake and responding.'.format(name)
+                return out_str
 
         if not guess["success"]:
             print("ERROR: {}".format(guess["error"]))
 
-    total = e_score + v_score + m_score   
+    total = e_score + v_score + m_score
     print("v_score: {}".format(v_score))
     print("e_score: {}".format(e_score))
     print("m_score: {}".format(m_score))
     print("Total score:{}".format(total))
 
-    return [v_score, e_score, m_score,total, report, conversation]
+    return [v_score, e_score, m_score, total, report, conversation]
 
 
 def verbal_response(lang, name, day, accident, place):
     score = 3
     conversation = []
     Connection = CheckingConnectionToGoogle()
-    if Connection == True:
+    if Connection is True:
         print(Connection, "Connected")
-    elif Connection == False:
+    elif Connection is False:
         print("Connection lost")
-    recieve = repete_three('Can you remember your name?',lang, ('yes','no'),'name.mp3') 
+    recieve = repeat_three('Can you remember your name?', lang, ('yes', 'no'), 'name.mp3')
     conversation.extend([recieve[3]])
-    if recieve[1] == True:
-        recieve = repete_three('What is your name?',lang,(name,name), None)
+    if recieve[1] is True:
+        recieve = repeat_three('What is your name?', lang, (name, name), None)
         conversation.extend([recieve[3]])
         guess = recieve[0]
         if guess["transcription"]:
-            recieve = repete_three('What day of the week is today?',lang, (day,day),'day.mp3')
+            recieve = repeat_three('What day of the week is today?', lang, (day, day), 'day.mp3')
             conversation.extend([recieve[3]])
-            if recieve[1] == True:
-                recieve = repete_three('What natural disaster has happend recently?',lang,(accident,accident),'accident.mp3')
+            if recieve[1] is True:
+                recieve = repeat_three('What natural disaster has happend recently?', lang, (accident, accident),'accident.mp3')
                 conversation.extend([recieve[3]])
-                if recieve[1] == True:
-                    recieve = repete_three('where are we right now?', lang,(place,place),'place.mp3')
+                if recieve[1] is True:
+                    recieve = repeat_three('where are we right now?', lang,(place, place), 'place.mp3')
                     conversation.extend([recieve[3]])
-                    if recieve[1] == True:
+                    if recieve[1] is True:
                         score = 5
                     else:
                         score = 4
                 else:
                     score = 4
             else:
-                score = 4        
-        
-
-                      
+                score = 4
     return score, conversation
 
 
-def motor_response(lang,name):
+def motor_response(lang, name):
     conversation = []
-    recieve = repete_three('Are you able to put your tongue out, and put it back into your mouth again?', lang,('yes','no'), 'motor.mp3')
+    question_str = 'Are you able to put your tongue out, and put it back into your mouth again?'
+    recieve = repeat_three(question_str, lang, ('yes', 'no'), 'motor.mp3')
     conversation.extend([recieve[3]])
-    if recieve[1] == True:
+    if recieve[1] is True:
         score = 6
-    elif recieve[2] == True:
+    elif recieve[2] is True:
         score = 1
     else:
         score = 0
-    return score,conversation
+    return score, conversation
+
 
 def evaluation(lang, name):
     conversation = []
     if name == '':
         name == translate('Unknow victim', lang)
     if name == 'rebecca':
-        gender = translate('She',lang)
-        gender_2 = translate('her',lang)
+        gender = translate('She', lang)
+        gender_2 = translate('her', lang)
     else:
-        gender = translate('He',lang)
-        gender_2 = translate('his',lang)
-
+        gender = translate('He', lang)
+        gender_2 = translate('his', lang)
 
     text_limb = ''
     text_trapped = ''
@@ -340,87 +342,89 @@ def evaluation(lang, name):
     text_bleed = ''
     text_pain = ''
 
-    recieve = repete_three('Are you trapped?',lang,('no','yes'),'trapped.mp3')
+    recieve = repeat_three('Are you trapped?', lang, ('no', 'yes'), 'trapped.mp3')
     conversation.extend([recieve[3]])
-    if recieve[1] == True:
-        #print('Victim is trapped.')
+    if recieve[1] is True:
+        # print('Victim is trapped.')
         text_trapped = 'I have found ' + '' + name + '. ' + '' + gender + ' is trapped.'
-    elif recieve[2] == True:
-        #print('Victim is free.')
+    elif recieve[2] is True:
+        # print('Victim is free.')
         text_trapped = 'I have found ' + '' + name + '. ' + '' + gender +' is not trapped.'
     else:
         text_trapped = 'I have found ' + '' + name + '. I do not know if ' + '' + gender + ' is trapped or not.'
-    recieve = repete_three('Can you move all your limbs?',lang,('yes','no'),'move.mp3')
+    recieve = repeat_three('Can you move all your limbs?', lang,('yes', 'no'), 'move.mp3')
     conversation.extend([recieve[3]])
-    if recieve[1] == True:
-        text_limbsmoving = '' + gender + ' can move all of the lims.'
-    if recieve[2] == True:
-        recive = repete_three('Which is the limb that you can not move it?', lang,('arm','leg'),'limb.mp3')
+    if recieve[1] is True:
+        text_limbsmoving = '' + gender + ' can move all of the limbs.'
+    if recieve[2] is True:
+        recive = repeat_three('Which is the limb that you cannot move it?', lang,('arm', 'leg'), 'limb.mp3')
         conversation.extend([recieve[3]])
-        if recieve[1] == True or recive[2] == True:
-            if recieve[1] == True and recieve[2] == False:
+        if recieve[1] is True or recive[2] is True:
+            if recieve[1] is True and recieve[2] is False:
                 text_limb = '' + gender + ' is not able to move ' + '' + gender_2 + ' arm.'
-            elif recieve[2] == True and recieve[1] == False:
+            elif recieve[2] is True and recieve[1] is False:
                 text_limb = '' + gender + ' is not able to move ' + '' + gender_2 + ' leg.'
-            elif recieve[1] == True and recieve[2] == True:
+            elif recieve[1] is True and recieve[2] is True:
                 text_limb = '' + gender + ' is not able to move any of the limbs.'
-            recieve = repete_three('Can you still feel it?', lang,('yes','no'),'feel.mp3') 
-            if recieve[1] == True and recieve[2] == False:
-                        text_feel = 'But ' + '' + gender + ' can still feel it.'
-            elif recieve[2] == True and recieve[1] == False:
-                        text_feel = 'And ' + '' + gender + ' can not feel it.'
-            elif recieve[1] == True and recieve[2] == True:
+            recieve = repeat_three('Can you still feel it?', lang, ('yes', 'no'), 'feel.mp3')
+            if recieve[1] is True and recieve[2] is False:
+                text_feel = 'But ' + '' + gender + ' can still feel it.'
+            elif recieve[2] is True and recieve[1] is False:
+                text_feel = 'And ' + '' + gender + ' can not feel it.'
+            elif recieve[1] is True and recieve[2] is True:
                 text_feel = 'And ' + '' + gender + ' can not feel both.'
             else:
-                text_feel = 'And I do not know if' + '' + gender + ' can feel it or not.'  
+                text_feel = 'And I do not know if' + '' + gender + ' can feel it or not.'
     else:
         text_limbsmoving = 'I do not know if ' + '' + gender + ' can move ' + '' + gender_2 + ' limbs or not.'
-                            
-    recieve = repete_three('Are you bleeding?', lang,('yes','no'),'bleeding.mp3')
+
+    recieve = repeat_three('Are you bleeding?', lang, ('yes', 'no'), 'bleeding.mp3')
     conversation.extend([recieve[3]])
-    if recieve[1] == True:
-        recieve= repete_three('Where is the source of blood?',lang,('head','abdomen'),'bloodsource.mp3')
+    if recieve[1] is True:
+        recieve = repeat_three('Where is the source of blood?', lang, ('head', 'abdomen'), 'bloodsource.mp3')
         conversation.extend([recieve[3]])
-        if recieve[1] == True: 
-            #print("Victim is bleeding on the head.")
+        if recieve[1] is True:
+            # print("Victim is bleeding on the head.")
             text_bleed = '' + gender + ' is bleeding on the head.'
-        elif recieve[2] == True:
-            #print("Victim is bleeding on abdominal area.")
+        elif recieve[2] is True:
+            # print("Victim is bleeding on abdominal area.")
             text_bleed = '' + name + ' is bleeding on abdominal area.'
     elif recieve[2]:
         text_bleed = '' + gender + ' is not bleeding externally.'
-    recieve = repete_three('Do you feel severe pain?',lang,('yes','no'),'pain.mp3')
+    recieve = repeat_three('Do you feel severe pain?', lang, ('yes', 'no'), 'pain.mp3')
     conversation.extend([recieve[3]])
-    if recieve[1] == True:
+    if recieve[1] is True:
         text_pain = '' + gender + ' feels sever pain.'
-        recieve = repete_three('Where is the source of pain?',lang,('head','stomach'), 'painsource.mp3')
+        recieve = repeat_three('Where is the source of pain?', lang, ('head', 'stomach'), 'painsource.mp3')
         conversation.extend([recieve[3]])
-        if recieve[1] == True:
-            #print("Victim has pain on the head.")
+        if recieve[1] is True:
+            # print("Victim has pain on the head.")
             text_pain = '' + gender + ' has severe headache.'
-        elif recieve[2] == True:
-            #print("Victim has pain on abdominal area.")
+        elif recieve[2] is True:
+            # print("Victim has pain on abdominal area.")
             text_pain = '' + gender + ' feels severe abdominal pain.'
-    elif recieve[2] == True:
-        #print("Victim doesn't feel sever pain.")
+    elif recieve[2] is True:
+        # print("Victim doesn't feel sever pain.")
         text_pain = '' + gender + ' does not feel severe pain.'
     oral_report = '' + text_trapped + '' + text_limb + '' + text_limbsmoving + '' + text_feel + '' + text_bleed + '' + text_pain
     print(oral_report)
-    recieve = repete_three('' + oral_report + ' Do you confirm?',lang,('yes','no'),None)
+    recieve = repeat_three('' + oral_report + ' Do you confirm?', lang, ('yes', 'no'), None)
     conversation.extend([recieve[3]])
     if recieve is not None:
-        if recieve[1] == True:
-            #print("The victim confirmed above")
-            oral_report = '' + oral_report + ' Victim confirmed.' 
+        if recieve[1] is True:
+            # print("The victim confirmed above")
+            oral_report = '' + oral_report + ' Victim confirmed.'
 
-    return oral_report,conversation
+    return oral_report, conversation
 
 
-if __name__ == "__main__":                                   
-    a = eye_opening('en','rebecca', 'friday', 'earthquake', 'office')
+if __name__ == "__main__":
+    result = eye_opening('ru', 'eugene', 'sunday', 'earthquake', 'school')
     path = os.path.dirname(os.path.abspath(__file__))
     local_path = "testing_evaluation/scenario_1.log"
     full_path = os.path.join(path, local_path)
-    logging.basicConfig(filename = full_path,level=logging.DEBUG,format='%(asctime)s :: %(message)s')
-    logging.info(a[5])
-    print(a)
+    logging.basicConfig(filename=full_path,
+                        level=logging.DEBUG,
+                        format='%(asctime)s :: %(message)s')
+    logging.info(result[5])
+    print(result)

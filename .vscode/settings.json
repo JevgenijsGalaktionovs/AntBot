@@ -1,0 +1,5 @@
+{
+    "python.pythonPath": "/home/eugenegalaxy/Desktop/projects/virtual_environments/rebecca_test/bin/python3",
+    "python.linting.flake8Enabled": true,
+    "python.linting.enabled": true
+}
