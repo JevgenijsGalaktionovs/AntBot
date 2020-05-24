@@ -51,7 +51,7 @@ def record(lang):
         guess = recognize_speech_from_mic(recognizer, microphone, 'sv-SE')
     elif lang == 'ru':
         guess = recognize_speech_from_mic(recognizer, microphone, 'ru-RU')
-    else :
+    else:
         guess = recognize_speech_from_mic(recognizer, microphone, 'en-UK')
     return guess
 
@@ -59,14 +59,25 @@ def record(lang):
 def repeat_three(phrase, lang, keyWord, fName=None):
     output_1 = False
     output_2 = False
-    keyWord_1 = translate(keyWord[0], lang)
-    keyWord_2 = translate(keyWord[1], lang)
+    translator = Translator()
+
 
     Connection = CheckingConnectionToGoogle()
     if isinstance(Connection, tuple):
         Connection = Connection[0]
+        keyWord_1 = translate(keyWord[0], lang)
+        if keyWord[1] is 'no' and lang is 'da':
+            keyWord_2 = 'Nej'
+        else:
+            keyWord_2 = translate(keyWord[1], lang)
+
+    if Connection is False:
+        keyWord_1 = keyWord[0]
+        keyWord_2 = keyWord[1]
+        
+        
     # reb_error()
-    translator = Translator()
+
     if Connection is False and fName is None:
         return
     else:
@@ -88,6 +99,7 @@ def repeat_three(phrase, lang, keyWord, fName=None):
             guess = record(lang)
             if guess["transcription"]:
                 message = guess["transcription"].lower()
+                print(guess["transcription"])
                 if keyWord_1 in message:
                     output_1 = True
                 if keyWord_2 in message:
@@ -343,7 +355,7 @@ def evaluation(lang, name):
     text_bleed = ''
     text_pain = ''
 
-    recieve = repeat_three('Are you trapped?', lang, ('no', 'yes'), 'trapped.mp3')
+    recieve = repeat_three('Are you trapped?', lang, ('yes', 'no'), 'trapped.mp3')
     conversation.extend([recieve[3]])
     if recieve[1] is True:
         # print('Victim is trapped.')
@@ -420,7 +432,7 @@ def evaluation(lang, name):
 
 
 if __name__ == "__main__":
-    result = eye_opening('ru', 'eugene', 'sunday', 'earthquake', 'school')
+    result = eye_opening('en', 'rebecca', 'sunday', 'earthquake', 'school')
     path = os.path.dirname(os.path.abspath(__file__))
     local_path = "testing_evaluation/scenario_1.log"
     full_path = os.path.join(path, local_path)
