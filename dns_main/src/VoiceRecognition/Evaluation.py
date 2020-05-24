@@ -213,6 +213,7 @@ def eye_opening(lang, name, day, accident, place):
         recieve = repeat_three(wakeup_str, lang, ('yes', 'no'), 'wakeup.mp3')
         conversation.extend([recieve[3]])
         guess = recieve[0]
+        #print(guess["transcription"])
         if guess["transcription"]:
             understand_str = 'Do you understand me?'
             recieve = repeat_three(understand_str, lang, ('yes', 'no'), 'understand.mp3')

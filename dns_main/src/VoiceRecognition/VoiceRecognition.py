@@ -98,8 +98,8 @@ def motion_speech(lang, name):
                     guess = recognize_speech_from_mic(recognizer, microphone, 'da-DK')
                 elif lang == 'sv':
                     guess = recognize_speech_from_mic(recognizer, microphone, 'sv-SE')
-                elif lang == 'bs':
-                    guess = recognize_speech_from_mic(recognizer, microphone, 'sr-RS')
+                elif lang == 'ru':
+                    guess = recognize_speech_from_mic(recognizer, microphone, 'ru_RU')
                 else :
                     guess = recognize_speech_from_mic(recognizer, microphone, 'en-UK')
                 if guess["transcription"]:
