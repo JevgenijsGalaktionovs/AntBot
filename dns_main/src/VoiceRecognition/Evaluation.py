@@ -46,8 +46,8 @@ def recorde(lang):
         guess = recognize_speech_from_mic(recognizer, microphone, 'da-DK')
     elif lang == 'sv':
         guess = recognize_speech_from_mic(recognizer, microphone, 'sv-SE')
-    elif lang == 'bs':
-        guess = recognize_speech_from_mic(recognizer, microphone, 'ru-Ru')
+    elif lang == 'ru':
+        guess = recognize_speech_from_mic(recognizer, microphone, 'ru-RU')
     else :
         guess = recognize_speech_from_mic(recognizer, microphone, 'en-UK')
     return guess
@@ -212,6 +212,7 @@ def eye_opening(lang, name, day, accident, place ):
         recieve = repete_three('' + name + ' wake up. Can you hear me?', lang, ('yes','no'),'wakeup.mp3',)
         conversation.extend([recieve[3]])
         guess = recieve[0]
+        #print(guess["transcription"])
         if guess["transcription"]:
             recieve = repete_three('Do you understand me?', lang , ('yes','no'),'understand.mp3')
             conversation.extend([recieve[3]])
