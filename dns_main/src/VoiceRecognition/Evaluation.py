@@ -51,7 +51,7 @@ def record(lang):
         guess = recognize_speech_from_mic(recognizer, microphone, 'sv-SE')
     elif lang == 'ru':
         guess = recognize_speech_from_mic(recognizer, microphone, 'ru-RU')
-    else :
+    else:
         guess = recognize_speech_from_mic(recognizer, microphone, 'en-UK')
     return guess
 
@@ -343,7 +343,7 @@ def evaluation(lang, name):
     text_bleed = ''
     text_pain = ''
 
-    recieve = repeat_three('Are you trapped?', lang, ('no', 'yes'), 'trapped.mp3')
+    recieve = repeat_three('Are you trapped?', lang, ('yes', 'no'), 'trapped.mp3')
     conversation.extend([recieve[3]])
     if recieve[1] is True:
         # print('Victim is trapped.')
@@ -422,10 +422,10 @@ def evaluation(lang, name):
 if __name__ == "__main__":
     result = eye_opening('ru', 'eugene', 'sunday', 'earthquake', 'school')
     path = os.path.dirname(os.path.abspath(__file__))
-    local_path = "testing_evaluation/scenario_1.log"
+    local_path = "testing_evaluation/scenario_13.log"
     full_path = os.path.join(path, local_path)
     logging.basicConfig(filename=full_path,
-                        level=logging.DEBUG,
+                        level=logging.CRITICAL,
                         format='%(asctime)s :: %(message)s')
-    logging.info(result[5])
+    logging.critical(result[5])
     print(result)
