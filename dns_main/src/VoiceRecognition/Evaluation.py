@@ -49,9 +49,9 @@ def record(lang):
         guess = recognize_speech_from_mic(recognizer, microphone, 'da-DK')
     elif lang == 'sv':
         guess = recognize_speech_from_mic(recognizer, microphone, 'sv-SE')
-    elif lang == 'bs':
-        guess = recognize_speech_from_mic(recognizer, microphone, 'ru-Ru')
-    else:
+    elif lang == 'ru':
+        guess = recognize_speech_from_mic(recognizer, microphone, 'ru-RU')
+    else :
         guess = recognize_speech_from_mic(recognizer, microphone, 'en-UK')
     return guess
 
