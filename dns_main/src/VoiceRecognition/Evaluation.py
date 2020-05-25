@@ -171,6 +171,7 @@ def eye_opening(lang, name, day, accident, place):
     conversation.extend([recieve[3]])
     guess = recieve[0]
     if guess["transcription"]:
+        e_score = 4
         recieve = repeat_three('Do you understand me?', lang, ('yes', 'no'), 'understand.mp3')
         conversation.extend([recieve[3]])
         if recieve[1] is True:
@@ -199,13 +200,12 @@ def eye_opening(lang, name, day, accident, place):
             #        lang = 'en'
 
             # guess = repeat_three('I am a member of the search and rescue team. I am here to evaluate your condition and report it 
-            v_score = 3
             very_long_str = 'Please avoid moving your head. This can cause spinal cord injuries.\
                              Please try to answer the following questions as concisely as you can.\
                              Can you open your eyes and see your surroundings?'
             recieve = repeat_three(very_long_str, lang, ('yes', 'no'), 'eyes.mp3')
             if recieve[1] is True:
-                e_score = 4
+                v_score = 3
 
             v_score = verbal_response(lang, name, day, accident, place)
             conversation.extend([v_score[1]])
@@ -218,6 +218,11 @@ def eye_opening(lang, name, day, accident, place):
             report = report[0]
         else:
             out_str = 'I have found {}. The victim is awake and responding. But cannot communicate.'.format(name)
+            total = e_score + v_score + m_score
+            print("v_score: {}".format(v_score))
+            print("e_score: {}".format(e_score))
+            print("m_score: {}".format(m_score))
+            print("Total score:{}".format(total))
             return out_str
 
     else:
@@ -227,6 +232,7 @@ def eye_opening(lang, name, day, accident, place):
         guess = recieve[0]
         #print(guess["transcription"])
         if guess["transcription"]:
+            e_score = 3
             understand_str = 'Do you understand me?'
             recieve = repeat_three(understand_str, lang, ('yes', 'no'), 'understand.mp3')
             conversation.extend([recieve[3]])
@@ -255,14 +261,13 @@ def eye_opening(lang, name, day, accident, place):
                 #elif recieve[1] is True:
                 #    lang = 'en'
 
-                v_score = 3
                 very_long_str = 'Please avoid moving your head. This can cause spinal cord injuries.\
                     Please try to answer the following questions as concisely as you can.\
                     Can you open your eyes and see your surroundings?'
                 recieve = repeat_three(very_long_str, lang, ('yes', 'no'), 'eyes.mp3')
                 conversation.extend([recieve[3]])
                 if recieve[1] is True:
-                    e_score = 3
+                    v_score = 3
 
                 v_score = verbal_response(lang, name, day, accident, place)
                 conversation.extend([v_score[1]])
@@ -275,6 +280,11 @@ def eye_opening(lang, name, day, accident, place):
                 report = report[0]
             else:
                 out_str = 'I have found {}. The victim is not awake and responding.'.format(name)
+                total = e_score + v_score + m_score
+                print("v_score: {}".format(v_score))
+                print("e_score: {}".format(e_score))
+                print("m_score: {}".format(m_score))
+                print("Total score:{}".format(total))
                 return out_str
 
         if not guess["success"]:
@@ -432,7 +442,7 @@ def evaluation(lang, name):
 
 
 if __name__ == "__main__":
-    result = eye_opening('en', 'rebecca', 'sunday', 'earthquake', 'school')
+    result = eye_opening('da', 'hugo', 'sunday', 'earthquake', 'school')
     path = os.path.dirname(os.path.abspath(__file__))
     local_path = "testing_evaluation/scenario_1.log"
     full_path = os.path.join(path, local_path)
