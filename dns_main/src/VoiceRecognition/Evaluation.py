@@ -444,10 +444,10 @@ def evaluation(lang, name):
 if __name__ == "__main__":
     result = eye_opening('da', 'hugo', 'sunday', 'earthquake', 'school')
     path = os.path.dirname(os.path.abspath(__file__))
-    local_path = "testing_evaluation/scenario_1.log"
+    local_path = "testing_evaluation/scenario_13.log"
     full_path = os.path.join(path, local_path)
     logging.basicConfig(filename=full_path,
-                        level=logging.DEBUG,
+                        level=logging.CRITICAL,
                         format='%(asctime)s :: %(message)s')
-    logging.info(result[5])
+    logging.critical(result[5])
     print(result)
