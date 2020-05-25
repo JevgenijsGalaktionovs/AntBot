@@ -59,15 +59,17 @@ def record(lang):
 def repeat_three(phrase, lang, keyWord, fName=None):
     output_1 = False
     output_2 = False
-    translator = Translator()
+    
 
 
-    Connection = CheckingConnectionToGoogle()
+    #Connection = CheckingConnectionToGoogle()
+    Connection = False
     if isinstance(Connection, tuple):
+        translator = Translator()
         Connection = Connection[0]
         keyWord_1 = translate(keyWord[0], lang)
         if keyWord[1] is 'no' and lang is 'da':
-            keyWord_2 = 'Nej'
+            keyWord_2 = 'nej'
         else:
             keyWord_2 = translate(keyWord[1], lang)
 
@@ -117,12 +119,14 @@ def repeat_three(phrase, lang, keyWord, fName=None):
 
 
 def translate(keyWord, lang):
-    translator = Translator()
-    Connection = CheckingConnectionToGoogle()
+    
+    #Connection = CheckingConnectionToGoogle()
+    Connecion = False
     if isinstance(Connection, tuple):
         Connection = Connection[0]
     if Connection is True:
-        lang = lang
+        print(Connection)
+        translator = Translator()
         translated_keyWord = translator.translate(keyWord, dest=lang)
         keyWord = translated_keyWord.text.lower()
     return keyWord
@@ -130,38 +134,12 @@ def translate(keyWord, lang):
 
 def eye_opening(lang, name, day, accident, place):
     total = 0
-    Connection = CheckingConnectionToGoogle()
+    #Connection = CheckingConnectionToGoogle()
+    Connection = False
     conversation = ['']
     if isinstance(Connection, tuple):
         Connection = Connection[0]
-        # print(Connection, "I knew this")
-    # if isinstance(Connection,tuple):
-    #     Connection = Connection[0]
-    # if Connection is True:
-    #     print(Connection, "Connected")
-    #     translated_yes = translator.translate('Yes' , dest=lang)
-    #     wordYes =[translated_yes.text.lower()]
-    #     translated_no = translator.translate('No' , dest=lang)
-    #     wordNo =[translated_no.text.lower()]
-    #     translated_danish = translator.translate('Danish' , dest=lang)
-    #     wordDanish =[translated_danish.text.lower()]
-    #     translated_swedish = translator.translate('Swedish' , dest=lang)
-    #     wordSwedish =[translated_swedish.text.lower()]
-    #     translated_russian = translator.translate('Russian' , dest=lang)
-    #     wordRussian =[translated_russian.text.lower()]
-    #     translated_english = translator.translate('English' , dest=lang)
-    #     wordEnglish =[translated_english.text.lower()]
-    # if lang == 'da':
-    #     mothertongue = 'Danish'
-    # elif lang == 'se':
-    #     mothertongue = 'Swedish'
-    # elif lang == 'ru':
-    #     mothertongue = 'Russian'
-    # else:
-    #     mothertongue = 'English'
-    # else:
-    #     wordYes =['Yes']
-    #     wordNo =['No']
+        print(Connection)
     e_score = 0
     v_score = 0
     m_score = 0
@@ -302,7 +280,8 @@ def eye_opening(lang, name, day, accident, place):
 def verbal_response(lang, name, day, accident, place):
     score = 3
     conversation = []
-    Connection = CheckingConnectionToGoogle()
+    #Connection = CheckingConnectionToGoogle()
+    Connection = False
     if Connection is True:
         print(Connection, "Connected")
     elif Connection is False:
@@ -349,15 +328,21 @@ def motor_response(lang, name):
 
 def evaluation(lang, name):
     conversation = []
-    if name == '':
-        name == translate('Unknow victim', lang)
+    
+    # if name == '':
+    #     name == translate('Unknow victim', lang)
+    # if name == 'rebecca':
+    #     gender = translate('She', lang)
+    #     gender_2 = translate('her', lang)
+    # else:
+    #     gender = translate('He', lang)
+    #     gender_2 = translate('his', lang)
     if name == 'rebecca':
-        gender = translate('She', lang)
-        gender_2 = translate('her', lang)
+        gender = 'She'
+        gender_2 = 'her'
     else:
-        gender = translate('He', lang)
-        gender_2 = translate('his', lang)
-
+         gender = 'He'
+         gender_2 = 'his'
     text_limb = ''
     text_trapped = ''
     text_limbsmoving = ''
@@ -389,7 +374,7 @@ def evaluation(lang, name):
                 text_limb = '' + gender + ' is not able to move ' + '' + gender_2 + ' leg.'
             elif recieve[1] is True and recieve[2] is True:
                 text_limb = '' + gender + ' is not able to move any of the limbs.'
-            recieve = repeat_three('Can you still feel it?', lang, ('yes', 'no'), 'feel.mp3')
+            recieve = repeat_three('Can you still feel it?', lang, ('yes', 'Nej'), 'feel.mp3')
             if recieve[1] is True and recieve[2] is False:
                 text_feel = 'But ' + '' + gender + ' can still feel it.'
             elif recieve[2] is True and recieve[1] is False:
@@ -442,7 +427,7 @@ def evaluation(lang, name):
 
 
 if __name__ == "__main__":
-    result = eye_opening('da', 'hugo', 'sunday', 'earthquake', 'school')
+    result = eye_opening('en', 'rebecca', 'sunday', 'earthquake', 'office')
     path = os.path.dirname(os.path.abspath(__file__))
     local_path = "testing_evaluation/scenario_13.log"
     full_path = os.path.join(path, local_path)
